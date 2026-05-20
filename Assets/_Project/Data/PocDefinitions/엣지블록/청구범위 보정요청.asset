@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b51ab299ad5284489c0d6e9be4ce825, type: 3}
+  m_Name: "\uCCAD\uAD6C\uBC94\uC704 \uBCF4\uC815\uC694\uCCAD"
+  m_EditorClassIdentifier: 
+  id: "\uCCAD\uAD6C\uBC94\uC704 \uBCF4\uC815\uC694\uCCAD"
+  displayName: "\uCCAD\uAD6C\uBC94\uC704 \uBCF4\uC815\uC694\uCCAD"
+  tagModifiers:
+  - tag: 8
+    amount: -2
+  - tag: 5
+    amount: 1
+  - tag: 1
+    amount: 1
+  byproducts:
+  - type: 2
+    amount: 1
+  - type: 1
+    amount: 1
