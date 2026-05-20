@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c44144eaa45c134c9c8b0b951e54d73, type: 3}
+  m_Name: Recipe_Forced_Order
+  m_EditorClassIdentifier: Assembly-CSharp::FOIA.Flow.Definitions.RecipeDefinition
+  recipeId: Recipe_Forced_Order
+  firstIngredient: {fileID: 11400000, guid: cc99f94e845add74aa8edfc394d40d93, type: 2}
+  secondIngredient: {fileID: 11400000, guid: 6e41c7a2e94c63642a6ccf473fc0637d, type: 2}
+  result: {fileID: 11400000, guid: b83eddffa8887104d8f5c6f00debb9ab, type: 2}
+  discoveryText: "\uC0C8 \uC5E3\uC9C0\uBE14\uB7ED \uBC1C\uACAC: \uC801\uBC1C\uBA85\uB839"

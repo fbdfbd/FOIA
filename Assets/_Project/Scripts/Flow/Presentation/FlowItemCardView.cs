@@ -1,4 +1,5 @@
 using System.Linq;
+using FOIA.Flow.Input;
 using FOIA.Flow.Runtime;
 using TMPro;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 namespace FOIA.Flow.Presentation
 {
     [DisallowMultipleComponent]
-    public sealed class FlowItemCardView : MonoBehaviour, IPointerClickHandler
+    public sealed class FlowItemCardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [SerializeField] private Image background;
         [SerializeField] private TMP_Text titleText;
@@ -98,6 +99,23 @@ namespace FOIA.Flow.Presentation
             flowStore.SelectItem(item.ItemId);
         }
 
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (item != null)
+            {
+                FlowDragPayload.Begin(FlowDragPayload.Item, item.ItemId);
+            }
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            FlowDragPayload.Clear();
+        }
+
         private void ConfigureDefaults()
         {
             if (background != null)
@@ -117,6 +135,7 @@ namespace FOIA.Flow.Presentation
             }
 
             text.raycastTarget = false;
+            FlowTextStyle.Apply(text);
             text.fontSize = size;
             text.fontStyle = style;
             text.color = Color.black;

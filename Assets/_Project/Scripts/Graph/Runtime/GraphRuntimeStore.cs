@@ -174,6 +174,28 @@ namespace FOIA.Graph.Runtime
             return false;
         }
 
+        public bool TryGetFirstNextNodeId(string currentNodeId, out string nextNodeId, out string edgeId)
+        {
+            nextNodeId = string.Empty;
+            edgeId = string.Empty;
+
+            if (string.IsNullOrEmpty(currentNodeId) || !edgeIdsByNodeId.TryGetValue(currentNodeId, out List<string> nodeEdgeIds))
+            {
+                return false;
+            }
+
+            foreach (string currentEdgeId in nodeEdgeIds)
+            {
+                if (TryGetNextNodeId(currentNodeId, currentEdgeId, out nextNodeId))
+                {
+                    edgeId = currentEdgeId;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void SelectEdge(string edgeId)
         {
             if (!edgesById.ContainsKey(edgeId))

@@ -35,6 +35,7 @@ namespace FOIA.Flow.Runtime
 
             FlowItem item = new(Guid.NewGuid().ToString("N"), definition, containerId);
             itemsById.Add(item.ItemId, item);
+            SelectItem(item.ItemId);
             ItemsChanged?.Invoke();
             return item;
         }
@@ -65,6 +66,23 @@ namespace FOIA.Flow.Runtime
 
             SelectedItemId = itemId;
             SelectionChanged?.Invoke();
+        }
+
+        public bool DeleteItem(string itemId)
+        {
+            if (string.IsNullOrEmpty(itemId) || !itemsById.Remove(itemId))
+            {
+                return false;
+            }
+
+            if (SelectedItemId == itemId)
+            {
+                SelectedItemId = string.Empty;
+                SelectionChanged?.Invoke();
+            }
+
+            ItemsChanged?.Invoke();
+            return true;
         }
 
         public void NotifyItemChanged()

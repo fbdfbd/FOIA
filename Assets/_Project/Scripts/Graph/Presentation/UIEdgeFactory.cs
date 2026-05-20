@@ -1,5 +1,6 @@
 using FOIA.Graph.Runtime;
 using FOIA.Graph.Input;
+using FOIA.Flow.Presentation;
 using FOIA.UI.Components;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,6 +26,7 @@ namespace FOIA.Graph.Presentation
             EnsureComponent<UIEdgeDirectionView>(edge.gameObject);
             EnsureComponent<EdgeSelectable>(edge.gameObject);
             EnsureComponent<EdgeContextInput>(edge.gameObject);
+            EnsureComponent<EdgeFlowBlockView>(edge.gameObject);
 
             edge.Initialize(data, fromNode, toNode);
 
@@ -85,6 +87,7 @@ namespace FOIA.Graph.Presentation
             edgeObject.AddComponent<UIEdgeDirectionView>();
             edgeObject.AddComponent<EdgeSelectable>();
             edgeObject.AddComponent<EdgeContextInput>();
+            edgeObject.AddComponent<EdgeFlowBlockView>();
             return edgeObject.GetComponent<EdgeEntity>();
         }
 

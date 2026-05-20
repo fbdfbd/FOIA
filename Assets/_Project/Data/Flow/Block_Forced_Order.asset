@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bdcc92a1e5bd744c83c294f0b936ab2, type: 3}
+  m_Name: Block_Forced_Order
+  m_EditorClassIdentifier: Assembly-CSharp::FOIA.Flow.Definitions.EdgeBlockDefinition
+  blockId: forced_order
+  displayName: "\uC801\uBC1C\uBA85\uB839"
+  effects:
+  - Operation: 0
+    Tag: "\uC801\uBC1C\uBA85\uB839"
+  preventsIntakeStress: 0
+  forcesAgencyApproval: 1
+  forcedApprovalRelationshipLoss: 30
+  forcedByproduct: {fileID: 11400000, guid: 6e41c7a2e94c63642a6ccf473fc0637d, type: 2}

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 302dc2aadb746e34ba4e41e30401050e, type: 3}
+  m_Name: Database_Default_FOIA_Flow
+  m_EditorClassIdentifier: Assembly-CSharp::FOIA.Flow.Definitions.FoiaFlowDatabase
+  defaultComplaint: {fileID: 11400000, guid: 56ceeb44690e94f47b494c80d785ba2c, type: 2}
+  staff:
+  - {fileID: 11400000, guid: b163cc6f1d632214aa442c6da66c642b, type: 2}
+  - {fileID: 11400000, guid: 26fe52761dd965143baa3aa939ab017c, type: 2}
+  - {fileID: 11400000, guid: a1e493e06ba6b6143a7ebb8574bc0538, type: 2}
+  agencies:
+  - {fileID: 11400000, guid: 74371f0a60bec084aa46f887ec2f3273, type: 2}
+  - {fileID: 11400000, guid: b8a6d39b819b64d458534839817b2db8, type: 2}
+  - {fileID: 11400000, guid: dab50b301213a9b419ae2fb27b459ce8, type: 2}
+  agencyOutcomes:
+  - {fileID: 11400000, guid: 7edf1cbbd265f64498f72737532f31af, type: 2}
+  - {fileID: 11400000, guid: 27daa8861b735a9418c75d33ed59bebe, type: 2}
+  - {fileID: 11400000, guid: d00eac566603ad64ca37268a0e722dea, type: 2}
+  recipes:
+  - {fileID: 11400000, guid: 1851c87f168c0bf478820e4bdb53d97e, type: 2}
+  - {fileID: 11400000, guid: 4aab59403e1fc4649b526485ee14ad1a, type: 2}
+  - {fileID: 11400000, guid: cb5e5ca9fd3951f4a8fbf9617db189ad, type: 2}
+  normalByproduct: {fileID: 11400000, guid: bbad3dba1d1e0a74b90d0a4279a10257, type: 2}
+  refusalByproduct: {fileID: 11400000, guid: cc99f94e845add74aa8edfc394d40d93, type: 2}
