@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>민원 처리 시뮬레이터: 블랙 박스</title>
+    <style>
+        :root { 
+            --bg: #121215; --panel: #22222a; --text: #e0e0e0; 
+            --accent: #00d2ff; --edge: #ffaa00; --danger: #ff4444; --success: #00e676;
+            --slot-bg: #1a1a20; --slot-border: #444;
+        }
+        body { font-family: 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; height: 100vh; user-select: none; }
+        h2, h3, p { margin: 0 0 10px 0; }
+        
+        /* Layout */
+        .top-board { flex: 2; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        .bottom-inventory { flex: 1; background: var(--panel); border-top: 2px solid #333; padding: 20px; display: flex; gap: 20px; overflow-x: auto; }
+        
+        /* Node & Graph Structure */
+        .graph-container { display: flex; align-items: stretch; justify-content: space-between; background: #18181e; padding: 20px; border-radius: 12px; border: 1px solid #333; flex-grow: 1;}
+        
+        /* Drop Zones & Slots */
+        .drop-zone { background: var(--slot-bg); border: 2px dashed var(--slot-border); border-radius: 8px; display: flex; align-items: center; justify-content: center; text-align: center; color: #888; transition: 0.2s; position: relative; flex-direction: column;}
+        .drop-zone.drag-over { border-color: var(--accent); background: #1a2a3a; color: white; }
+        
+        /* Specific Nodes */
+        .node-intake { width: 140px; border-color: var(--accent); }
+        .node-edge { width: 100px; height: 80px; align-self: center; border-color: var(--edge); border-radius: 50%; }
+        .node-board { width: 160px; border-color: #b06ab3; }
+        .agency-col { display: flex; flex-direction: column; gap: 15px; justify-content: center; }
+        .node-agency { width: 150px; height: 90px; padding: 10px; border: 2px solid #555; background: #222; border-radius: 8px; display: flex; flex-direction: column; }
+        .node-agency.drag-over { border-color: var(--success); transform: scale(1.05); }
+
+        /* Draggable Items (Cards, Tokens) */
+        .card-emp { background: #2a2a35; border: 1px solid #555; border-radius: 6px; padding: 10px; cursor: grab; width: 100px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .card-emp:active { cursor: grabbing; }
+        .stress-bar { height: 6px; background: #111; margin-top: 5px; border-radius: 3px; overflow: hidden; }
+        .stress-fill { height: 100%; background: var(--danger); width: 0%; transition: 0.3s; }
+        
+        .token-doc { background: #fff; color: #000; font-weight: bold; padding: 15px; border-radius: 4px; cursor: grab; border: 2px solid #ccc; box-shadow: 0 0 10px rgba(255,255,255,0.2); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        
+        .item-byproduct { background: #444; border: 1px solid #666; padding: 5px 10px; border-radius: 15px; font-size: 12px; cursor: grab; display: inline-block; margin: 2px; }
+        .item-block { background: var(--edge); color: #000; border: 2px solid #aa7700; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: grab; display: inline-block; margin: 2px; }
+
+        /* UI Areas */
+        .inventory-section { display: flex; flex-direction: column; border-right: 1px solid #444; padding-right: 20px; min-width: 250px; }
+        .items-grid { display: flex; flex-wrap: wrap; gap: 10px; align-content: flex-start; }
+        .crafting-area { background: #1a1a20; padding: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; border: 1px solid #444; }
+        .craft-slot { width: 80px; height: 40px; border: 1px dashed #777; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #777; }
+        
+        .btn { background: var(--accent); color: #000; border: none; padding: 10px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        .btn:hover { background: #00b0d0; }
+        .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+
+        /* Logs */
+        .log-panel { flex: 1; background: #0a0a0c; border: 1px solid #333; padding: 10px; border-radius: 8px; overflow-y: auto; font-family: monospace; font-size: 13px; line-height: 1.5; color: #aaa; }
+        .log-highlight { color: var(--accent); }
+        .log-warn { color: var(--edge); }
+        .log-err { color: var(--danger); }
+        
+        /* Utility Classes pointer-events to fix drag issues */
+        .no-pointer { pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <!-- 상단: 메인 게임 보드 -->
+    <div class="top-board">
+        <div style="display: flex; justify-content: space-between;">
+            <h2>행정 프로세스 보드</h2>
+            <button class="btn" style="margin:0;" onclick="resetGame()">게임 초기화</button>
+        </div>
+        
+        <div class="graph-container">
+            <!-- 1. 접수 노드 -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap:10px;">
+                <h3>[접수]</h3>
+                <div class="drop-zone node-intake" id="node-intake" ondrop="dropEmp(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                    직원 카드<br>배치 (Drop)
+                </div>
+                <button class="btn" id="btn-start" onclick="startProcess()" disabled>민원 접수 시작</button>
+            </div>
+
+            <div style="align-self: center; font-size: 24px; color: #555;">▶</div>
+
+            <!-- 2. 엣지 (블럭 장착) -->
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <h3 style="color:var(--edge);">[시스템 엣지]</h3>
+                <div class="drop-zone node-edge" id="node-edge" ondrop="dropBlock(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" onclick="unequipBlock()">
+                    엣지 블럭<br>(Drop)
+                </div>
+                <small style="color:#777; cursor:pointer;" onclick="unequipBlock()">클릭하여 해제</small>
+            </div>
+
+            <div style="align-self: center; font-size: 24px; color: #555;">▶</div>
+
+            <!-- 3. 분기 보드 -->
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <h3 style="color:#b06ab3;">[분기 대기열]</h3>
+                <div class="drop-zone node-board" id="node-board">
+                    <!-- 서류 토큰이 여기 생성됨 -->
+                    대기중인 민원 없음
+                </div>
+                <small style="color:#777; text-align:center; margin-top:5px;">민원 서류를<br>우측 기관으로 드래그</small>
+            </div>
+
+            <div style="align-self: center; font-size: 24px; color: #555;">▶</div>
+
+            <!-- 4. 기관들 (3갈래) -->
+            <div class="agency-col" id="agency-container">
+                <!-- JS에서 렌더링 됨 -->
+            </div>
+            
+            <div style="align-self: center; font-size: 24px; color: #555;">▶</div>
+            
+            <!-- 로그 창 (최종 결과물 대신) -->
+            <div class="log-panel" id="log-box">
+                시스템이 부팅되었습니다. 하단에서 직원을 [접수] 노드로 드래그하세요.
+            </div>
+        </div>
+    </div>
+
+    <!-- 하단: 인벤토리 및 UI -->
+    <div class="bottom-inventory">
+        <!-- 직원 인벤토리 -->
+        <div class="inventory-section">
+            <h3>직원 (인사 파일)</h3>
+            <div class="items-grid" id="inv-emp"></div>
+        </div>
+
+        <!-- 부산물 & 엣지 블럭 인벤토리 -->
+        <div class="inventory-section" style="flex: 1;">
+            <h3>보유 아이템 / 블럭</h3>
+            <div class="items-grid" id="inv-items"></div>
+            
+            <h4 style="margin-top: 20px; border-top: 1px solid #444; padding-top:10px;">블럭 연구 (조합)</h4>
+            <div class="crafting-area">
+                <div class="drop-zone craft-slot" id="craft-1" ondrop="dropCraft(event, 1)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" onclick="clearCraft(1)">재료1</div>
+                <span>+</span>
+                <div class="drop-zone craft-slot" id="craft-2" ondrop="dropCraft(event, 2)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" onclick="clearCraft(2)">재료2</div>
+                <button class="btn" style="margin:0;" onclick="craft()">결합</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // --- 초기 DB ---
+    const INITIAL_DB = {
+        employees: [
+            { id: 'e1', name: "신입", tag: "열정", stress: 0, active: true },
+            { id: 'e2', name: "과장", tag: "원칙", stress: 30, active: true },
+            { id: 'e3', name: "국장", tag: "꼼수", stress: 0, active: true }
+        ],
+        agencies: [
+            { id: 'a1', name: "경찰청", rel: 80, trait: "강압" },
+            { id: 'a2', name: "국세청", rel: 50, trait: "지연" },
+            { id: 'a3', name: "교육부", rel: 100, trait: "유도리" }
+        ],
+        recipes: [
+            { req: ["서류뭉치", "항의전화"], result: "독촉장", desc: "[독촉장]: 관계도 깎고 강제 신속 처리" },
+            { req: ["항의전화", "비자금내역"], result: "협박편지", desc: "[협박편지]: 관계도 무시 무조건 승인" },
+            { req: ["칭찬사연", "서류뭉치"], result: "매뉴얼", desc: "[매뉴얼]: 접수 시 직원 스트레스 보호" }
+        ]
+    };
+
+    // --- 게임 상태 ---
+    let state = {};
+    
+    function resetGame() {
+        state = {
+            employees: JSON.parse(JSON.stringify(INITIAL_DB.employees)),
+            agencies: JSON.parse(JSON.stringify(INITIAL_DB.agencies)),
+            inventory: [],
+            blocks: [],
+            equippedEmpId: null,
+            equippedBlock: null,
+            currentDoc: null, // 분기 보드에 있는 서류 정보
+            craftSlots: [null, null]
+        };
+        document.getElementById('log-box').innerHTML = "시스템이 초기화되었습니다.";
+        render();
+    }
+
+    // --- 로그 출력 ---
+    function log(msg, type="") {
+        const box = document.getElementById('log-box');
+        let colorClass = type === "warn" ? "log-warn" : (type === "err" ? "log-err" : "log-highlight");
+        box.innerHTML += `<div style="margin-bottom:8px;">> <span class="${type ? colorClass : ''}">${msg}</span></div>`;
+        box.scrollTop = box.scrollHeight;
+    }
+
+    // --- 드래그 앤 드롭 공통 ---
+    function allowDrop(ev) {
+        ev.preventDefault();
+        ev.currentTarget.classList.add('drag-over');
+    }
+    function dragLeave(ev) {
+        ev.currentTarget.classList.remove('drag-over');
+    }
+    function dragStart(ev, type, id) {
+        ev.dataTransfer.setData("type", type);
+        ev.dataTransfer.setData("id", id);
+    }
+
+    // --- 구역별 Drop 처리 로직 ---
+    function dropEmp(ev) {
+        ev.preventDefault(); ev.currentTarget.classList.remove('drag-over');
+        if(ev.dataTransfer.getData("type") !== "emp") return;
+        
+        state.equippedEmpId = ev.dataTransfer.getData("id");
+        log(`직원 할당됨. 민원 접수를 시작할 수 있습니다.`);
+        render();
+    }
+
+    function dropBlock(ev) {
+        ev.preventDefault(); ev.currentTarget.classList.remove('drag-over');
+        if(ev.dataTransfer.getData("type") !== "block") return;
+        
+        let blockName = ev.dataTransfer.getData("id");
+        // 인벤에서 제거
+        state.blocks.splice(state.blocks.indexOf(blockName), 1);
+        
+        // 기존 엣지 장착 해제
+        if(state.equippedBlock) state.blocks.push(state.equippedBlock);
+        
+        state.equippedBlock = blockName;
+        log(`시스템 엣지에 [${blockName}] 블럭이 마운트 되었습니다. 프로세스 룰이 변경됩니다.`, "warn");
+        render();
+    }
+
+    function unequipBlock() {
+        if(!state.equippedBlock) return;
+        state.blocks.push(state.equippedBlock);
+        log(`[${state.equippedBlock}] 엣지 블럭이 해제되었습니다.`);
+        state.equippedBlock = null;
+        render();
+    }
+
+    function dropCraft(ev, slotNum) {
+        ev.preventDefault(); ev.currentTarget.classList.remove('drag-over');
+        if(ev.dataTransfer.getData("type") !== "item") return;
+        
+        let itemName = ev.dataTransfer.getData("id");
+        state.inventory.splice(state.inventory.indexOf(itemName), 1); // 인벤에서 제거
+        
+        // 슬롯에 기존템 있으면 인벤으로 복구
+        if(state.craftSlots[slotNum-1]) state.inventory.push(state.craftSlots[slotNum-1]);
+        
+        state.craftSlots[slotNum-1] = itemName;
+        render();
+    }
+
+    function clearCraft(slotNum) {
+        if(!state.craftSlots[slotNum-1]) return;
+        state.inventory.push(state.craftSlots[slotNum-1]);
+        state.craftSlots[slotNum-1] = null;
+        render();
+    }
+
+    function dropDocToAgency(ev, agencyId) {
+        ev.preventDefault(); ev.currentTarget.classList.remove('drag-over');
+        if(ev.dataTransfer.getData("type") !== "doc") return;
+        
+        if(!state.currentDoc) return;
+        processAtAgency(agencyId);
+    }
+
+    // --- 프로세스 단계 로직 ---
+
+    function startProcess() {
+        if(!state.equippedEmpId) return;
+        if(state.currentDoc) {
+            log("이미 분기 보드에 처리 대기 중인 민원이 있습니다!", "err");
+            return;
+        }
+
+        let emp = state.employees.find(e => e.id === state.equippedEmpId);
+        log(`[접수] ${emp.name} 직원이 민원을 접수했습니다.`);
+
+        // 1. 스트레스 처리 로직 (매뉴얼 블럭 효과 검사)
+        let stressDmg = 20;
+        if(state.equippedBlock === "매뉴얼") {
+            stressDmg = 0;
+            log(`↳ [매뉴얼] 엣지 효과: 직원 스트레스가 오르지 않습니다.`, "warn");
+        }
+        emp.stress += stressDmg;
+        if(emp.stress >= 100) {
+            emp.active = false;
+            state.equippedEmpId = null;
+            log(`[경고] ${emp.name} 직원이 스트레스를 견디지 못하고 퇴사했습니다!!`, "err");
+        }
+
+        // 2. 문서 객체 생성 (태그 부착)
+        let tags = [emp.tag];
+        if(state.equippedBlock) tags.push(state.equippedBlock);
+
+        state.currentDoc = { tags: tags, fromEmp: emp.name };
+        
+        log(`[엣지] 서류가 엣지를 통과하여 분기 보드로 전송되었습니다. (부착된 태그: ${tags.join(', ')})`);
+        
+        // 접수 노드에서 직원 자동 해제 (편의상)
+        if(emp.active) state.equippedEmpId = null; 
+        render();
+    }
+
+    function processAtAgency(agencyId) {
+        let ag = state.agencies.find(a => a.id === agencyId);
+        let doc = state.currentDoc;
+        let generatedByproducts = [];
+        let isSuccess = false;
+
+        log(`-----------------------------------`);
+        log(`[기관 배정] 서류가 <${ag.name}>으로 이관되었습니다.`);
+        
+        // 엣지 블럭 효과 및 특성 충돌 검사
+        if (doc.tags.includes("협박편지")) {
+            isSuccess = true;
+            ag.rel -= 30;
+            generatedByproducts.push("비자금내역");
+            log(`↳ [협박편지] 효과: ${ag.name}이(가) 불만에도 불구하고 강제로 승인했습니다!`, "warn");
+        } else if (doc.tags.includes("독촉장")) {
+            isSuccess = true;
+            ag.rel -= 15;
+            generatedByproducts.push("항의전화");
+            log(`↳ [독촉장] 효과: 강압적으로 신속 처리되었으나 기관의 불만이 쌓입니다.`, "warn");
+        } else {
+            // 기본 시스템 룰
+            if (ag.rel < 40) {
+                log(`↳ ${ag.name}의 우호도가 낮아 협조를 거부하고 서류를 반려합니다.`, "err");
+                generatedByproducts.push("항의전화");
+            } else {
+                isSuccess = true;
+                // 직원 태그 + 기관 특성 조합
+                if (doc.tags.includes("열정") && ag.trait === "지연") {
+                    generatedByproducts.push("서류뭉치");
+                    log(`↳ 직원의 열정과 기관의 지연이 충돌하여 찌꺼기 [서류뭉치]가 생성되었습니다.`);
+                } else if (doc.tags.includes("꼼수") && ag.trait === "강압") {
+                    generatedByproducts.push("비자금내역");
+                    log(`↳ 꼼수와 강압이 엮여 은밀한 [비자금내역]이 흘러나왔습니다.`, "warn");
+                } else if (doc.tags.includes("원칙") && ag.trait === "유도리") {
+                    generatedByproducts.push("항의전화");
+                    log(`↳ 원칙주의와 유도리가 충돌하여 [항의전화]가 발생했습니다.`);
+                } else {
+                    generatedByproducts.push("칭찬사연");
+                    log(`↳ 기관이 협조적으로 정상 처리했습니다.`);
+                }
+            }
+        }
+
+        log(`[최종 결과] 민원 처리 결과: ${isSuccess ? '승인' : '반려'}`);
+        if(generatedByproducts.length > 0) {
+            log(`↳ 획득 부산물: ${generatedByproducts.join(', ')} (인벤토리 저장됨)`);
+            state.inventory.push(...generatedByproducts);
+        }
+
+        // 우호도 클리핑
+        if(ag.rel < 0) ag.rel = 0; if(ag.rel > 100) ag.rel = 100;
+
+        // 보드 비우기
+        state.currentDoc = null;
+        render();
+    }
+
+    function craft() {
+        let i1 = state.craftSlots[0]; let i2 = state.craftSlots[1];
+        if(!i1 || !i2) return;
+
+        let recipe = INITIAL_DB.recipes.find(r => 
+            (r.req.includes(i1) && r.req.includes(i2) && (i1 !== i2 || r.req[0] === r.req[1]))
+        );
+
+        if(recipe) {
+            state.blocks.push(recipe.result);
+            log(`[연구 성공!] 새로운 레시피 발견: ${recipe.desc}`, "warn");
+        } else {
+            log(`[연구 실패] [${i1}]과 [${i2}]는 반응하지 않고 파괴되었습니다.`, "err");
+        }
+        
+        state.craftSlots = [null, null];
+        render();
+    }
+
+    // --- 렌더링 ---
+    function render() {
+        // 1. 직원 인벤토리
+        const invEmp = document.getElementById('inv-emp');
+        invEmp.innerHTML = '';
+        state.employees.forEach(emp => {
+            if(!emp.active || state.equippedEmpId === emp.id) return; // 퇴사했거나, 장착중이면 안보임
+            invEmp.innerHTML += `
+                <div class="card-emp" draggable="true" ondragstart="dragStart(event, 'emp', '${emp.id}')">
+                    <b>${emp.name}</b><br><small class="no-pointer">태그: ${emp.tag}</small>
+                    <div class="stress-bar no-pointer"><div class="stress-fill" style="width:${emp.stress}%"></div></div>
+                </div>
+            `;
+        });
+
+        // 2. 접수 노드 (장착된 직원)
+        const nodeIntake = document.getElementById('node-intake');
+        if(state.equippedEmpId) {
+            let emp = state.employees.find(e => e.id === state.equippedEmpId);
+            nodeIntake.innerHTML = `
+                <div style="background:#334; width:100%; height:100%; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
+                    <b>${emp.name}</b><small>대기중</small>
+                </div>
+            `;
+            document.getElementById('btn-start').disabled = false;
+        } else {
+            nodeIntake.innerHTML = "직원 카드<br>배치 (Drop)";
+            document.getElementById('btn-start').disabled = true;
+        }
+
+        // 3. 아이템 & 블럭 인벤토리
+        const invItems = document.getElementById('inv-items');
+        invItems.innerHTML = '';
+        state.inventory.forEach((item, idx) => {
+            // 중복이름 처리위해 id대신 이름 자체를 넘김
+            invItems.innerHTML += `<div class="item-byproduct" draggable="true" ondragstart="dragStart(event, 'item', '${item}')">${item}</div>`;
+        });
+        state.blocks.forEach(block => {
+            invItems.innerHTML += `<div class="item-block" draggable="true" ondragstart="dragStart(event, 'block', '${block}')">${block}</div>`;
+        });
+        if(state.inventory.length===0 && state.blocks.length===0) invItems.innerHTML = "<small style='color:#666'>보유 아이템 없음</small>";
+
+        // 4. 조합 슬롯
+        document.getElementById('craft-1').innerText = state.craftSlots[0] || "재료1";
+        document.getElementById('craft-2').innerText = state.craftSlots[1] || "재료2";
+
+        // 5. 엣지 블럭 장착
+        const nodeEdge = document.getElementById('node-edge');
+        if(state.equippedBlock) {
+            nodeEdge.innerHTML = `<div class="item-block no-pointer" style="margin:0; text-align:center;">${state.equippedBlock}</div>`;
+        } else {
+            nodeEdge.innerHTML = "엣지 블럭<br>(Drop)";
+        }
+
+        // 6. 분기 보드 (서류 생성)
+        const nodeBoard = document.getElementById('node-board');
+        if(state.currentDoc) {
+            nodeBoard.innerHTML = `
+                <div class="token-doc" draggable="true" ondragstart="dragStart(event, 'doc', 'doc')">
+                    📄 민원 서류<br><small class="no-pointer" style="color:#666">(${state.currentDoc.fromEmp} 담당)</small>
+                </div>
+            `;
+        } else {
+            nodeBoard.innerHTML = "<span style='color:#555'>대기중인 민원 없음</span>";
+        }
+
+        // 7. 하위 기관 렌더링
+        const agContainer = document.getElementById('agency-container');
+        agContainer.innerHTML = '';
+        state.agencies.forEach(ag => {
+            let relColor = ag.rel < 40 ? "var(--danger)" : "var(--success)";
+            agContainer.innerHTML += `
+                <div class="node-agency drop-zone" ondrop="dropDocToAgency(event, '${ag.id}')" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                    <div class="no-pointer" style="font-weight:bold; color:#fff;">${ag.name}</div>
+                    <div class="no-pointer" style="font-size:11px; color:#aaa;">특성: ${ag.trait}</div>
+                    <div class="stress-bar no-pointer" style="margin-top:auto;"><div class="stress-fill" style="width:${ag.rel}%; background:${relColor};"></div></div>
+                    <div class="no-pointer" style="font-size:10px; text-align:right;">우호도: ${ag.rel}</div>
+                </div>
+            `;
+        });
+    }
+
+    // 게임 시작
+    resetGame();
+</script>
+
+</body>
+</html>

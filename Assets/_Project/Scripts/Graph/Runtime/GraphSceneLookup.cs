@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace FOIA.Graph.Runtime
 {
-    internal static class GraphSceneLookup
+    public static class GraphSceneLookup
     {
         public static T FindFirst<T>() where T : Object
         {

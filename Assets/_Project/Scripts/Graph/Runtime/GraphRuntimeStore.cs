@@ -121,6 +121,59 @@ namespace FOIA.Graph.Runtime
             return edgesById.TryGetValue(edgeId, out edge);
         }
 
+        public bool TryGetNode(string nodeId, out NodeEntity node)
+        {
+            return nodesById.TryGetValue(nodeId, out node);
+        }
+
+        public bool TryGetSelectedNode(out NodeEntity node)
+        {
+            node = null;
+
+            if (SelectionType != GraphSelectionType.Node || string.IsNullOrEmpty(SelectedNodeId))
+            {
+                return false;
+            }
+
+            return TryGetNode(SelectedNodeId, out node);
+        }
+
+        public bool TryGetSelectedEdge(out EdgeRuntimeData edge)
+        {
+            edge = null;
+
+            if (SelectionType != GraphSelectionType.Edge || string.IsNullOrEmpty(SelectedEdgeId))
+            {
+                return false;
+            }
+
+            return TryGetEdge(SelectedEdgeId, out edge);
+        }
+
+        public bool TryGetNextNodeId(string currentNodeId, string edgeId, out string nextNodeId)
+        {
+            nextNodeId = string.Empty;
+
+            if (string.IsNullOrEmpty(currentNodeId) || !edgesById.TryGetValue(edgeId, out EdgeRuntimeData edge))
+            {
+                return false;
+            }
+
+            if (CanMoveForward(edge, currentNodeId))
+            {
+                nextNodeId = edge.ToNodeId;
+                return true;
+            }
+
+            if (CanMoveBackward(edge, currentNodeId))
+            {
+                nextNodeId = edge.FromNodeId;
+                return true;
+            }
+
+            return false;
+        }
+
         public void SelectEdge(string edgeId)
         {
             if (!edgesById.ContainsKey(edgeId))
@@ -218,6 +271,22 @@ namespace FOIA.Graph.Runtime
             {
                 node.SetConnected(edgeIdsByNodeId.ContainsKey(nodeId));
             }
+        }
+
+        private static bool CanMoveForward(EdgeRuntimeData edge, string currentNodeId)
+        {
+            return edge.FromNodeId == currentNodeId
+                && (edge.Direction == EdgeDirection.Forward
+                    || edge.Direction == EdgeDirection.Bidirectional
+                    || edge.Direction == EdgeDirection.Undirected);
+        }
+
+        private static bool CanMoveBackward(EdgeRuntimeData edge, string currentNodeId)
+        {
+            return edge.ToNodeId == currentNodeId
+                && (edge.Direction == EdgeDirection.Backward
+                    || edge.Direction == EdgeDirection.Bidirectional
+                    || edge.Direction == EdgeDirection.Undirected);
         }
     }
 }
