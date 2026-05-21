@@ -28,6 +28,11 @@ namespace FOIA.Flow.Runtime
         public void ReduceStress(int value)
         {
             Stress = UnityEngine.Mathf.Clamp(Stress - value, 0, 100);
+
+            if (Stress < 100)
+            {
+                IsActive = true;
+            }
         }
     }
 }

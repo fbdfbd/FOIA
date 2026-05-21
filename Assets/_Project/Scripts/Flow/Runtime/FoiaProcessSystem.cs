@@ -9,6 +9,7 @@ namespace FOIA.Flow.Runtime
     {
         private const string InventoryContainerId = "inventory";
         private const string BlocksContainerId = "blocks";
+        private const string IntakeStressPreventedTag = "intake_stress_prevented";
 
         [SerializeField] private int stressDecayPerTick = 5;
 
@@ -175,7 +176,15 @@ namespace FOIA.Flow.Runtime
             document.AddTag($"staff:{staff.Definition.StaffId}");
             nodeStateStore.AddItem(intakeNode.NodeId, document);
 
-            staff.AddStress(20);
+            if (HasSingleOutgoingBlock(intakeNode.NodeId, block => block.PreventsIntakeStress))
+            {
+                document.AddTag(IntakeStressPreventedTag);
+            }
+            else
+            {
+                staff.AddStress(20);
+            }
+
             staffStore.NotifyChanged();
             nodeStateStore.ClearStaff(intakeNode.NodeId);
 
@@ -248,7 +257,9 @@ namespace FOIA.Flow.Runtime
                 return;
             }
 
-            if (agency.Relationship < 40)
+            EdgeBlockDefinition forcedApprovalBlock = FindForcedApprovalBlock(document);
+
+            if (agency.Relationship < 40 && forcedApprovalBlock == null)
             {
                 CreateByproduct(database.RefusalByproduct);
                 document.AddTag("processed");
@@ -256,6 +267,8 @@ namespace FOIA.Flow.Runtime
                 AddLog($"{agency.Definition.DisplayName} 기관이 비협조적으로 반려했습니다.");
                 return;
             }
+
+            ApplyForcedApprovalCost(forcedApprovalBlock, agency);
 
             FlowItemDefinition byproduct = FindMatchedAgencyByproduct(document, agency);
             CreateByproduct(byproduct != null ? byproduct : database.NormalByproduct);
@@ -437,6 +450,7 @@ namespace FOIA.Flow.Runtime
             {
                 item.AddTag($"block:{block.BlockId}");
                 ApplyEdgeBlockEffects(item, block);
+                ApplyIntakeStressPrevention(fromNodeId, item, block);
             }
 
             item.AddTag("edge_passed");
@@ -445,6 +459,101 @@ namespace FOIA.Flow.Runtime
             flowStore.NotifyItemChanged();
             AddLog($"{item.Definition.DisplayName} 문서가 엣지를 통해 다음 노드로 이동했습니다.");
             return true;
+        }
+
+        private bool HasSingleOutgoingBlock(string nodeId, System.Func<EdgeBlockDefinition, bool> predicate)
+        {
+            if (graphStore == null || edgeBlockStore == null)
+            {
+                return false;
+            }
+
+            IReadOnlyList<EdgeRuntimeData> traversable = graphStore.GetTraversableEdgesFrom(nodeId);
+
+            if (traversable.Count != 1)
+            {
+                return false;
+            }
+
+            EdgeBlockDefinition block = edgeBlockStore.GetBlock(traversable[0].EdgeId);
+            return block != null && predicate(block);
+        }
+
+        private void ApplyIntakeStressPrevention(string fromNodeId, FlowItem document, EdgeBlockDefinition block)
+        {
+            if (!block.PreventsIntakeStress || document.HasTag(IntakeStressPreventedTag))
+            {
+                return;
+            }
+
+            if (graphStore == null || staffStore == null || !graphStore.TryGetNode(fromNodeId, out NodeEntity node))
+            {
+                return;
+            }
+
+            if (!node.TryGetComponent(out NodeFlowData flowData) || flowData.Role != NodeFlowRole.Intake)
+            {
+                return;
+            }
+
+            foreach (string tag in document.Tags)
+            {
+                const string staffPrefix = "staff:";
+
+                if (!tag.StartsWith(staffPrefix, System.StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                string staffId = tag.Substring(staffPrefix.Length);
+
+                if (staffStore.TryGetStaff(staffId, out StaffRuntime staff))
+                {
+                    staff.ReduceStress(20);
+                    staffStore.NotifyChanged();
+                    document.AddTag(IntakeStressPreventedTag);
+                }
+
+                return;
+            }
+        }
+
+        private EdgeBlockDefinition FindForcedApprovalBlock(FlowItem document)
+        {
+            EdgeBlockDefinition strongestBlock = null;
+
+            foreach (RecipeDefinition recipe in database.Recipes)
+            {
+                EdgeBlockDefinition block = recipe != null && recipe.Result != null
+                    ? recipe.Result.EdgeBlock
+                    : null;
+
+                if (block != null
+                    && block.ForcesAgencyApproval
+                    && document.HasTag($"block:{block.BlockId}")
+                    && (strongestBlock == null || block.ForcedApprovalRelationshipLoss > strongestBlock.ForcedApprovalRelationshipLoss))
+                {
+                    strongestBlock = block;
+                }
+            }
+
+            return strongestBlock;
+        }
+
+        private void ApplyForcedApprovalCost(EdgeBlockDefinition block, AgencyRuntime agency)
+        {
+            if (block == null || agency == null)
+            {
+                return;
+            }
+
+            if (block.ForcedApprovalRelationshipLoss > 0)
+            {
+                agency.AddRelationship(-block.ForcedApprovalRelationshipLoss);
+            }
+
+            CreateByproduct(block.ForcedByproduct);
+            AddLog($"{block.DisplayName} effect applied: force approval, relationship -{block.ForcedApprovalRelationshipLoss}");
         }
 
         private bool TryGetItem(string itemId, out FlowItem item)
