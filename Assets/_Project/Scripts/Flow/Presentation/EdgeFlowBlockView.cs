@@ -14,7 +14,9 @@ namespace FOIA.Flow.Presentation
     {
         [SerializeField] private FoiaProcessSystem processSystem;
         [SerializeField] private EdgeBlockRuntimeStore edgeBlockStore;
+        [SerializeField] private GraphRuntimeStore graphStore;
         [SerializeField] private TMP_Text label;
+        [SerializeField] private float labelFontSize = 16f;
 
         private EdgeEntity edge;
 
@@ -32,6 +34,11 @@ namespace FOIA.Flow.Presentation
                 edgeBlockStore = GraphSceneLookup.FindFirst<EdgeBlockRuntimeStore>();
             }
 
+            if (graphStore == null)
+            {
+                graphStore = GraphSceneLookup.FindFirst<GraphRuntimeStore>();
+            }
+
             if (label == null)
             {
                 label = GetComponentInChildren<TMP_Text>();
@@ -42,10 +49,17 @@ namespace FOIA.Flow.Presentation
                 label = CreateLabel((RectTransform)transform);
             }
 
+            ApplyLabelFontSize();
+
             if (TryGetComponent(out Graphic graphic))
             {
                 graphic.raycastTarget = true;
             }
+        }
+
+        private void OnValidate()
+        {
+            ApplyLabelFontSize();
         }
 
         private void OnEnable()
@@ -53,6 +67,11 @@ namespace FOIA.Flow.Presentation
             if (edgeBlockStore != null)
             {
                 edgeBlockStore.BlocksChanged += Refresh;
+            }
+
+            if (graphStore != null)
+            {
+                graphStore.EdgeStateChanged += Refresh;
             }
 
             Refresh();
@@ -63,6 +82,11 @@ namespace FOIA.Flow.Presentation
             if (edgeBlockStore != null)
             {
                 edgeBlockStore.BlocksChanged -= Refresh;
+            }
+
+            if (graphStore != null)
+            {
+                graphStore.EdgeStateChanged -= Refresh;
             }
         }
 
@@ -76,10 +100,18 @@ namespace FOIA.Flow.Presentation
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (edge != null && eventData.button == PointerEventData.InputButton.Left)
+            if (edge == null || eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
+            if (UnityEngine.Input.GetKey(KeyCode.LeftControl) || UnityEngine.Input.GetKey(KeyCode.RightControl))
             {
                 processSystem.UnequipEdgeBlockFromEdge(edge.EdgeId);
+                return;
             }
+
+            graphStore?.ToggleEdgeActive(edge.EdgeId);
         }
 
         public void Refresh()
@@ -89,8 +121,18 @@ namespace FOIA.Flow.Presentation
                 return;
             }
 
+            bool isActive = edge.Data?.IsActive ?? true;
             string blockName = edgeBlockStore.GetBlockName(edge.EdgeId);
-            label.text = string.IsNullOrEmpty(blockName) ? "+" : blockName;
+            label.text = string.IsNullOrEmpty(blockName) ? (isActive ? "+" : "??") : blockName;
+            label.color = isActive ? Color.yellow : Color.gray;
+        }
+
+        private void ApplyLabelFontSize()
+        {
+            if (label != null)
+            {
+                label.fontSize = labelFontSize;
+            }
         }
 
         private static TMP_Text CreateLabel(RectTransform parent)

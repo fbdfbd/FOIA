@@ -25,8 +25,8 @@ namespace FOIA.Flow.Presentation
             Image bg = root.GetComponent<Image>();
             bg.color = new Color(0.18f, 0.18f, 0.22f, 1f);
 
-            TextMeshProUGUI name = CreateText("Name", rect, 18f, FontStyles.Bold, new Vector2(8f, -30f), new Vector2(-8f, -6f));
-            TextMeshProUGUI tag = CreateText("Tag", rect, 12f, FontStyles.Normal, new Vector2(8f, -54f), new Vector2(-8f, -32f));
+            TextMeshProUGUI name = CreateText("Name", rect, 20f, FontStyles.Bold, new Vector2(8f, -30f), new Vector2(-8f, -6f));
+            TextMeshProUGUI tag = CreateText("Tag", rect, 14f, FontStyles.Normal, new Vector2(8f, -54f), new Vector2(-8f, -32f));
 
             GameObject bar = new("StressBar", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
             RectTransform barRect = (RectTransform)bar.transform;
@@ -51,6 +51,19 @@ namespace FOIA.Flow.Presentation
             view.tagText = tag;
             view.stressFill = fill.GetComponent<Image>();
             return view;
+        }
+
+        public void ConfigureFontSizes(float nameFontSize, float tagFontSize)
+        {
+            if (nameText != null)
+            {
+                nameText.fontSize = nameFontSize;
+            }
+
+            if (tagText != null)
+            {
+                tagText.fontSize = tagFontSize;
+            }
         }
 
         public void Bind(StaffRuntime runtime)

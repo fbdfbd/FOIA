@@ -54,6 +54,19 @@ namespace FOIA.Flow.Presentation
             flowStore = store;
         }
 
+        public void ConfigureFontSizes(float titleFontSize, float tagFontSize)
+        {
+            if (titleText != null)
+            {
+                titleText.fontSize = titleFontSize;
+            }
+
+            if (tagText != null)
+            {
+                tagText.fontSize = tagFontSize;
+            }
+        }
+
         private void Awake()
         {
             if (background == null)
@@ -123,8 +136,8 @@ namespace FOIA.Flow.Presentation
                 background.raycastTarget = true;
             }
 
-            ConfigureText(titleText, 18f, FontStyles.Bold);
-            ConfigureText(tagText, 12f, FontStyles.Normal);
+            ConfigureText(titleText, 20f, FontStyles.Bold);
+            ConfigureText(tagText, 14f, FontStyles.Normal);
         }
 
         private static void ConfigureText(TMP_Text text, float size, FontStyles style)

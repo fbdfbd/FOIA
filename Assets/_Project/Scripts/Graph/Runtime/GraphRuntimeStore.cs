@@ -11,6 +11,8 @@ namespace FOIA.Graph.Runtime
         private readonly Dictionary<string, List<string>> edgeIdsByNodeId = new();
 
         public event Action SelectionChanged;
+        public event Action EdgeStateChanged;
+        public event Action<string> EdgeRemoved;
 
         public GraphSelectionType SelectionType { get; private set; }
         public string SelectedNodeId { get; private set; }
@@ -103,6 +105,7 @@ namespace FOIA.Graph.Runtime
             }
 
             edgesById.Remove(edgeId);
+            EdgeRemoved?.Invoke(edgeId);
             RemoveNodeEdge(edge.FromNodeId, edgeId);
             RemoveNodeEdge(edge.ToNodeId, edgeId);
             RefreshNodeConnected(edge.FromNodeId);
@@ -194,6 +197,43 @@ namespace FOIA.Graph.Runtime
             }
 
             return false;
+        }
+
+        public bool ToggleEdgeActive(string edgeId)
+        {
+            if (!edgesById.TryGetValue(edgeId, out EdgeRuntimeData edge))
+            {
+                return false;
+            }
+
+            edge.SetActive(!edge.IsActive);
+            EdgeStateChanged?.Invoke();
+            return true;
+        }
+
+        public IReadOnlyList<EdgeRuntimeData> GetTraversableEdgesFrom(string nodeId)
+        {
+            var result = new List<EdgeRuntimeData>();
+
+            if (string.IsNullOrEmpty(nodeId) || !edgeIdsByNodeId.TryGetValue(nodeId, out List<string> edgeIds))
+            {
+                return result;
+            }
+
+            foreach (string edgeId in edgeIds)
+            {
+                if (!edgesById.TryGetValue(edgeId, out EdgeRuntimeData edge) || !edge.IsActive)
+                {
+                    continue;
+                }
+
+                if (CanMoveForward(edge, nodeId) || CanMoveBackward(edge, nodeId))
+                {
+                    result.Add(edge);
+                }
+            }
+
+            return result;
         }
 
         public void SelectEdge(string edgeId)

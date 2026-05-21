@@ -47,7 +47,9 @@ namespace FOIA.Flow.Editor
             ProcessStateStore processState = GetOrAdd<ProcessStateStore>(runtimeRoot);
             FlowLogStore logStore = GetOrAdd<FlowLogStore>(runtimeRoot);
             EdgeBlockRuntimeStore edgeBlockStore = GetOrAdd<EdgeBlockRuntimeStore>(runtimeRoot);
+            NodeFlowStateStore nodeStateStore = GetOrAdd<NodeFlowStateStore>(runtimeRoot);
             FoiaProcessSystem processSystem = GetOrAdd<FoiaProcessSystem>(runtimeRoot);
+            FlowTickSystem tickSystem = GetOrAdd<FlowTickSystem>(runtimeRoot);
 
             SetObject(staffStore, "database", database);
             SetObject(agencyStore, "database", database);
@@ -59,6 +61,8 @@ namespace FOIA.Flow.Editor
             SetObject(processSystem, "logStore", logStore);
             SetObject(processSystem, "edgeBlockStore", edgeBlockStore);
             SetObject(processSystem, "graphStore", graphStore);
+            SetObject(processSystem, "nodeStateStore", nodeStateStore);
+            SetObject(tickSystem, "processSystem", processSystem);
 
             RectTransform nodeRoot = GetOrCreateRectRoot(canvas.transform, NodeRootName);
             nodeRoot.anchorMin = new Vector2(0f, 0.34f);
@@ -76,7 +80,7 @@ namespace FOIA.Flow.Editor
             }
 
             CreateFlowNode(nodeRoot, "Node_Output", "결과물", NodeFlowRole.Output, null, new Vector2(1130f, -180f), graphStore);
-            CreateInventoryUi(canvas.transform, database, flowStore, staffStore, processState, processSystem, logStore);
+            CreateInventoryUi(canvas.transform, database, flowStore, staffStore, agencyStore, processState, processSystem, logStore);
 
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             Selection.activeGameObject = nodeRoot.gameObject;
@@ -87,6 +91,7 @@ namespace FOIA.Flow.Editor
             FoiaFlowDatabase database,
             FlowRuntimeStore flowStore,
             StaffRuntimeStore staffStore,
+            AgencyRuntimeStore agencyStore,
             ProcessStateStore processState,
             FoiaProcessSystem processSystem,
             FlowLogStore logStore)
@@ -96,6 +101,14 @@ namespace FOIA.Flow.Editor
             root.anchorMax = new Vector2(1f, 0.34f);
             root.offsetMin = new Vector2(16f, 12f);
             root.offsetMax = new Vector2(-16f, -8f);
+
+            RectTransform agencyPanel = CreatePanel(root, "AgencyStatus", new Vector2(0f, 0f), new Vector2(0.17f, 1f));
+            CreateLabel(agencyPanel, "기관");
+            RectTransform agencyContent = CreateContentRoot(agencyPanel, "Content", new Vector2(0.04f, 0.08f), new Vector2(0.96f, 0.92f));
+            AgencyListView agencyListView = GetOrAdd<AgencyListView>(agencyContent.gameObject);
+            SetObject(agencyListView, "agencyStore", agencyStore);
+            SetObject(agencyListView, "processSystem", processSystem);
+            SetObject(agencyListView, "contentRoot", agencyContent);
 
             RectTransform staffPanel = CreatePanel(root, "StaffInventory", new Vector2(0f, 0f), new Vector2(0.24f, 1f));
             CreateLabel(staffPanel, "직원");

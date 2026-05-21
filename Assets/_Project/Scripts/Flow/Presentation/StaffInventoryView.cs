@@ -11,6 +11,8 @@ namespace FOIA.Flow.Presentation
         [SerializeField] private StaffRuntimeStore staffStore;
         [SerializeField] private ProcessStateStore processState;
         [SerializeField] private RectTransform contentRoot;
+        [SerializeField] private float staffNameFontSize = 20f;
+        [SerializeField] private float staffTagFontSize = 14f;
 
         private readonly List<StaffCardView> cards = new();
 
@@ -81,6 +83,7 @@ namespace FOIA.Flow.Presentation
                 }
 
                 StaffCardView card = GetCard(index);
+                card.ConfigureFontSizes(staffNameFontSize, staffTagFontSize);
                 card.Bind(staff);
                 card.gameObject.SetActive(true);
                 index++;

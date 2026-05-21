@@ -64,6 +64,13 @@ namespace FOIA.Graph.Runtime
             Direction = direction;
         }
 
+        public bool IsActive { get; private set; } = true;
+
+        public void SetActive(bool isActive)
+        {
+            IsActive = isActive;
+        }
+
         public void SetSelected(bool isSelected)
         {
             if (isSelected)

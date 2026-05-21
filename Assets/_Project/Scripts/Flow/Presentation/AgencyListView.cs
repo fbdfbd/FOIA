@@ -11,6 +11,8 @@ namespace FOIA.Flow.Presentation
         [SerializeField] private AgencyRuntimeStore agencyStore;
         [SerializeField] private FoiaProcessSystem processSystem;
         [SerializeField] private RectTransform contentRoot;
+        [SerializeField] private float agencyNameFontSize = 19f;
+        [SerializeField] private float agencyTraitFontSize = 14f;
 
         private readonly List<AgencyDropView> views = new();
 
@@ -63,6 +65,7 @@ namespace FOIA.Flow.Presentation
             {
                 AgencyDropView view = GetView(i);
                 view.Initialize(processSystem);
+                view.ConfigureFontSizes(agencyNameFontSize, agencyTraitFontSize);
                 view.Bind(agencyStore.Agencies[i]);
                 view.gameObject.SetActive(true);
             }

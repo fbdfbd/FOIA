@@ -24,5 +24,10 @@ namespace FOIA.Flow.Runtime
                 IsActive = false;
             }
         }
+
+        public void ReduceStress(int value)
+        {
+            Stress = UnityEngine.Mathf.Clamp(Stress - value, 0, 100);
+        }
     }
 }

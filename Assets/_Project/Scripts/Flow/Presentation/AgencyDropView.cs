@@ -12,6 +12,7 @@ namespace FOIA.Flow.Presentation
     {
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text traitText;
+        [SerializeField] private RectTransform relationshipBar;
         [SerializeField] private Image relationshipFill;
 
         private FoiaProcessSystem processSystem;
@@ -25,23 +26,48 @@ namespace FOIA.Flow.Presentation
             rect.sizeDelta = new Vector2(170f, 86f);
             root.GetComponent<Image>().color = new Color(0.14f, 0.14f, 0.16f, 1f);
 
-            TextMeshProUGUI name = CreateText("Name", rect, 17f, FontStyles.Bold, new Vector2(8f, -30f), new Vector2(-8f, -6f));
-            TextMeshProUGUI trait = CreateText("Trait", rect, 12f, FontStyles.Normal, new Vector2(8f, -54f), new Vector2(-8f, -32f));
+            TextMeshProUGUI name = CreateText("Name", rect, 19f, FontStyles.Bold, new Vector2(8f, -30f), new Vector2(-8f, -6f));
+            TextMeshProUGUI trait = CreateText("Trait", rect, 14f, FontStyles.Normal, new Vector2(8f, -54f), new Vector2(-8f, -32f));
 
-            GameObject fillObject = new("Relationship", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            RectTransform fillRect = (RectTransform)fillObject.transform;
-            fillRect.SetParent(rect, false);
-            fillRect.anchorMin = new Vector2(0f, 0f);
-            fillRect.anchorMax = new Vector2(0f, 0f);
-            fillRect.offsetMin = new Vector2(8f, 8f);
-            fillRect.offsetMax = new Vector2(8f, 14f);
-            fillObject.GetComponent<Image>().color = new Color(0.1f, 0.8f, 0.3f, 1f);
+            // 배경 바
+            GameObject barBg = new("RelationshipBg", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            RectTransform barBgRect = (RectTransform)barBg.transform;
+            barBgRect.SetParent(rect, false);
+            barBgRect.anchorMin = new Vector2(0f, 0f);
+            barBgRect.anchorMax = new Vector2(1f, 0f);
+            barBgRect.offsetMin = new Vector2(8f, 8f);
+            barBgRect.offsetMax = new Vector2(-8f, 18f);
+            barBg.GetComponent<Image>().color = new Color(0.08f, 0.08f, 0.08f, 1f);
+
+            // 채움 바 (배경 바의 자식)
+            GameObject fill = new("Fill", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            RectTransform fillRect = (RectTransform)fill.transform;
+            fillRect.SetParent(barBgRect, false);
+            fillRect.anchorMin = Vector2.zero;
+            fillRect.anchorMax = new Vector2(0f, 1f);
+            fillRect.offsetMin = Vector2.zero;
+            fillRect.offsetMax = Vector2.zero;
+            fill.GetComponent<Image>().color = new Color(0.1f, 0.8f, 0.3f, 1f);
 
             AgencyDropView view = root.GetComponent<AgencyDropView>();
             view.nameText = name;
             view.traitText = trait;
-            view.relationshipFill = fillObject.GetComponent<Image>();
+            view.relationshipBar = barBgRect;
+            view.relationshipFill = fill.GetComponent<Image>();
             return view;
+        }
+
+        public void ConfigureFontSizes(float nameFontSize, float traitFontSize)
+        {
+            if (nameText != null)
+            {
+                nameText.fontSize = nameFontSize;
+            }
+
+            if (traitText != null)
+            {
+                traitText.fontSize = traitFontSize;
+            }
         }
 
         public void Initialize(FoiaProcessSystem system)
@@ -54,9 +80,8 @@ namespace FOIA.Flow.Presentation
             agency = runtime;
             nameText.text = runtime.Definition.DisplayName;
             traitText.text = runtime.Definition.TraitTag;
-            RectTransform rect = (RectTransform)relationshipFill.transform;
-            rect.anchorMax = new Vector2(runtime.Relationship / 100f, 0f);
-            rect.offsetMax = new Vector2(8f + 154f * runtime.Relationship / 100f, 14f);
+            RectTransform fillRect = (RectTransform)relationshipFill.transform;
+            fillRect.anchorMax = new Vector2(runtime.Relationship / 100f, 1f);
         }
 
         public void OnDrop(PointerEventData eventData)

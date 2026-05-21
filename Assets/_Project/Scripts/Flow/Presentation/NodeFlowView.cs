@@ -11,12 +11,13 @@ namespace FOIA.Flow.Presentation
     [DisallowMultipleComponent]
     [RequireComponent(typeof(NodeEntity))]
     [RequireComponent(typeof(NodeFlowData))]
-    public sealed class NodeFlowView : MonoBehaviour, IDropHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public sealed class NodeFlowView : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
         [SerializeField] private FoiaProcessSystem processSystem;
-        [SerializeField] private ProcessStateStore processState;
+        [SerializeField] private NodeFlowStateStore nodeStateStore;
         [SerializeField] private StaffRuntimeStore staffStore;
         [SerializeField] private TMP_Text label;
+        [SerializeField] private float labelFontSize = 18f;
 
         private NodeEntity node;
         private NodeFlowData flowData;
@@ -26,20 +27,9 @@ namespace FOIA.Flow.Presentation
             node = GetComponent<NodeEntity>();
             flowData = GetComponent<NodeFlowData>();
 
-            if (processSystem == null)
-            {
-                processSystem = GraphSceneLookup.FindFirst<FoiaProcessSystem>();
-            }
-
-            if (processState == null)
-            {
-                processState = GraphSceneLookup.FindFirst<ProcessStateStore>();
-            }
-
-            if (staffStore == null)
-            {
-                staffStore = GraphSceneLookup.FindFirst<StaffRuntimeStore>();
-            }
+            if (processSystem == null) processSystem = GraphSceneLookup.FindFirst<FoiaProcessSystem>();
+            if (nodeStateStore == null) nodeStateStore = GraphSceneLookup.FindFirst<NodeFlowStateStore>();
+            if (staffStore == null) staffStore = GraphSceneLookup.FindFirst<StaffRuntimeStore>();
 
             if (label == null)
             {
@@ -51,17 +41,24 @@ namespace FOIA.Flow.Presentation
                 label = CreateLabel((RectTransform)transform);
             }
 
+            ApplyLabelFontSize();
+
             if (TryGetComponent(out Graphic graphic))
             {
                 graphic.raycastTarget = true;
             }
         }
 
+        private void OnValidate()
+        {
+            ApplyLabelFontSize();
+        }
+
         private void OnEnable()
         {
-            if (processState != null)
+            if (nodeStateStore != null)
             {
-                processState.StateChanged += Refresh;
+                nodeStateStore.StateChanged += Refresh;
             }
 
             Refresh();
@@ -69,9 +66,9 @@ namespace FOIA.Flow.Presentation
 
         private void OnDisable()
         {
-            if (processState != null)
+            if (nodeStateStore != null)
             {
-                processState.StateChanged -= Refresh;
+                nodeStateStore.StateChanged -= Refresh;
             }
         }
 
@@ -79,44 +76,33 @@ namespace FOIA.Flow.Presentation
         {
             if (flowData.Role == NodeFlowRole.Intake && FlowDragPayload.Is(FlowDragPayload.Staff))
             {
-                processSystem.EquipStaff(FlowDragPayload.Id);
-                return;
-            }
-
-            if (flowData.Role == NodeFlowRole.Agency && FlowDragPayload.Is(FlowDragPayload.Document))
-            {
-                processSystem.ProcessCurrentDocumentAtAgencyNode(flowData);
+                processSystem.EquipStaffOnNode(node, FlowDragPayload.Id);
             }
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (eventData.button == PointerEventData.InputButton.Left && flowData.Role == NodeFlowRole.Intake)
-            {
-                processSystem.StartIntakeFromNode(node);
-            }
-        }
-
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            if (flowData.Role != NodeFlowRole.Board || processState == null || processState.CurrentDocument == null)
+            if (eventData.button != PointerEventData.InputButton.Left)
             {
                 return;
             }
 
-            if (processState.CurrentDocument.CurrentNodeId == node.NodeId)
+            if (flowData.Role == NodeFlowRole.Intake)
             {
-                FlowDragPayload.Begin(FlowDragPayload.Document, processState.CurrentDocument.ItemId);
+                processSystem.StartIntakeFromNode(node);
+                return;
             }
-        }
 
-        public void OnDrag(PointerEventData eventData)
-        {
-        }
+            if (flowData.Role == NodeFlowRole.Agency)
+            {
+                processSystem.ProcessAgencyNode(flowData);
+                return;
+            }
 
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            FlowDragPayload.Clear();
+            if (flowData.Role == NodeFlowRole.Output)
+            {
+                processSystem.CollectFirstOutputDocument(node);
+            }
         }
 
         public void Refresh()
@@ -131,40 +117,57 @@ namespace FOIA.Flow.Presentation
                 NodeFlowRole.Intake => GetIntakeText(),
                 NodeFlowRole.Board => GetBoardText(),
                 NodeFlowRole.Agency => GetAgencyText(),
-                NodeFlowRole.Output => "결과물",
+                NodeFlowRole.Output => GetOutputText(),
                 _ => "노드",
             };
         }
 
+        private void ApplyLabelFontSize()
+        {
+            if (label != null)
+            {
+                label.fontSize = labelFontSize;
+            }
+        }
+
         private string GetIntakeText()
         {
-            if (processState == null || string.IsNullOrEmpty(processState.EquippedStaffId))
+            string staffId = nodeStateStore != null ? nodeStateStore.GetStaffId(node.NodeId) : string.Empty;
+            int itemCount = nodeStateStore != null ? nodeStateStore.GetItemCount(node.NodeId) : 0;
+
+            if (string.IsNullOrEmpty(staffId))
             {
-                return "접수\n직원 드롭\n직원 배치 후 클릭";
+                return $"접수\n직원 드롭\n보유 문서 {itemCount}";
             }
 
-            return staffStore != null && staffStore.TryGetStaff(processState.EquippedStaffId, out StaffRuntime staff)
-                ? $"접수\n{staff.Definition.DisplayName}\n클릭하면 민원 생성"
-                : "접수";
+            string staffName = staffStore != null && staffStore.TryGetStaff(staffId, out StaffRuntime staff)
+                ? staff.Definition.DisplayName
+                : "직원";
+
+            return $"접수\n{staffName}\n클릭: 민원 생산";
         }
 
         private string GetBoardText()
         {
-            if (processState != null
-                && processState.CurrentDocument != null
-                && processState.CurrentDocument.CurrentNodeId == node.NodeId)
-            {
-                return $"대기열\n{processState.CurrentDocument.Definition.DisplayName}\n기관 노드로 드래그";
-            }
-
-            return "대기열\n민원 서류 없음";
+            int itemCount = nodeStateStore != null ? nodeStateStore.GetItemCount(node.NodeId) : 0;
+            return itemCount > 0
+                ? $"대기열\n민원 서류 {itemCount}건\n엣지 클릭으로 이동"
+                : "대기열\n민원 서류 없음";
         }
 
         private string GetAgencyText()
         {
-            return flowData.Agency != null
-                ? $"{flowData.Agency.DisplayName}\n민원 서류 드롭"
-                : "기관\n데이터 없음";
+            int itemCount = nodeStateStore != null ? nodeStateStore.GetItemCount(node.NodeId) : 0;
+            string agencyName = flowData.Agency != null ? flowData.Agency.DisplayName : "기관";
+            return itemCount > 0
+                ? $"{agencyName}\n배정 문서 {itemCount}건\n클릭: 처리"
+                : $"{agencyName}\n엣지로 문서 배정";
+        }
+
+        private string GetOutputText()
+        {
+            int itemCount = nodeStateStore != null ? nodeStateStore.GetItemCount(node.NodeId) : 0;
+            return $"결과물\n도착 문서 {itemCount}건";
         }
 
         private static TMP_Text CreateLabel(RectTransform parent)

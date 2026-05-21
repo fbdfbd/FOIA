@@ -16,6 +16,8 @@ namespace FOIA.Flow.Presentation
         [SerializeField] private FlowItemCardView cardPrefab;
         [SerializeField] private Vector2 cardSize = new(180f, 72f);
         [SerializeField] private Vector2 spacing = new(8f, 8f);
+        [SerializeField] private float itemTitleFontSize = 20f;
+        [SerializeField] private float itemTagFontSize = 14f;
 
         private readonly List<FlowItemCardView> cards = new();
 
@@ -70,6 +72,7 @@ namespace FOIA.Flow.Presentation
 
                 FlowItemCardView card = GetCard(cardIndex);
                 card.Initialize(flowStore);
+                card.ConfigureFontSizes(itemTitleFontSize, itemTagFontSize);
                 card.Bind(item);
                 card.gameObject.SetActive(true);
                 cardIndex++;
@@ -99,6 +102,7 @@ namespace FOIA.Flow.Presentation
 
             RectTransform cardRect = (RectTransform)card.transform;
             cardRect.sizeDelta = cardSize;
+            card.ConfigureFontSizes(itemTitleFontSize, itemTagFontSize);
             return card;
         }
 
