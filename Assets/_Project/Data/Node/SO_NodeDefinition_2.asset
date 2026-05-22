@@ -15,5 +15,7 @@ MonoBehaviour:
   definitionId: node_test_2
   displayName: NODE2
   processLayer: 2
-  category: 0
+  category: 3
   baseTags: []
+  addedFlowTags:
+  - test1234

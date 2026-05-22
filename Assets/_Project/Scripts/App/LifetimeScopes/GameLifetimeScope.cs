@@ -7,10 +7,13 @@ using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.Game.Factories;
 using OneMoreSpoon.Game.Systems;
 using OneMoreSpoon.Input;
+using OneMoreSpoon.Presenter;
 using OneMoreSpoon.View.Common;
 using OneMoreSpoon.View.Edges;
 using OneMoreSpoon.View.Factories;
+using OneMoreSpoon.View.Flows;
 using OneMoreSpoon.View.Nodes;
+using OneMoreSpoon.View.Substances;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -21,16 +24,36 @@ namespace OneMoreSpoon.App.LifetimeScopes
     {
         [Header("Initial Test Data")]
         [SerializeField] private SO_NodeDefinition[] initialNodeDefinitions;
+        [SerializeField] private SO_OperationDefinition[] operationDefinitions;
+        [SerializeField] private SO_SubstanceDefinition[] substanceDefinitions;
+        [SerializeField] private SO_OutputRuleDefinition[] outputRuleDefinitions;
+        [SerializeField] private SO_MergeRecipeDefinition[] mergeRecipeDefinitions;
+        [SerializeField] private InitialSubstanceStack[] initialSubstanceStacks;
+        [SerializeField] private Vector2 substanceInventoryOrigin = new(-4f, -3f);
+        [SerializeField] private Vector2 substanceInventorySpacing = new(1.7f, 0f);
 
         [Header("View")]
         [SerializeField] private ViewRegistry viewRegistry;
         [SerializeField] private NodeView nodeViewPrefab;
         [SerializeField] private EdgeView edgeViewPrefab;
+        [SerializeField] private EdgeBlockIndicatorView edgeBlockIndicatorViewPrefab;
+        [SerializeField] private SubstanceView substanceViewPrefab;
+        [SerializeField] private FlowView flowViewPrefab;
 
         protected override void Configure(IContainerBuilder builder)
         {
             // ── Config ─────────────────────────────────────────────
             builder.RegisterInstance(new InitialGameConfig(initialNodeDefinitions));
+            builder.RegisterInstance(new InitialSubstanceInventoryConfig(
+                initialSubstanceStacks,
+                substanceInventoryOrigin,
+                substanceInventorySpacing
+            ));
+            builder.RegisterInstance(new NodeDefinitionRegistry(initialNodeDefinitions));
+            builder.RegisterInstance(new OperationDefinitionRegistry(operationDefinitions));
+            builder.RegisterInstance(new SubstanceDefinitionRegistry(substanceDefinitions));
+            builder.RegisterInstance(new OutputRuleRegistry(outputRuleDefinitions));
+            builder.RegisterInstance(new MergeRecipeRegistry(mergeRecipeDefinitions));
 
             // ── Core State ─────────────────────────────────────────
             builder.Register<GameWorld>(Lifetime.Singleton);
@@ -42,12 +65,19 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.Register<NodeMoveSystem>(Lifetime.Singleton);
             builder.Register<ProcessSystem>(Lifetime.Singleton);
             builder.Register<EdgeDeleteSystem>(Lifetime.Singleton);
+            builder.Register<SubstanceStackSystem>(Lifetime.Singleton);
+            builder.Register<MergeSystem>(Lifetime.Singleton);
+            builder.Register<EdgeBlockEquipSystem>(Lifetime.Singleton);
 
             // ── Factories ──────────────────────────────────────────
             builder.Register<NodeFactory>(Lifetime.Singleton);
             builder.Register<EdgeFactory>(Lifetime.Singleton);
+            builder.Register<SubstanceStackFactory>(Lifetime.Singleton);
             builder.Register<NodeViewFactory>(Lifetime.Singleton);
             builder.Register<EdgeViewFactory>(Lifetime.Singleton);
+            builder.Register<EdgeBlockIndicatorViewFactory>(Lifetime.Singleton);
+            builder.Register<SubstanceViewFactory>(Lifetime.Singleton);
+            builder.Register<FlowViewFactory>(Lifetime.Singleton);
 
             // ── Services ──────────────────────────────────────────
             builder.Register<SelectionVisualService>(Lifetime.Singleton);
@@ -56,15 +86,23 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.RegisterComponent(viewRegistry);
             builder.RegisterInstance(nodeViewPrefab);
             builder.RegisterInstance(edgeViewPrefab);
+            builder.RegisterInstance(edgeBlockIndicatorViewPrefab);
+            builder.RegisterInstance(substanceViewPrefab);
+            builder.RegisterInstance(flowViewPrefab);
 
             // ── Input ──────────────────────────────────────────────
             builder.RegisterComponentInHierarchy<EdgeConnectionInput>();
             builder.RegisterComponentInHierarchy<NodePointerInput>();
             builder.RegisterComponentInHierarchy<EdgeSelectionInput>();
+            builder.RegisterComponentInHierarchy<SubstancePointerInput>();
 
             // ── Entry Points ───────────────────────────────────────
             builder.RegisterEntryPoint<GameBootstrap>();
+            builder.RegisterEntryPoint<SubstanceInventoryBootstrap>();
             builder.RegisterEntryPoint<GameLoopRunner>();
+            builder.RegisterEntryPoint<FlowViewSyncSystem>();
+            builder.RegisterEntryPoint<SubstanceViewSyncSystem>();
+            builder.RegisterEntryPoint<EdgeBlockIndicatorSyncSystem>();
         }
     }
 }

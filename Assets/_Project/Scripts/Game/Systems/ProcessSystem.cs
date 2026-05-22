@@ -1,20 +1,405 @@
+using OneMoreSpoon.Game.Components;
 using OneMoreSpoon.Game.Core;
+using OneMoreSpoon.Game.Definitions;
+using System.Collections.Generic;
+using UnityEngine;
+using GameEntityId = OneMoreSpoon.Game.Core.EntityId;
 
 namespace OneMoreSpoon.Game.Systems
 {
     public sealed class ProcessSystem
     {
-        private readonly GameWorld world;
-        private bool created;
+        private const float DefaultEdgeDuration = 5f;
+        private const float MinEdgeDuration = 0.01f;
+        private static readonly Vector2 OutputStackOffset = new(0f, -1.2f);
+        private static readonly Vector2 OutputStackSpacing = new(0.6f, 0f);
 
-        public ProcessSystem(GameWorld world)
+        private readonly GameWorld world;
+        private readonly NodeDefinitionRegistry nodeDefinitionRegistry;
+        private readonly SubstanceDefinitionRegistry substanceDefinitionRegistry;
+        private readonly OperationDefinitionRegistry operationDefinitionRegistry;
+        private readonly OutputRuleRegistry outputRuleRegistry;
+        private readonly List<GameEntityId> flowBuffer = new();
+
+        public ProcessSystem(
+            GameWorld world,
+            NodeDefinitionRegistry nodeDefinitionRegistry,
+            SubstanceDefinitionRegistry substanceDefinitionRegistry,
+            OperationDefinitionRegistry operationDefinitionRegistry,
+            OutputRuleRegistry outputRuleRegistry)
         {
             this.world = world;
+            this.nodeDefinitionRegistry = nodeDefinitionRegistry;
+            this.substanceDefinitionRegistry = substanceDefinitionRegistry;
+            this.operationDefinitionRegistry = operationDefinitionRegistry;
+            this.outputRuleRegistry = outputRuleRegistry;
         }
 
         public void Tick(float deltaTime)
         {
-           
+            SpawnQueuedFlows(deltaTime);
+            RouteWaitingFlows(deltaTime);
+            MoveFlows(deltaTime);
+            ApplyArrivalEffects(deltaTime);
+            ResolveOutputs(deltaTime);
+        }
+
+        private void SpawnQueuedFlows(float deltaTime)
+        {
+            while (world.TryDequeueFlowSpawn(out var request))
+            {
+                if (!world.Nodes.TryGetValue(request.TargetNodeId, out var node))
+                {
+                    Debug.LogWarning($"[FlowSpawn] Skipped substance={request.SubstanceId} targetNode={request.TargetNodeId} reason=NodeNotFound");
+                    continue;
+                }
+
+                if (node.Category != NodeCategory.Input)
+                {
+                    Debug.LogWarning($"[FlowSpawn] Skipped substance={request.SubstanceId} targetNode={request.TargetNodeId} reason=TargetIsNotInput category={node.Category}");
+                    continue;
+                }
+
+                if (!substanceDefinitionRegistry.TryGet(request.SubstanceId, out var substanceDefinition))
+                {
+                    Debug.LogWarning($"[FlowSpawn] Skipped substance={request.SubstanceId} targetNode={request.TargetNodeId} reason=SubstanceDefinitionNotFound");
+                    continue;
+                }
+
+                if (substanceDefinition.Kind != SubstanceKind.Material)
+                {
+                    Debug.LogWarning($"[FlowSpawn] Skipped substance={request.SubstanceId} targetNode={request.TargetNodeId} reason=SubstanceIsNotMaterial kind={substanceDefinition.Kind}");
+                    continue;
+                }
+
+                world.CreateFlowEntity(
+                    substanceDefinition.SubstanceId,
+                    request.TargetNodeId,
+                    substanceDefinition.BaseTags
+                );
+            }
+        }
+
+        private void RouteWaitingFlows(float deltaTime)
+        {
+            flowBuffer.Clear();
+
+            foreach (var pair in world.Flows)
+            {
+                if (pair.Value.State == FlowState.WaitingAtNode)
+                    flowBuffer.Add(pair.Key);
+            }
+
+            foreach (var flowEntityId in flowBuffer)
+            {
+                if (!world.Flows.TryGetValue(flowEntityId, out var flow))
+                    continue;
+
+                if (!world.Nodes.TryGetValue(flow.CurrentNodeId, out var node))
+                    continue;
+
+                if (node.Category == NodeCategory.Output)
+                {
+                    ApplyNodeEffects(flowEntityId, flow.CurrentNodeId);
+                    flow.ArriveAtOutput(flow.CurrentNodeId);
+                    world.Flows[flowEntityId] = flow;
+                    Debug.Log($"[Flow] ArrivedAtOutput entity={flowEntityId} outputNode={flow.CurrentNodeId}");
+                    continue;
+                }
+
+                if (!TryFindNextEdge(flowEntityId, flow.CurrentNodeId, out var edgeId))
+                    continue;
+
+                flow.BeginEdge(edgeId);
+                world.Flows[flowEntityId] = flow;
+                Debug.Log($"[Flow] Route started entity={flowEntityId} fromNode={flow.CurrentNodeId} edge={edgeId}");
+            }
+        }
+
+        private void MoveFlows(float deltaTime)
+        {
+            flowBuffer.Clear();
+
+            foreach (var pair in world.Flows)
+            {
+                if (pair.Value.State == FlowState.MovingOnEdge)
+                    flowBuffer.Add(pair.Key);
+            }
+
+            foreach (var flowEntityId in flowBuffer)
+            {
+                if (!world.Flows.TryGetValue(flowEntityId, out var flow))
+                    continue;
+
+                if (!world.Edges.TryGetValue(flow.CurrentEdgeId, out var edge))
+                {
+                    flow.ArriveAtNode(flow.CurrentNodeId);
+                    world.Flows[flowEntityId] = flow;
+                    continue;
+                }
+
+                float duration = GetEdgeDuration(edge);
+                flow.Progress += deltaTime / duration;
+
+                if (flow.Progress < 1f)
+                {
+                    world.Flows[flowEntityId] = flow;
+                    continue;
+                }
+
+                if (!world.Nodes.TryGetValue(edge.ToNodeId, out var toNode))
+                    continue;
+
+                var completedEdgeId = flow.CurrentEdgeId;
+
+                ApplyEdgeBlockEffects(flowEntityId, completedEdgeId);
+
+                if (toNode.Category == NodeCategory.Output)
+                {
+                    flow.ArriveAtOutput(edge.ToNodeId);
+                    ApplyNodeEffects(flowEntityId, edge.ToNodeId);
+                    Debug.Log($"[Flow] ArrivedAtOutput entity={flowEntityId} outputNode={edge.ToNodeId} viaEdge={completedEdgeId}");
+                }
+                else
+                {
+                    flow.ArriveAtNode(edge.ToNodeId);
+                    ApplyNodeEffects(flowEntityId, edge.ToNodeId);
+                }
+
+                world.Flows[flowEntityId] = flow;
+            }
+        }
+
+        private void ApplyArrivalEffects(float deltaTime)
+        {
+        }
+
+        private void ApplyEdgeBlockEffects(GameEntityId flowEntityId, GameEntityId edgeId)
+        {
+            if (!world.Edges.TryGetValue(edgeId, out var edge))
+                return;
+
+            if (!IsForwardEdge(edge))
+                return;
+
+            if (!world.EdgeBlockSlots.TryGetValue(edgeId, out var slot) || !slot.HasBlock)
+                return;
+
+            if (!substanceDefinitionRegistry.TryGet(slot.EquippedSubstanceId, out var blockDefinition))
+                return;
+
+            if (blockDefinition.Kind != SubstanceKind.EdgeBlock)
+                return;
+
+            AddFlowTags(flowEntityId, blockDefinition.AddedTags, $"EdgeBlock edge={edgeId} block={slot.EquippedSubstanceId}");
+        }
+
+        private void ApplyNodeEffects(GameEntityId flowEntityId, GameEntityId nodeId)
+        {
+            if (!world.Nodes.TryGetValue(nodeId, out var node))
+                return;
+
+            if (!nodeDefinitionRegistry.TryGet(node.DefinitionId, out var definition))
+                return;
+
+            AddFlowTags(flowEntityId, definition.AddedFlowTags, $"Node node={nodeId} definition={node.DefinitionId}");
+        }
+
+        private bool IsForwardEdge(EdgeComponent edge)
+        {
+            if (!world.Nodes.TryGetValue(edge.FromNodeId, out var fromNode))
+                return false;
+
+            if (!world.Nodes.TryGetValue(edge.ToNodeId, out var toNode))
+                return false;
+
+            return fromNode.ProcessLayer < toNode.ProcessLayer;
+        }
+
+        private void AddFlowTags(
+            GameEntityId flowEntityId,
+            IReadOnlyList<string> tags,
+            string source)
+        {
+            if (tags == null || tags.Count <= 0)
+                return;
+
+            if (!world.Tags.TryGetValue(flowEntityId, out var flowTags))
+                return;
+
+            foreach (var tag in tags)
+            {
+                if (!flowTags.Add(tag))
+                    continue;
+
+                Debug.Log($"[FlowTag] Added entity={flowEntityId} source={source} tag={tag}");
+            }
+        }
+
+        private void ResolveOutputs(float deltaTime)
+        {
+            flowBuffer.Clear();
+
+            foreach (var pair in world.Flows)
+            {
+                if (pair.Value.State == FlowState.ArrivedAtOutput)
+                    flowBuffer.Add(pair.Key);
+            }
+
+            for (int i = 0; i < flowBuffer.Count; i++)
+                ResolveOutput(flowBuffer[i], i);
+        }
+
+        private void ResolveOutput(GameEntityId flowEntityId, int outputIndex)
+        {
+            if (!world.Flows.TryGetValue(flowEntityId, out var flow))
+                return;
+
+            if (flow.State != FlowState.ArrivedAtOutput)
+                return;
+
+            if (!world.Substances.TryGetValue(flowEntityId, out var substance))
+            {
+                Debug.LogWarning($"[Output] Failed entity={flowEntityId} outputNode={flow.CurrentNodeId} reason=SubstanceNotFound");
+                ConsumeFlow(flowEntityId, flow);
+                return;
+            }
+
+            if (!world.Positions.TryGetValue(flow.CurrentNodeId, out var outputPosition))
+            {
+                Debug.LogWarning($"[Output] Failed entity={flowEntityId} substance={substance.SubstanceId} outputNode={flow.CurrentNodeId} reason=OutputPositionNotFound");
+                ConsumeFlow(flowEntityId, flow);
+                return;
+            }
+
+            world.Tags.TryGetValue(flowEntityId, out var tags);
+
+            if (outputRuleRegistry.TryGetMatch(substance.SubstanceId, tags, out var rule))
+            {
+                Debug.Log($"[Output] RuleMatched entity={flowEntityId} rule={rule.RuleId} substance={substance.SubstanceId}");
+                CreateRuleOutputStacks(rule, outputPosition.Value, outputIndex);
+            }
+            else
+            {
+                Debug.LogWarning($"[Output] RuleMissing entity={flowEntityId} substance={substance.SubstanceId} tags=[{GetTagDebugText(tags)}]");
+                CreateFallbackOutputStack(substance.SubstanceId, outputPosition.Value, outputIndex);
+            }
+
+            ConsumeFlow(flowEntityId, flow);
+        }
+
+        private void CreateRuleOutputStacks(
+            SO_OutputRuleDefinition rule,
+            Vector2 outputPosition,
+            int outputIndex)
+        {
+            Vector2 resultPosition = GetOutputStackPosition(outputPosition, outputIndex, 0);
+            var resultStackId = world.CreateSubstanceStack(
+                rule.ResultSubstance.SubstanceId,
+                rule.ResultAmount,
+                false,
+                resultPosition);
+
+            Debug.Log($"[Output] ResultCreated rule={rule.RuleId} substance={rule.ResultSubstance.SubstanceId} amount={rule.ResultAmount} stack={resultStackId}");
+
+            int slotIndex = 1;
+            foreach (var byproduct in rule.Byproducts)
+            {
+                if (byproduct == null || byproduct.Substance == null || byproduct.Amount <= 0)
+                    continue;
+
+                Vector2 byproductPosition = GetOutputStackPosition(outputPosition, outputIndex, slotIndex);
+                var byproductStackId = world.CreateSubstanceStack(
+                    byproduct.Substance.SubstanceId,
+                    byproduct.Amount,
+                    false,
+                    byproductPosition);
+
+                Debug.Log($"[Output] ByproductCreated rule={rule.RuleId} substance={byproduct.Substance.SubstanceId} amount={byproduct.Amount} stack={byproductStackId}");
+                slotIndex++;
+            }
+        }
+
+        private void CreateFallbackOutputStack(
+            string substanceId,
+            Vector2 outputPosition,
+            int outputIndex)
+        {
+            Vector2 stackPosition = GetOutputStackPosition(outputPosition, outputIndex, 0);
+            var stackId = world.CreateSubstanceStack(substanceId, 1, false, stackPosition);
+
+            Debug.Log($"[Output] ResultCreated rule=Fallback substance={substanceId} amount=1 stack={stackId}");
+        }
+
+        private static Vector2 GetOutputStackPosition(
+            Vector2 outputPosition,
+            int outputIndex,
+            int slotIndex)
+        {
+            return outputPosition
+                + OutputStackOffset
+                + OutputStackSpacing * outputIndex
+                + OutputStackSpacing * slotIndex;
+        }
+
+        private static string GetTagDebugText(TagComponent tags)
+        {
+            if (tags == null)
+                return string.Empty;
+
+            return tags.ToDebugString();
+        }
+
+        private void ConsumeFlow(GameEntityId flowEntityId, FlowComponent flow)
+        {
+            flow.Consume();
+            world.Flows[flowEntityId] = flow;
+        }
+
+        private bool TryFindNextEdge(
+            GameEntityId flowEntityId,
+            GameEntityId currentNodeId,
+            out GameEntityId edgeId)
+        {
+            foreach (var pair in world.Edges)
+            {
+                if (pair.Value.FromNodeId != currentNodeId)
+                    continue;
+
+                if (!CanEnterEdge(flowEntityId, pair.Key))
+                    continue;
+
+                edgeId = pair.Key;
+                return true;
+            }
+
+            edgeId = GameEntityId.Invalid;
+            return false;
+        }
+
+        private bool CanEnterEdge(GameEntityId flowEntityId, GameEntityId edgeId)
+        {
+            if (!world.Flows.ContainsKey(flowEntityId))
+                return false;
+
+            if (!world.Edges.TryGetValue(edgeId, out var edge))
+                return false;
+
+            if (!world.Nodes.ContainsKey(edge.ToNodeId))
+                return false;
+
+            if (world.EdgeStates.TryGetValue(edgeId, out var state) && state.IsLocked)
+                return false;
+
+            return true;
+        }
+
+        private float GetEdgeDuration(EdgeComponent edge)
+        {
+            if (operationDefinitionRegistry.TryGet(edge.OperationDefinitionId, out var operationDefinition))
+                return UnityEngine.Mathf.Max(operationDefinition.Duration, MinEdgeDuration);
+
+            return DefaultEdgeDuration;
         }
     }
 }

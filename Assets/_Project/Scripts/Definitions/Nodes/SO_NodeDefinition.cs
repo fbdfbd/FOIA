@@ -17,10 +17,14 @@ namespace OneMoreSpoon.Game.Definitions
         [SerializeField] private NodeCategory category;
         [SerializeField] private List<string> baseTags = new();
 
+        [Header("Flow Effect")]
+        [SerializeField] private List<string> addedFlowTags = new();
+
         public string DefinitionId => definitionId;
         public string DisplayName => displayName;
         public ProcessLayer ProcessLayer => processLayer;
         public NodeCategory Category => category;
         public IReadOnlyList<string> BaseTags => baseTags;
+        public IReadOnlyList<string> AddedFlowTags => addedFlowTags;
     }
 }

@@ -31,11 +31,17 @@ namespace OneMoreSpoon.Game.Factories
             if (operationDefinition == null)
                 return false;
 
-            if (!world.Nodes.ContainsKey(fromNodeId))
+            if (!world.Nodes.TryGetValue(fromNodeId, out var fromNode))
                 return false;
 
-            if (!world.Nodes.ContainsKey(toNodeId))
+            if (!world.Nodes.TryGetValue(toNodeId, out var toNode))
                 return false;
+
+            if (fromNode.Category == NodeCategory.Merge || toNode.Category == NodeCategory.Merge)
+            {
+                Debug.LogWarning($"[EdgeConnection] Rejected from={fromNodeId} to={toNodeId} reason=MergeNodeCannotConnect");
+                return false;
+            }
 
             if (world.HasEdge(fromNodeId, toNodeId))
                 return false;

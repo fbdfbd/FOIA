@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OneMoreSpoon.Game.Components
 {
@@ -16,14 +17,25 @@ namespace OneMoreSpoon.Game.Components
             return tags.Contains(tag);
         }
 
-        public void Add(string tag)
+        public bool Add(string tag)
         {
-            tags.Add(tag);
+            if (string.IsNullOrWhiteSpace(tag))
+                return false;
+
+            return tags.Add(tag);
         }
 
         public void Remove(string tag)
         {
             tags.Remove(tag);
+        }
+
+        public string ToDebugString()
+        {
+            if (tags.Count <= 0)
+                return string.Empty;
+
+            return string.Join(", ", tags.OrderBy(tag => tag));
         }
     }
 }

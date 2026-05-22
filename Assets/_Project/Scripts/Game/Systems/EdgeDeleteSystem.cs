@@ -19,6 +19,7 @@ namespace OneMoreSpoon.Game.Systems
 
             world.Edges.Remove(edgeId);
             world.EdgeStates.Remove(edgeId);
+            world.EdgeBlockSlots.Remove(edgeId);
 
             return true;
         }

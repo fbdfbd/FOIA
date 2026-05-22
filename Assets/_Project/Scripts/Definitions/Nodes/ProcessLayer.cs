@@ -2,8 +2,10 @@ namespace OneMoreSpoon.Game.Definitions
 {
     public enum ProcessLayer
     {
-        Layer1 = 1,
-        Layer2 = 2,
-        Layer3 = 3
+        Source = 0,
+        Prep = 1,
+        Cook = 2,
+        Finish = 3,
+        Serve = 4
     }
 }
