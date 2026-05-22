@@ -335,6 +335,53 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &369568470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 369568472}
+  - component: {fileID: 369568471}
+  m_Layer: 0
+  m_Name: EdgeSelectionInput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &369568471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 369568470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2192ec35180c77b4ebfa0b11265f4f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.Input.EdgeSelectionInput
+  edgeLayer:
+    serializedVersion: 2
+    m_Bits: 256
+--- !u!4 &369568472
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 369568470}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -730,6 +777,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   previewLine: {fileID: 643412692}
+  defaultOperationDefinition: {fileID: 11400000, guid: e0bd8ca2aaa3f4d48bbfb1f5e2cabaf1, type: 2}
 --- !u!4 &967494107
 Transform:
   m_ObjectHideFlags: 0
@@ -780,6 +828,8 @@ MonoBehaviour:
   autoInjectGameObjects: []
   initialNodeDefinitions:
   - {fileID: 11400000, guid: 9fc8fd35d3ffcbf4fa8c2b37ce68cc6d, type: 2}
+  - {fileID: 11400000, guid: 60ae845161146a94cb46da667126a6e3, type: 2}
+  - {fileID: 11400000, guid: 73c38d30998194e48a140a22bd96f05a, type: 2}
   viewRegistry: {fileID: 490406068}
   nodeViewPrefab: {fileID: 1543590340054116190, guid: f7018c43716078a45aed88bb5b920ff5, type: 3}
   edgeViewPrefab: {fileID: -6018216240545183760, guid: 069d7de062072d04c86646930a30027f, type: 3}
@@ -931,6 +981,9 @@ MonoBehaviour:
   nodeLayer:
     serializedVersion: 2
     m_Bits: 128
+  edgeLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!4 &1970141703
 Transform:
   m_ObjectHideFlags: 0
@@ -957,6 +1010,7 @@ SceneRoots:
   - {fileID: 12006051}
   - {fileID: 1193802636}
   - {fileID: 490406069}
-  - {fileID: 1970141703}
-  - {fileID: 967494107}
   - {fileID: 643412693}
+  - {fileID: 369568472}
+  - {fileID: 967494107}
+  - {fileID: 1970141703}

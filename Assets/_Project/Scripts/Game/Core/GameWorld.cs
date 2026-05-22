@@ -1,7 +1,8 @@
-using System.Collections.Generic;
 using OneMoreSpoon.Game.Components;
-using GameEntityId = OneMoreSpoon.Game.Core.EntityId;
+using OneMoreSpoon.Game.Definitions;
+using System.Collections.Generic;
 using UnityEngine;
+using GameEntityId = OneMoreSpoon.Game.Core.EntityId;
 
 namespace OneMoreSpoon.Game.Core
 {
@@ -23,12 +24,19 @@ namespace OneMoreSpoon.Game.Core
 
         public EntityId CreateNode(
             string definitionId,
+            ProcessLayer processLayer,
+            NodeCategory category,
             Vector2 position,
             IReadOnlyList<string> baseTags)
         {
             var entityId = CreateEntity();
 
-            Nodes[entityId] = new NodeComponent(definitionId);
+            Nodes[entityId] = new NodeComponent(
+                definitionId,
+                processLayer,
+                category
+            );
+
             Positions[entityId] = new PositionComponent(position);
             Tags[entityId] = new TagComponent(baseTags);
             Draggables[entityId] = new DraggableComponent(true);
@@ -36,11 +44,19 @@ namespace OneMoreSpoon.Game.Core
             return entityId;
         }
 
-        public GameEntityId CreateEdge(GameEntityId fromNodeId, GameEntityId toNodeId)
-        {
+        public EntityId CreateEdge(
+            EntityId fromNodeId,
+            EntityId toNodeId,
+            string operationDefinitionId)
+         {
             var edgeId = CreateEntity();
 
-            Edges[edgeId] = new EdgeComponent(fromNodeId, toNodeId);
+            Edges[edgeId] = new EdgeComponent(
+                fromNodeId,
+                toNodeId,
+                operationDefinitionId
+            );
+
             EdgeStates[edgeId] = new EdgeStateComponent(false, false);
 
             return edgeId;

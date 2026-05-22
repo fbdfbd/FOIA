@@ -18,6 +18,8 @@ namespace OneMoreSpoon.Game.Factories
         {
             return world.CreateNode(
                 definition.DefinitionId,
+                definition.ProcessLayer,
+                definition.Category,
                 position,
                 definition.BaseTags
             );

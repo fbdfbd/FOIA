@@ -41,12 +41,16 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.Register<PlacementRuleSystem>(Lifetime.Singleton);
             builder.Register<NodeMoveSystem>(Lifetime.Singleton);
             builder.Register<ProcessSystem>(Lifetime.Singleton);
+            builder.Register<EdgeDeleteSystem>(Lifetime.Singleton);
 
             // ── Factories ──────────────────────────────────────────
             builder.Register<NodeFactory>(Lifetime.Singleton);
             builder.Register<EdgeFactory>(Lifetime.Singleton);
             builder.Register<NodeViewFactory>(Lifetime.Singleton);
             builder.Register<EdgeViewFactory>(Lifetime.Singleton);
+
+            // ── Services ──────────────────────────────────────────
+            builder.Register<SelectionVisualService>(Lifetime.Singleton);
 
             // ── View (Prefabs & Registry) ──────────────────────────
             builder.RegisterComponent(viewRegistry);
@@ -56,6 +60,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             // ── Input ──────────────────────────────────────────────
             builder.RegisterComponentInHierarchy<EdgeConnectionInput>();
             builder.RegisterComponentInHierarchy<NodePointerInput>();
+            builder.RegisterComponentInHierarchy<EdgeSelectionInput>();
 
             // ── Entry Points ───────────────────────────────────────
             builder.RegisterEntryPoint<GameBootstrap>();

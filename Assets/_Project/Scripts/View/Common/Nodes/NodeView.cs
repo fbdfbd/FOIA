@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace OneMoreSpoon.View.Nodes
 {
-    public sealed class NodeView : EntityView
+    public sealed class NodeView : EntityView, ISelectableView
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Color normalColor = Color.white;

@@ -1,4 +1,5 @@
 using OneMoreSpoon.Game.Core;
+using OneMoreSpoon.Game.Definitions;
 using UnityEngine;
 using GameEntityId = OneMoreSpoon.Game.Core.EntityId;
 
@@ -16,6 +17,7 @@ namespace OneMoreSpoon.Game.Factories
         public bool TryCreateEdge(
             GameEntityId fromNodeId,
             GameEntityId toNodeId,
+            SO_OperationDefinition operationDefinition,
             out GameEntityId edgeId)
         {
             edgeId = GameEntityId.Invalid;
@@ -24,6 +26,9 @@ namespace OneMoreSpoon.Game.Factories
                 return false;
 
             if (fromNodeId == toNodeId)
+                return false;
+
+            if (operationDefinition == null)
                 return false;
 
             if (!world.Nodes.ContainsKey(fromNodeId))
@@ -35,9 +40,15 @@ namespace OneMoreSpoon.Game.Factories
             if (world.HasEdge(fromNodeId, toNodeId))
                 return false;
 
-            edgeId = world.CreateEdge(fromNodeId, toNodeId);
+            edgeId = world.CreateEdge(
+                fromNodeId,
+                toNodeId,
+                operationDefinition.OperationId
+            );
 
-            Debug.Log($"Created edge: {fromNodeId} -> {toNodeId}");
+            Debug.Log(
+                $"Created edge: {fromNodeId} -> {toNodeId}, Operation: {operationDefinition.DisplayName}"
+            );
 
             return true;
         }

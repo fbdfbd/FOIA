@@ -11,6 +11,7 @@ namespace OneMoreSpoon.Input
     public sealed class NodePointerInput : MonoBehaviour
     {
         [SerializeField] private LayerMask nodeLayer;
+        [SerializeField] private LayerMask edgeLayer;
 
         private SelectionState selectionState;
         private NodeMoveSystem nodeMoveSystem;
@@ -19,14 +20,17 @@ namespace OneMoreSpoon.Input
         private NodeView selectedView;
         private NodeView draggingView;
         private Vector2 pointerToNodeOffset;
+        private SelectionVisualService selectionVisualService;
 
         [Inject]
         public void Construct(
             SelectionState selectionState,
+            SelectionVisualService selectionVisualService,
             NodeMoveSystem nodeMoveSystem,
             EdgeConnectionState edgeConnectionState)
         {
             this.selectionState = selectionState;
+            this.selectionVisualService = selectionVisualService;
             this.nodeMoveSystem = nodeMoveSystem;
             this.edgeConnectionState = edgeConnectionState;
         }
@@ -62,6 +66,9 @@ namespace OneMoreSpoon.Input
             var hitView = RaycastNodeView();
             if (hitView == null)
             {
+                if (RaycastEdge())
+                    return;
+
                 ClearSelection();
                 return;
             }
@@ -87,22 +94,15 @@ namespace OneMoreSpoon.Input
 
         private void Select(NodeView nodeView)
         {
-            if (selectedView != null)
-                selectedView.SetSelected(false);
-
             selectedView = nodeView;
-            selectedView.SetSelected(true);
-            selectionState.Select(nodeView.EntityId);
+            selectionVisualService.SelectNode(nodeView);
         }
 
         private void ClearSelection()
         {
-            if (selectedView != null)
-                selectedView.SetSelected(false);
-
             selectedView = null;
             draggingView = null;
-            selectionState.Clear();
+            selectionVisualService.Clear();
         }
 
         private NodeView RaycastNodeView()
@@ -133,6 +133,13 @@ namespace OneMoreSpoon.Input
         {
             return EventSystem.current != null
                 && EventSystem.current.IsPointerOverGameObject();
+        }
+
+        private bool RaycastEdge()
+        {
+            Vector2 worldPosition = GetPointerWorldPosition();
+            var hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, edgeLayer);
+            return hit.collider != null;
         }
     }
 }

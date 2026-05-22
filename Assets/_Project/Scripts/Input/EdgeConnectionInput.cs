@@ -1,4 +1,5 @@
 using OneMoreSpoon.App.State;
+using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.Game.Factories;
 using OneMoreSpoon.View.Factories;
 using OneMoreSpoon.View.Nodes;
@@ -7,12 +8,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using VContainer;
 
+
 namespace OneMoreSpoon.Input
 {
     public sealed class EdgeConnectionInput : MonoBehaviour
     {
         [SerializeField] private LayerMask nodeLayer;
-        [SerializeField] private LineRenderer previewLine;
+        [SerializeField] private LineRenderer previewLine; 
+        [SerializeField] private SO_OperationDefinition defaultOperationDefinition;
 
         private EdgeConnectionState edgeConnectionState;
         private EdgeFactory edgeFactory;
@@ -93,9 +96,10 @@ namespace OneMoreSpoon.Input
             }
 
             if (edgeFactory.TryCreateEdge(
-                    edgeConnectionState.FromNodeId,
-                    toView.EntityId,
-                    out var edgeId))
+                edgeConnectionState.FromNodeId,
+                toView.EntityId,
+                defaultOperationDefinition,
+                out var edgeId))
             {
                 edgeViewFactory.Create(edgeId);
             }
