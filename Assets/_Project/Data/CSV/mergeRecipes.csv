@@ -1,0 +1,2 @@
+recipeId,inputSubstanceIds,resultSubstanceId,resultAmount
+test,substance_test_1|substance_test_1,substance_merge_,1

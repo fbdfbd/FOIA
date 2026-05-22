@@ -1,0 +1,3 @@
+substanceId,displayName,kind,baseTags,baseValue,addedTags,durationMultiplier,valueMultiplier
+substance_test_1,TESTSUB,Material,,0,,1,1
+substance_merge_,MERGE,Material,,0,,1,1

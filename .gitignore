@@ -74,6 +74,10 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+# Generated ScriptableObject assets (source of truth is CSV files in _Project/Data/CSV)
+# Run OneMoreSpoon/Import Definitions from CSV to regenerate
+Assets/_Project/Data/Generated/
+
 # NuGetForUnity - In Packages folder
 # Ignore restored NuGet package files, keep config files
 /[Pp]ackages/[Nn]u[Gg]et-[Pp]ackages/[Ii]nstalled[Pp]ackages/

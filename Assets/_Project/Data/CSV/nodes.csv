@@ -1,0 +1,5 @@
+definitionId,displayName,processLayer,category,baseTags,addedFlowTags
+node_test_1,NODE1,Prep,Input,,
+node_test_2,NODE2,Cook,Split,,test1234
+node_test_3,NODE3,Finish,Output,,
+node_merge,MERGE,Source,Merge,,
