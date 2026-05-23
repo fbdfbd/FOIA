@@ -3,6 +3,7 @@ using OneMoreSpoon.App.Config;
 using OneMoreSpoon.App.Inspect;
 using OneMoreSpoon.App.Inspect.Providers;
 using OneMoreSpoon.App.Loop;
+using OneMoreSpoon.App.Messaging;
 using OneMoreSpoon.App.State;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
@@ -94,6 +95,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.Register<GameWorld>(Lifetime.Singleton);
             builder.Register<SelectionState>(Lifetime.Singleton);
             builder.Register<EdgeConnectionState>(Lifetime.Singleton);
+            builder.Register<ToastMessageQueue>(Lifetime.Singleton);
 
             // ── Systems ────────────────────────────────────────────
             builder.Register<PlacementRuleSystem>(Lifetime.Singleton);

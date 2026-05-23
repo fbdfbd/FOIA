@@ -1405,12 +1405,15 @@ MonoBehaviour:
   substanceInventoryOrigin: {x: -4, y: -3}
   substanceInventorySpacing: {x: 1.7, y: 0}
   viewRegistry: {fileID: 490406068}
-  nodeViewPrefab: {fileID: 158862403785399452, guid: 7b756fef13a6ebe449d822578c270186, type: 3}
+  inputNodeViewPrefab: {fileID: 158862403785399452, guid: 7b756fef13a6ebe449d822578c270186, type: 3}
+  outputNodeViewPrefab: {fileID: 1700252867415424330, guid: e42a2434a16c492478f97b18c33de5c4, type: 3}
+  interactNodeViewPrefab: {fileID: 8289468287852243107, guid: 60255ad2b31ba5640af7384afa706cae, type: 3}
+  mergeNodeViewPrefab: {fileID: 2040270858981613804, guid: f6bd780bc7616ac4d9e1caf19aad5007, type: 3}
   edgeViewPrefab: {fileID: -6018216240545183760, guid: 069d7de062072d04c86646930a30027f, type: 3}
   edgeBlockIndicatorViewPrefab: {fileID: 3068559565703066108, guid: 27d526127a68bd849904daec49c6cc51, type: 3}
   substanceViewPrefab: {fileID: 43564751759636787, guid: 74bbab41e5ab9564aae4525ffe56d6de, type: 3}
   flowViewPrefab: {fileID: 8734692758741452506, guid: 2c2bfdf25dd2a0e44bc9365324243193, type: 3}
-  inspectPanelView: {fileID: 614641285}
+  inspectPanelViewPrefab: {fileID: 614641285}
   mainGamePanelRenderer: {fileID: 872954707}
   nodePlaecementPadding: 0.4
 --- !u!4 &1193802636
