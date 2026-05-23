@@ -1,6 +1,7 @@
-using System;
 using OneMoreSpoon.App.Bootstrap;
 using OneMoreSpoon.App.Config;
+using OneMoreSpoon.App.Inspect;
+using OneMoreSpoon.App.Inspect.Providers;
 using OneMoreSpoon.App.Loop;
 using OneMoreSpoon.App.State;
 using OneMoreSpoon.Game.Core;
@@ -15,6 +16,8 @@ using OneMoreSpoon.View.Factories;
 using OneMoreSpoon.View.Flows;
 using OneMoreSpoon.View.Nodes;
 using OneMoreSpoon.View.Substances;
+using OneMoreSpoon.View.UI;
+using System;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -40,6 +43,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
         [SerializeField] private EdgeBlockIndicatorView edgeBlockIndicatorViewPrefab;
         [SerializeField] private SubstanceView substanceViewPrefab;
         [SerializeField] private FlowView flowViewPrefab;
+        [SerializeField] private InspectPanelView inspectPanelViewPrefab;
 
         [Header("Play Area")]
         [SerializeField] private SpriteRenderer mainGamePanelRenderer;
@@ -62,6 +66,12 @@ namespace OneMoreSpoon.App.LifetimeScopes
             var mergeRecipeDefinitions = definitionCatalog != null
                 ? definitionCatalog.MergeRecipeDefinitions
                 : Array.Empty<SO_MergeRecipeDefinition>();
+            var nodeInspectDefinitions = definitionCatalog != null
+                ? definitionCatalog.NodeInspectDefinitions
+                : Array.Empty<SO_NodeInspectDefinition>();
+            var substanceInspectDefinitions = definitionCatalog != null
+                ? definitionCatalog.SubstanceInspectDefinitions
+                : Array.Empty<SO_SubstanceInspectDefinition>();
 
             // ── Config ─────────────────────────────────────────────
             builder.RegisterInstance(new InitialGameConfig(initialNodeDefinitions));
@@ -75,6 +85,8 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.RegisterInstance(new SubstanceDefinitionRegistry(substanceDefinitions));
             builder.RegisterInstance(new OutputRuleRegistry(outputRuleDefinitions));
             builder.RegisterInstance(new MergeRecipeRegistry(mergeRecipeDefinitions));
+            builder.RegisterInstance(new NodeInspectDefinitionRegistry(nodeInspectDefinitions));
+            builder.RegisterInstance(new SubstanceInspectDefinitionRegistry(substanceInspectDefinitions));
             builder.RegisterInstance(new PlayAreaBoundsSystem(mainGamePanelRenderer, nodePlaecementPadding));
             builder.RegisterInstance(new NodeViewPrefabSet(inputNodeViewPrefab, outputNodeViewPrefab, interactNodeViewPrefab, mergeNodeViewPrefab));
 
@@ -103,6 +115,9 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.Register<FlowViewFactory>(Lifetime.Singleton);
 
             // ── Services ──────────────────────────────────────────
+            builder.Register<NodeInspectDataProvider>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<SubstanceInspectDataProvider>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<InspectDataService>(Lifetime.Singleton);
             builder.Register<SelectionVisualService>(Lifetime.Singleton);
 
             // ── View (Prefabs & Registry) ──────────────────────────
@@ -111,6 +126,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.RegisterInstance(edgeBlockIndicatorViewPrefab);
             builder.RegisterInstance(substanceViewPrefab);
             builder.RegisterInstance(flowViewPrefab);
+            builder.RegisterInstance(inspectPanelViewPrefab);
 
             // ── Input ──────────────────────────────────────────────
             builder.RegisterComponentInHierarchy<EdgeConnectionInput>();
@@ -126,6 +142,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.RegisterEntryPoint<FlowViewSyncSystem>();
             builder.RegisterEntryPoint<SubstanceViewSyncSystem>();
             builder.RegisterEntryPoint<EdgeBlockIndicatorSyncSystem>();
+            builder.RegisterEntryPoint<InspectPanelSyncSystem>();
         }
     }
 }
