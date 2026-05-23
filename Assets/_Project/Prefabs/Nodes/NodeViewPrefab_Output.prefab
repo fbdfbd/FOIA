@@ -156,6 +156,8 @@ MonoBehaviour:
   spriteRenderer: {fileID: 714040017418587838}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  normalZ: 0
+  pressedZOffset: -0.5
 --- !u!1 &6235216329081267852
 GameObject:
   m_ObjectHideFlags: 0

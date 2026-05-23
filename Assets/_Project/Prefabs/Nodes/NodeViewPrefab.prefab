@@ -371,7 +371,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.33, y: 4.56}
+    oldSize: {x: 0.8325, y: 1.14}
     newSize: {x: 3.33, y: 4.56}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -395,3 +395,5 @@ MonoBehaviour:
   spriteRenderer: {fileID: 1582729683901783028}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  normalZ: 0
+  pressedZOffset: -0.5

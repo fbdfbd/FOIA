@@ -6,7 +6,8 @@ namespace OneMoreSpoon.App.State
     {
         None,
         Node,
-        Edge
+        Edge,
+        Substance
     }
 
     public sealed class SelectionState
@@ -24,6 +25,12 @@ namespace OneMoreSpoon.App.State
         {
             SelectedEntityId = entityId;
             SelectedType = SelectionTargetType.Edge;
+        }
+
+        public void SelectSubstance(GameEntityId entityId)
+        {
+            SelectedEntityId = entityId;
+            SelectedType = SelectionTargetType.Substance;
         }
 
         public void Clear()

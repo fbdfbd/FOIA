@@ -46,8 +46,11 @@ namespace OneMoreSpoon.Game.Factories
                 return false;
             }
 
-            if (world.HasEdge(fromNodeId, toNodeId))
+            if (world.HasEdge(fromNodeId, toNodeId) || world.HasEdge(toNodeId, fromNodeId))
+            {
+                Debug.LogWarning($"[EdgeConnection] Rejected from={fromNodeId} to={toNodeId} reason=EdgeAlreadyExists");
                 return false;
+            }
 
             edgeId = world.CreateEdge(
                 fromNodeId,

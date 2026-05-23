@@ -1,6 +1,7 @@
 using OneMoreSpoon.View.Common;
 using OneMoreSpoon.View.Edges;
 using OneMoreSpoon.View.Nodes;
+using OneMoreSpoon.View.Substances;
 
 namespace OneMoreSpoon.App.State
 {
@@ -31,6 +32,13 @@ namespace OneMoreSpoon.App.State
 
             selectionState.SelectEdge(edgeView.EntityId);
             edgeView.SetSelected(true);
+        }
+
+        public void SelectSubstance(SubstanceView substanceView)
+        {
+            ClearVisualOnly();
+
+            selectionState.SelectSubstance(substanceView.EntityId);
         }
 
         public void Clear()

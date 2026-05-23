@@ -1,3 +1,4 @@
+using OneMoreSpoon.App.Messaging;
 using OneMoreSpoon.Game.Components;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
@@ -19,20 +20,24 @@ namespace OneMoreSpoon.Game.Systems
         private readonly SubstanceDefinitionRegistry substanceDefinitionRegistry;
         private readonly OperationDefinitionRegistry operationDefinitionRegistry;
         private readonly OutputRuleRegistry outputRuleRegistry;
+        private readonly ToastMessageQueue toastMessageQueue;
         private readonly List<GameEntityId> flowBuffer = new();
+        private readonly Dictionary<GameEntityId, GameEntityId> lastAmbiguousRouteNodeByFlow = new();
 
         public ProcessSystem(
             GameWorld world,
             NodeDefinitionRegistry nodeDefinitionRegistry,
             SubstanceDefinitionRegistry substanceDefinitionRegistry,
             OperationDefinitionRegistry operationDefinitionRegistry,
-            OutputRuleRegistry outputRuleRegistry)
+            OutputRuleRegistry outputRuleRegistry,
+            ToastMessageQueue toastMessageQueue)
         {
             this.world = world;
             this.nodeDefinitionRegistry = nodeDefinitionRegistry;
             this.substanceDefinitionRegistry = substanceDefinitionRegistry;
             this.operationDefinitionRegistry = operationDefinitionRegistry;
             this.outputRuleRegistry = outputRuleRegistry;
+            this.toastMessageQueue = toastMessageQueue;
         }
 
         public void Tick(float deltaTime)
@@ -66,7 +71,7 @@ namespace OneMoreSpoon.Game.Systems
                     continue;
                 }
 
-                if (!CanSpawnFlow(substanceDefinition.Kind))
+                if (!SubstanceFlowSpawnRule.CanSpawnFlow(substanceDefinition.Kind))
                 {
                     Debug.LogWarning($"[FlowSpawn] Skipped substance={request.SubstanceId} targetNode={request.TargetNodeId} reason=SubstanceCannotSpawnFlow kind={substanceDefinition.Kind}");
                     continue;
@@ -173,12 +178,6 @@ namespace OneMoreSpoon.Game.Systems
 
         private void ApplyArrivalEffects(float deltaTime)
         {
-        }
-
-        private static bool CanSpawnFlow(SubstanceKind kind)
-        {
-            return kind == SubstanceKind.Material
-                || kind == SubstanceKind.SourceMaterial;
         }
 
         private void ApplyOperationEffects(GameEntityId flowEntityId, GameEntityId edgeId)
@@ -392,6 +391,8 @@ namespace OneMoreSpoon.Game.Systems
             GameEntityId currentNodeId,
             out GameEntityId edgeId)
         {
+            edgeId = GameEntityId.Invalid;
+
             foreach (var pair in world.Edges)
             {
                 if (pair.Value.FromNodeId != currentNodeId)
@@ -400,12 +401,34 @@ namespace OneMoreSpoon.Game.Systems
                 if (!CanEnterEdge(flowEntityId, pair.Key))
                     continue;
 
+                if (edgeId.IsValid)
+                {
+                    NotifyAmbiguousRoute(flowEntityId, currentNodeId);
+                    edgeId = GameEntityId.Invalid;
+                    return false;
+                }
+
                 edgeId = pair.Key;
-                return true;
             }
 
-            edgeId = GameEntityId.Invalid;
-            return false;
+            if (!edgeId.IsValid)
+                return false;
+
+            lastAmbiguousRouteNodeByFlow.Remove(flowEntityId);
+            return true;
+        }
+
+        private void NotifyAmbiguousRoute(GameEntityId flowEntityId, GameEntityId currentNodeId)
+        {
+            if (lastAmbiguousRouteNodeByFlow.TryGetValue(flowEntityId, out var lastNodeId) &&
+                lastNodeId == currentNodeId)
+            {
+                return;
+            }
+
+            lastAmbiguousRouteNodeByFlow[flowEntityId] = currentNodeId;
+            toastMessageQueue.Enqueue("연결 경로가 2개 이상이라 이동을 멈췄습니다.");
+            Debug.LogWarning($"[Flow] RouteBlocked entity={flowEntityId} node={currentNodeId} reason=MultipleOutgoingEdges");
         }
 
         private bool CanEnterEdge(GameEntityId flowEntityId, GameEntityId edgeId)
@@ -431,6 +454,14 @@ namespace OneMoreSpoon.Game.Systems
                 return UnityEngine.Mathf.Max(operationDefinition.Duration, MinEdgeDuration);
 
             return DefaultEdgeDuration;
+        }
+    }
+
+    public static class SubstanceFlowSpawnRule
+    {
+        public static bool CanSpawnFlow(SubstanceKind kind)
+        {
+            return kind == SubstanceKind.SourceMaterial;
         }
     }
 }
