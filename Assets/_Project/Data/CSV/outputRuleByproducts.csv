@@ -176,3 +176,7 @@ rule_c73,trait_sogginess,1
 rule_o72,trait_browning_lack,1
 rule_o73,trait_thin_body,1
 rule_o74,trait_sogginess,1
+rule_w68,trait_browning_lack,1
+rule_w69,trait_underheated_core,1
+rule_c74,trait_underheated_core,1
+rule_o75,trait_browning_lack,1
