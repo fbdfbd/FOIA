@@ -66,7 +66,7 @@ namespace OneMoreSpoon.Game.Systems
                     continue;
                 }
 
-                if (!CanSpawnFlow(substanceDefinition.Kind))
+                if (!SubstanceFlowSpawnRule.CanSpawnFlow(substanceDefinition.Kind))
                 {
                     Debug.LogWarning($"[FlowSpawn] Skipped substance={request.SubstanceId} targetNode={request.TargetNodeId} reason=SubstanceCannotSpawnFlow kind={substanceDefinition.Kind}");
                     continue;
@@ -173,12 +173,6 @@ namespace OneMoreSpoon.Game.Systems
 
         private void ApplyArrivalEffects(float deltaTime)
         {
-        }
-
-        private static bool CanSpawnFlow(SubstanceKind kind)
-        {
-            return kind == SubstanceKind.Material
-                || kind == SubstanceKind.SourceMaterial;
         }
 
         private void ApplyOperationEffects(GameEntityId flowEntityId, GameEntityId edgeId)
@@ -431,6 +425,14 @@ namespace OneMoreSpoon.Game.Systems
                 return UnityEngine.Mathf.Max(operationDefinition.Duration, MinEdgeDuration);
 
             return DefaultEdgeDuration;
+        }
+    }
+
+    public static class SubstanceFlowSpawnRule
+    {
+        public static bool CanSpawnFlow(SubstanceKind kind)
+        {
+            return kind == SubstanceKind.SourceMaterial;
         }
     }
 }

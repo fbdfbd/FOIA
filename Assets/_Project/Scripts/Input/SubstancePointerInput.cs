@@ -21,6 +21,7 @@ namespace OneMoreSpoon.Input
         private SubstanceStackSystem stackSystem;
         private MergeSystem mergeSystem;
         private EdgeBlockEquipSystem edgeBlockEquipSystem;
+        private SubstanceDefinitionRegistry substanceDefinitionRegistry;
         private ViewRegistry viewRegistry;
         private SelectionVisualService selectionVisualService;
 
@@ -35,6 +36,7 @@ namespace OneMoreSpoon.Input
             SubstanceStackSystem stackSystem,
             MergeSystem mergeSystem,
             EdgeBlockEquipSystem edgeBlockEquipSystem,
+            SubstanceDefinitionRegistry substanceDefinitionRegistry,
             ViewRegistry viewRegistry,
             SelectionVisualService selectionVisualService)
         {
@@ -42,6 +44,7 @@ namespace OneMoreSpoon.Input
             this.stackSystem = stackSystem;
             this.mergeSystem = mergeSystem;
             this.edgeBlockEquipSystem = edgeBlockEquipSystem;
+            this.substanceDefinitionRegistry = substanceDefinitionRegistry;
             this.viewRegistry = viewRegistry;
             this.selectionVisualService = selectionVisualService;
         }
@@ -133,6 +136,20 @@ namespace OneMoreSpoon.Input
             if (!world.SubstanceStacks.TryGetValue(draggingView.EntityId, out var stack))
             {
                 Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} targetNode={inputNode.EntityId} reason=StackNotFound");
+                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+                return;
+            }
+
+            if (!substanceDefinitionRegistry.TryGet(stack.SubstanceId, out var definition))
+            {
+                Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} substance={stack.SubstanceId} targetNode={inputNode.EntityId} reason=SubstanceDefinitionNotFound");
+                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+                return;
+            }
+
+            if (!SubstanceFlowSpawnRule.CanSpawnFlow(definition.Kind))
+            {
+                Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} substance={stack.SubstanceId} targetNode={inputNode.EntityId} reason=SubstanceCannotSpawnFlow kind={definition.Kind}");
                 stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
                 return;
             }
