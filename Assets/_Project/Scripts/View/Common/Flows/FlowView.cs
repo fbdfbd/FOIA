@@ -9,6 +9,7 @@ namespace OneMoreSpoon.View.Flows
     public sealed class FlowView : EntityView
     {
         [SerializeField] private TMP_Text labelText;
+        [SerializeField] private float flowZ = -0.25f;
 
         private SubstanceDefinitionRegistry definitionRegistry;
 
@@ -26,7 +27,7 @@ namespace OneMoreSpoon.View.Flows
                 return;
 
             if (TryGetPosition(flow, out var position))
-                transform.position = position;
+                transform.position = new Vector3(position.x, position.y, flowZ);
 
             UpdateLabel();
         }
