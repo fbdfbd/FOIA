@@ -198,6 +198,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &85217131
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 85217133}
+  - component: {fileID: 85217132}
+  m_Layer: 0
+  m_Name: CameraViewportInput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &85217132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 85217131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bee1d4734babb9478b38cf4b678adde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.Input.CameraViewportInput
+  targetCamera: {fileID: 330585545}
+  blockingLayer:
+    serializedVersion: 2
+    m_Bits: 384
+  zoomInSize: 3
+  zoomOutSize: 8
+--- !u!4 &85217133
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 85217131}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.02606, y: 1.48627, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -945,11 +995,12 @@ MonoBehaviour:
   substanceInventoryOrigin: {x: -4, y: -3}
   substanceInventorySpacing: {x: 1.7, y: 0}
   viewRegistry: {fileID: 490406068}
-  nodeViewPrefab: {fileID: 1543590340054116190, guid: f7018c43716078a45aed88bb5b920ff5, type: 3}
+  nodeViewPrefab: {fileID: 158862403785399452, guid: 7b756fef13a6ebe449d822578c270186, type: 3}
   edgeViewPrefab: {fileID: -6018216240545183760, guid: 069d7de062072d04c86646930a30027f, type: 3}
   edgeBlockIndicatorViewPrefab: {fileID: 3068559565703066108, guid: 27d526127a68bd849904daec49c6cc51, type: 3}
   substanceViewPrefab: {fileID: 43564751759636787, guid: 74bbab41e5ab9564aae4525ffe56d6de, type: 3}
   flowViewPrefab: {fileID: 8734692758741452506, guid: 2c2bfdf25dd2a0e44bc9365324243193, type: 3}
+  inspectPanelView: {fileID: 0}
   mainGamePanelRenderer: {fileID: 872954707}
   nodePlaecementPadding: 0.4
 --- !u!4 &1193802636
@@ -1182,3 +1233,4 @@ SceneRoots:
   - {fileID: 1970141703}
   - {fileID: 2050012342}
   - {fileID: 872954708}
+  - {fileID: 85217133}

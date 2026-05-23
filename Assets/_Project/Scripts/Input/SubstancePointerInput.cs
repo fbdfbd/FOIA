@@ -1,3 +1,4 @@
+using OneMoreSpoon.App.State;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.Game.Systems;
@@ -21,6 +22,7 @@ namespace OneMoreSpoon.Input
         private MergeSystem mergeSystem;
         private EdgeBlockEquipSystem edgeBlockEquipSystem;
         private ViewRegistry viewRegistry;
+        private SelectionVisualService selectionVisualService;
 
         private Camera mainCamera;
         private SubstanceView draggingView;
@@ -33,13 +35,15 @@ namespace OneMoreSpoon.Input
             SubstanceStackSystem stackSystem,
             MergeSystem mergeSystem,
             EdgeBlockEquipSystem edgeBlockEquipSystem,
-            ViewRegistry viewRegistry)
+            ViewRegistry viewRegistry,
+            SelectionVisualService selectionVisualService)
         {
             this.world = world;
             this.stackSystem = stackSystem;
             this.mergeSystem = mergeSystem;
             this.edgeBlockEquipSystem = edgeBlockEquipSystem;
             this.viewRegistry = viewRegistry;
+            this.selectionVisualService = selectionVisualService;
         }
 
         private void Awake()
@@ -72,6 +76,7 @@ namespace OneMoreSpoon.Input
             if (draggingView == null)
                 return;
 
+            selectionVisualService.SelectSubstance(draggingView);
             dragStartPosition = draggingView.transform.position;
             pointerToViewOffset = (Vector2)draggingView.transform.position - GetPointerWorldPosition();
         }

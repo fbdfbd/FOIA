@@ -22,6 +22,8 @@ namespace OneMoreSpoon.Editor
         private const string OperationDir = GenBase + "/Operation";
         private const string OutputRuleDir = GenBase + "/OutputRule";
         private const string RecipeDir = GenBase + "/MergeRecipe";
+        private const string NodeInspectDir = GenBase + "/NodeInspect";
+        private const string SubstanceInspectDir = GenBase + "/SubstanceInspect";
 
         [MenuItem("OneMoreSpoon/Import Definitions from CSV")]
         public static void ImportAll()
@@ -33,6 +35,8 @@ namespace OneMoreSpoon.Editor
             ImportOperations();
             ImportOutputRules(substanceLookup);
             ImportMergeRecipes(substanceLookup);
+            ImportNodeInspects();
+            ImportSubstanceInspects();
             RefreshCatalog();
 
             AssetDatabase.SaveAssets();
@@ -192,6 +196,54 @@ namespace OneMoreSpoon.Editor
             Debug.Log($"[CsvImporter] MergeRecipes: {count}");
         }
 
+        private static void ImportNodeInspects()
+        {
+            var rows = ReadCsv($"{CsvBase}/nodeInspects.csv");
+            if (rows == null) return;
+            var count = 0;
+
+            foreach (var row in rows)
+            {
+                var id = Get(row, "definitionId");
+                if (string.IsNullOrEmpty(id)) continue;
+
+                var asset = FindOrCreate<SO_NodeInspectDefinition>(NodeInspectDir, id, "targetDefinitionId");
+                var so = new SerializedObject(asset);
+                so.FindProperty("targetDefinitionId").stringValue = id;
+                so.FindProperty("description").stringValue = Get(row, "description");
+                so.ApplyModifiedProperties();
+
+                EditorUtility.SetDirty(asset);
+                count++;
+            }
+
+            Debug.Log($"[CsvImporter] NodeInspects: {count}");
+        }
+
+        private static void ImportSubstanceInspects()
+        {
+            var rows = ReadCsv($"{CsvBase}/substanceInspects.csv");
+            if (rows == null) return;
+            var count = 0;
+
+            foreach (var row in rows)
+            {
+                var id = Get(row, "substanceId");
+                if (string.IsNullOrEmpty(id)) continue;
+
+                var asset = FindOrCreate<SO_SubstanceInspectDefinition>(SubstanceInspectDir, id, "targetSubstanceId");
+                var so = new SerializedObject(asset);
+                so.FindProperty("targetSubstanceId").stringValue = id;
+                so.FindProperty("description").stringValue = Get(row, "description");
+                so.ApplyModifiedProperties();
+
+                EditorUtility.SetDirty(asset);
+                count++;
+            }
+
+            Debug.Log($"[CsvImporter] SubstanceInspects: {count}");
+        }
+
         private static void RefreshCatalog()
         {
             var catalog = AssetDatabase.LoadAssetAtPath<SO_DefinitionCatalog>(CatalogPath);
@@ -207,6 +259,8 @@ namespace OneMoreSpoon.Editor
             SetObjectArray(so, "substanceDefinitions", LoadGeneratedAssets<SO_SubstanceDefinition>(SubstanceDir));
             SetObjectArray(so, "outputRuleDefinitions", LoadGeneratedAssets<SO_OutputRuleDefinition>(OutputRuleDir));
             SetObjectArray(so, "mergeRecipeDefinitions", LoadGeneratedAssets<SO_MergeRecipeDefinition>(RecipeDir));
+            SetObjectArray(so, "nodeInspectDefinitions", LoadGeneratedAssets<SO_NodeInspectDefinition>(NodeInspectDir));
+            SetObjectArray(so, "substanceInspectDefinitions", LoadGeneratedAssets<SO_SubstanceInspectDefinition>(SubstanceInspectDir));
             so.ApplyModifiedProperties();
 
             EditorUtility.SetDirty(catalog);
@@ -489,7 +543,7 @@ namespace OneMoreSpoon.Editor
 
         private static void EnsureGeneratedFolders()
         {
-            foreach (var path in new[] { GenBase, NodeDir, SubstanceDir, OperationDir, OutputRuleDir, RecipeDir })
+            foreach (var path in new[] { GenBase, NodeDir, SubstanceDir, OperationDir, OutputRuleDir, RecipeDir, NodeInspectDir, SubstanceInspectDir })
                 EnsureFolder(path);
         }
 
