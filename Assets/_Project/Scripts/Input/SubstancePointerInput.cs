@@ -1,3 +1,4 @@
+using OneMoreSpoon.App.State;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.Game.Systems;
@@ -20,7 +21,9 @@ namespace OneMoreSpoon.Input
         private SubstanceStackSystem stackSystem;
         private MergeSystem mergeSystem;
         private EdgeBlockEquipSystem edgeBlockEquipSystem;
+        private SubstanceDefinitionRegistry substanceDefinitionRegistry;
         private ViewRegistry viewRegistry;
+        private SelectionVisualService selectionVisualService;
 
         private Camera mainCamera;
         private SubstanceView draggingView;
@@ -33,13 +36,17 @@ namespace OneMoreSpoon.Input
             SubstanceStackSystem stackSystem,
             MergeSystem mergeSystem,
             EdgeBlockEquipSystem edgeBlockEquipSystem,
-            ViewRegistry viewRegistry)
+            SubstanceDefinitionRegistry substanceDefinitionRegistry,
+            ViewRegistry viewRegistry,
+            SelectionVisualService selectionVisualService)
         {
             this.world = world;
             this.stackSystem = stackSystem;
             this.mergeSystem = mergeSystem;
             this.edgeBlockEquipSystem = edgeBlockEquipSystem;
+            this.substanceDefinitionRegistry = substanceDefinitionRegistry;
             this.viewRegistry = viewRegistry;
+            this.selectionVisualService = selectionVisualService;
         }
 
         private void Awake()
@@ -72,6 +79,7 @@ namespace OneMoreSpoon.Input
             if (draggingView == null)
                 return;
 
+            selectionVisualService.SelectSubstance(draggingView);
             dragStartPosition = draggingView.transform.position;
             pointerToViewOffset = (Vector2)draggingView.transform.position - GetPointerWorldPosition();
         }
@@ -128,6 +136,20 @@ namespace OneMoreSpoon.Input
             if (!world.SubstanceStacks.TryGetValue(draggingView.EntityId, out var stack))
             {
                 Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} targetNode={inputNode.EntityId} reason=StackNotFound");
+                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+                return;
+            }
+
+            if (!substanceDefinitionRegistry.TryGet(stack.SubstanceId, out var definition))
+            {
+                Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} substance={stack.SubstanceId} targetNode={inputNode.EntityId} reason=SubstanceDefinitionNotFound");
+                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+                return;
+            }
+
+            if (!SubstanceFlowSpawnRule.CanSpawnFlow(definition.Kind))
+            {
+                Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} substance={stack.SubstanceId} targetNode={inputNode.EntityId} reason=SubstanceCannotSpawnFlow kind={definition.Kind}");
                 stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
                 return;
             }

@@ -17,6 +17,7 @@ namespace OneMoreSpoon.Game.Systems
         private readonly GameWorld world;
         private readonly SubstanceStackSystem stackSystem;
         private readonly MergeRecipeRegistry recipeRegistry;
+        private readonly SubstanceDefinitionRegistry substanceDefinitionRegistry;
         private readonly List<GameEntityId> mergeNodeBuffer = new();
         private readonly List<GameEntityId> remainingStackBuffer = new();
         private readonly List<string> inputSubstanceBuffer = new();
@@ -24,11 +25,13 @@ namespace OneMoreSpoon.Game.Systems
         public MergeSystem(
             GameWorld world,
             SubstanceStackSystem stackSystem,
-            MergeRecipeRegistry recipeRegistry)
+            MergeRecipeRegistry recipeRegistry,
+            SubstanceDefinitionRegistry substanceDefinitionRegistry)
         {
             this.world = world;
             this.stackSystem = stackSystem;
             this.recipeRegistry = recipeRegistry;
+            this.substanceDefinitionRegistry = substanceDefinitionRegistry;
         }
 
         public void Tick(float deltaTime)
@@ -51,9 +54,21 @@ namespace OneMoreSpoon.Game.Systems
                 return false;
             }
 
-            if (!world.SubstanceStacks.ContainsKey(stackId))
+            if (!world.SubstanceStacks.TryGetValue(stackId, out var stack))
             {
                 Debug.LogWarning($"[Merge] AddRejected mergeNode={mergeNodeId} stack={stackId} reason=StackNotFound");
+                return false;
+            }
+
+            if (!substanceDefinitionRegistry.TryGet(stack.SubstanceId, out var definition))
+            {
+                Debug.LogWarning($"[Merge] AddRejected mergeNode={mergeNodeId} stack={stackId} substance={stack.SubstanceId} reason=SubstanceDefinitionNotFound");
+                return false;
+            }
+
+            if (!CanAddToMerge(definition.Kind))
+            {
+                Debug.LogWarning($"[Merge] AddRejected mergeNode={mergeNodeId} stack={stackId} substance={stack.SubstanceId} reason=SubstanceCannotMerge kind={definition.Kind}");
                 return false;
             }
 
@@ -68,6 +83,11 @@ namespace OneMoreSpoon.Game.Systems
 
             Debug.Log($"[Merge] StackAdded mergeNode={mergeNodeId} stack={stackId} count={slot.StackIds.Count}");
             return true;
+        }
+
+        private static bool CanAddToMerge(SubstanceKind kind)
+        {
+            return kind == SubstanceKind.TraitShard;
         }
 
         private void TickMergeSlot(GameEntityId mergeNodeId, float deltaTime)
