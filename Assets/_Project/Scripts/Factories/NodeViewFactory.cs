@@ -1,3 +1,4 @@
+using OneMoreSpoon.Game.Components;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.View.Common;
@@ -9,18 +10,18 @@ namespace OneMoreSpoon.View.Factories
 {
     public sealed class NodeViewFactory
     {
-        private readonly NodeView prefab;
+        private readonly NodeViewPrefabSet prefabSet;
         private readonly GameWorld world;
         private readonly NodeDefinitionRegistry nodeDefinitionRegistry;
         private readonly ViewRegistry viewRegistry;
 
         public NodeViewFactory(
-            NodeView prefab,
+            NodeViewPrefabSet prefabSet,
             GameWorld world,
             NodeDefinitionRegistry nodeDefinitionRegistry,
             ViewRegistry viewRegistry)
         {
-            this.prefab = prefab;
+            this.prefabSet = prefabSet;
             this.world = world;
             this.nodeDefinitionRegistry = nodeDefinitionRegistry;
             this.viewRegistry = viewRegistry;
@@ -28,13 +29,28 @@ namespace OneMoreSpoon.View.Factories
 
         public NodeView Create(GameEntityId entityId)
         {
-            if (!world.Positions.TryGetValue(entityId, out var position))
+            if (!world.Positions.TryGetValue(entityId, out PositionComponent position))
             {
                 Debug.LogError($"Node position not found: {entityId}");
                 return null;
             }
 
-            var view = Object.Instantiate(prefab, position.Value, Quaternion.identity);
+            if (!world.Nodes.TryGetValue(entityId, out NodeComponent node))
+            {
+                Debug.LogError($"Node not found: {entityId}");
+                return null;
+            }
+
+            NodeView prefab = GetPrefab(node.Category);
+
+            if (prefab == null)
+            {
+                Debug.LogError($"Node prefab not found for category: {node.Category}");
+                return null;
+            }
+
+            NodeView view = Object.Instantiate(prefab, position.Value, Quaternion.identity);
+
             view.Bind(entityId, world);
             UpdateLabel(entityId, view);
 
@@ -59,6 +75,28 @@ namespace OneMoreSpoon.View.Factories
             }
 
             view.SetLabel(definition.DisplayName);
+        }
+        private NodeView GetPrefab(NodeCategory category)
+        {
+            switch (category)
+            {
+                case NodeCategory.Input:
+                    return prefabSet.Input;
+
+                case NodeCategory.Output:
+                    return prefabSet.Output;
+
+                case NodeCategory.Merge:
+                    return prefabSet.Merge;
+
+                case NodeCategory.Process:
+                case NodeCategory.Split:
+                case NodeCategory.Storage:
+                    return prefabSet.Interact;
+
+                default:
+                    return prefabSet.Interact;
+            }
         }
     }
 }

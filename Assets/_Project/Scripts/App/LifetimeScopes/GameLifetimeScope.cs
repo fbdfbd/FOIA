@@ -32,7 +32,10 @@ namespace OneMoreSpoon.App.LifetimeScopes
 
         [Header("View")]
         [SerializeField] private ViewRegistry viewRegistry;
-        [SerializeField] private NodeView nodeViewPrefab;
+        [SerializeField] private NodeView inputNodeViewPrefab;
+        [SerializeField] private NodeView outputNodeViewPrefab;
+        [SerializeField] private NodeView interactNodeViewPrefab;
+        [SerializeField] private NodeView mergeNodeViewPrefab;
         [SerializeField] private EdgeView edgeViewPrefab;
         [SerializeField] private EdgeBlockIndicatorView edgeBlockIndicatorViewPrefab;
         [SerializeField] private SubstanceView substanceViewPrefab;
@@ -73,6 +76,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.RegisterInstance(new OutputRuleRegistry(outputRuleDefinitions));
             builder.RegisterInstance(new MergeRecipeRegistry(mergeRecipeDefinitions));
             builder.RegisterInstance(new PlayAreaBoundsSystem(mainGamePanelRenderer, nodePlaecementPadding));
+            builder.RegisterInstance(new NodeViewPrefabSet(inputNodeViewPrefab, outputNodeViewPrefab, interactNodeViewPrefab, mergeNodeViewPrefab));
 
             // ── Core State ─────────────────────────────────────────
             builder.Register<GameWorld>(Lifetime.Singleton);
@@ -103,7 +107,6 @@ namespace OneMoreSpoon.App.LifetimeScopes
 
             // ── View (Prefabs & Registry) ──────────────────────────
             builder.RegisterComponent(viewRegistry);
-            builder.RegisterInstance(nodeViewPrefab);
             builder.RegisterInstance(edgeViewPrefab);
             builder.RegisterInstance(edgeBlockIndicatorViewPrefab);
             builder.RegisterInstance(substanceViewPrefab);

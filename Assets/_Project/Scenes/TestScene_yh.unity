@@ -910,6 +910,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &920661321
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 920661323}
+  - component: {fileID: 920661322}
+  m_Layer: 0
+  m_Name: CameraViewportInput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &920661322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920661321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bee1d4734babb9478b38cf4b678adde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.Input.CameraViewportInput
+  targetCamera: {fileID: 330585545}
+  blockingLayer:
+    serializedVersion: 2
+    m_Bits: 928
+  zoomInSize: 3
+  zoomOutSize: 5
+--- !u!4 &920661323
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920661321}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.19806, y: 2.15086, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &967494105
 GameObject:
   m_ObjectHideFlags: 0
@@ -943,6 +993,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   previewLine: {fileID: 643412692}
+  defaultOperationId: op_default
   defaultOperationDefinition: {fileID: 11400000, guid: e0bd8ca2aaa3f4d48bbfb1f5e2cabaf1, type: 2}
 --- !u!4 &967494107
 Transform:
@@ -992,27 +1043,37 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
+  definitionCatalog: {fileID: 11400000, guid: 784a6a0386c7c7c4f8c8ffb6766711f1, type: 2}
   initialNodeDefinitions:
-  - {fileID: 11400000, guid: 9fc8fd35d3ffcbf4fa8c2b37ce68cc6d, type: 2}
-  - {fileID: 11400000, guid: 60ae845161146a94cb46da667126a6e3, type: 2}
-  - {fileID: 11400000, guid: 73c38d30998194e48a140a22bd96f05a, type: 2}
-  - {fileID: 11400000, guid: cf2d83f4eb48bc84194b227d562abdd7, type: 2}
-  operationDefinitions: []
-  substanceDefinitions:
-  - {fileID: 11400000, guid: 086bf40a36d23934681e06d70d4b81d1, type: 2}
-  - {fileID: 11400000, guid: b6d86f14cdf359f43a17a83f0d10b1ca, type: 2}
-  outputRuleDefinitions:
-  - {fileID: 0}
-  mergeRecipeDefinitions:
-  - {fileID: 11400000, guid: 65a8ec546ab80964fa151fd6d5fcff44, type: 2}
+  - {fileID: 11400000, guid: 64cf465cc4a30254884c58e3d1258f55, type: 2}
+  - {fileID: 11400000, guid: 775f33d39073cf641bc7e4925345c8d3, type: 2}
+  - {fileID: 11400000, guid: c8e7fd27dfb87a54e89233f6b180dd61, type: 2}
+  - {fileID: 11400000, guid: fc7e884f10db4224daf7e309bfbc612e, type: 2}
+  - {fileID: 11400000, guid: 3a7fe5b6bf1ca674b825b0f742d135d9, type: 2}
+  - {fileID: 11400000, guid: 3593785aab8aa384da4f73e8593db350, type: 2}
+  - {fileID: 11400000, guid: 4be4301585d1f864980dc67e4fc3bae4, type: 2}
+  - {fileID: 11400000, guid: 1dea2235cf25ba641b1fe5ea520ad1bb, type: 2}
+  - {fileID: 11400000, guid: 80b1c12f4f8e42a4b9bb191b50e53d4e, type: 2}
+  - {fileID: 11400000, guid: 00f5f4b39f45a924e99173cd65d6e2fc, type: 2}
+  - {fileID: 11400000, guid: bf5cce6ae2d71594896b5d4c97027227, type: 2}
+  - {fileID: 11400000, guid: 4cddc0ba3acab2648a317bb582d538cc, type: 2}
   initialSubstanceStacks:
-  - SubstanceDefinition: {fileID: 11400000, guid: 086bf40a36d23934681e06d70d4b81d1, type: 2}
+  - SubstanceDefinition: {fileID: 11400000, guid: 369cf5240f75525458c9b9aa2494f0ac, type: 2}
+    Amount: 1
+    IsInfinite: 1
+  - SubstanceDefinition: {fileID: 11400000, guid: d8e97afa155cb124a9ee2b58ce1bb003, type: 2}
+    Amount: 1
+    IsInfinite: 1
+  - SubstanceDefinition: {fileID: 11400000, guid: f3b4319ab223b01418d7b759e1dfe404, type: 2}
     Amount: 1
     IsInfinite: 1
   substanceInventoryOrigin: {x: -4, y: -3}
   substanceInventorySpacing: {x: 1.7, y: 0}
   viewRegistry: {fileID: 490406068}
-  nodeViewPrefab: {fileID: 1543590340054116190, guid: f7018c43716078a45aed88bb5b920ff5, type: 3}
+  inputNodeViewPrefab: {fileID: 158862403785399452, guid: 7b756fef13a6ebe449d822578c270186, type: 3}
+  outputNodeViewPrefab: {fileID: 1700252867415424330, guid: e42a2434a16c492478f97b18c33de5c4, type: 3}
+  interactNodeViewPrefab: {fileID: 8289468287852243107, guid: 60255ad2b31ba5640af7384afa706cae, type: 3}
+  mergeNodeViewPrefab: {fileID: 2040270858981613804, guid: f6bd780bc7616ac4d9e1caf19aad5007, type: 3}
   edgeViewPrefab: {fileID: -6018216240545183760, guid: 069d7de062072d04c86646930a30027f, type: 3}
   edgeBlockIndicatorViewPrefab: {fileID: 3068559565703066108, guid: 27d526127a68bd849904daec49c6cc51, type: 3}
   substanceViewPrefab: {fileID: 43564751759636787, guid: 74bbab41e5ab9564aae4525ffe56d6de, type: 3}
@@ -1342,3 +1403,4 @@ SceneRoots:
   - {fileID: 967494107}
   - {fileID: 1970141703}
   - {fileID: 2050012342}
+  - {fileID: 920661323}
