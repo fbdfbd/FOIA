@@ -3,6 +3,10 @@ namespace OneMoreSpoon.Game.Definitions
     public enum SubstanceKind
     {
         Material,
-        EdgeBlock
+        EdgeBlock,
+        SourceMaterial,
+        TraitShard,
+        Dish,
+        FinalDish
     }
 }
