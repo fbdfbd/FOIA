@@ -1,4 +1,5 @@
 using OneMoreSpoon.Game.Core;
+using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.View.Common;
 using OneMoreSpoon.View.Flows;
 using UnityEngine;
@@ -11,15 +12,18 @@ namespace OneMoreSpoon.View.Factories
         private readonly FlowView prefab;
         private readonly GameWorld world;
         private readonly ViewRegistry viewRegistry;
+        private readonly SubstanceDefinitionRegistry definitionRegistry;
 
         public FlowViewFactory(
             FlowView prefab,
             GameWorld world,
-            ViewRegistry viewRegistry)
+            ViewRegistry viewRegistry,
+            SubstanceDefinitionRegistry definitionRegistry)
         {
             this.prefab = prefab;
             this.world = world;
             this.viewRegistry = viewRegistry;
+            this.definitionRegistry = definitionRegistry;
         }
 
         public FlowView Create(GameEntityId flowEntityId)
@@ -33,6 +37,7 @@ namespace OneMoreSpoon.View.Factories
             var view = Object.Instantiate(prefab, Vector3.zero, Quaternion.identity);
 
             view.Bind(flowEntityId, world);
+            view.Initialize(definitionRegistry);
             viewRegistry.Register(flowEntityId, view);
 
             Debug.Log($"[FlowView] Created entity={flowEntityId}");
