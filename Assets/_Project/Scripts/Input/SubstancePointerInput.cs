@@ -21,6 +21,7 @@ namespace OneMoreSpoon.Input
         private SubstanceStackSystem stackSystem;
         private MergeSystem mergeSystem;
         private EdgeBlockEquipSystem edgeBlockEquipSystem;
+        private ClusterSeparationSystem clusterSeparationSystem;
         private SubstanceDefinitionRegistry substanceDefinitionRegistry;
         private ViewRegistry viewRegistry;
         private SelectionVisualService selectionVisualService;
@@ -36,6 +37,7 @@ namespace OneMoreSpoon.Input
             SubstanceStackSystem stackSystem,
             MergeSystem mergeSystem,
             EdgeBlockEquipSystem edgeBlockEquipSystem,
+            ClusterSeparationSystem clusterSeparationSystem,
             SubstanceDefinitionRegistry substanceDefinitionRegistry,
             ViewRegistry viewRegistry,
             SelectionVisualService selectionVisualService)
@@ -44,6 +46,7 @@ namespace OneMoreSpoon.Input
             this.stackSystem = stackSystem;
             this.mergeSystem = mergeSystem;
             this.edgeBlockEquipSystem = edgeBlockEquipSystem;
+            this.clusterSeparationSystem = clusterSeparationSystem;
             this.substanceDefinitionRegistry = substanceDefinitionRegistry;
             this.viewRegistry = viewRegistry;
             this.selectionVisualService = selectionVisualService;
@@ -126,16 +129,16 @@ namespace OneMoreSpoon.Input
                 return;
             }
 
-            if (RaycastBlockingObject())
-                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
-
             ReleaseDraggingView();
         }
 
         private void ReleaseDraggingView()
         {
             if (draggingView != null)
+            {
                 draggingView.SetPressed(false);
+                clusterSeparationSystem.RelaxAround(draggingView.EntityId);
+            }
 
             draggingView = null;
         }
@@ -287,26 +290,6 @@ namespace OneMoreSpoon.Input
             }
 
             return null;
-        }
-
-        private bool RaycastBlockingObject()
-        {
-            var hits = Physics2D.RaycastAll(GetPointerWorldPosition(), Vector2.zero);
-
-            foreach (var hit in hits)
-            {
-                var view = hit.collider.GetComponentInParent<EntityView>();
-
-                if (view == null)
-                    continue;
-
-                if (draggingView != null && view.EntityId == draggingView.EntityId)
-                    continue;
-
-                return true;
-            }
-
-            return false;
         }
 
         private void RemoveDraggedView()

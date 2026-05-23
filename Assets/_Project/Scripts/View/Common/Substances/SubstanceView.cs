@@ -1,6 +1,7 @@
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.View.Common;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -14,9 +15,13 @@ namespace OneMoreSpoon.View.Substances
         [SerializeField] private TMP_Text amountText;
         [SerializeField] private float normalZ = 0f;
         [SerializeField] private float pressedZOffset = -0.5f;
+        [SerializeField] private float moveTweenDuration = 0.14f;
 
         private SubstanceDefinitionRegistry definitionRegistry;
         private bool isPressed;
+        private bool hasTargetPosition;
+        private Vector3 lastTargetPosition;
+        private Tween moveTween;
 
         public void Initialize(SubstanceDefinitionRegistry definitionRegistry)
         {
@@ -47,10 +52,46 @@ namespace OneMoreSpoon.View.Substances
             if (World.Positions.TryGetValue(EntityId, out var position))
             {
                 float z = isPressed ? normalZ + pressedZOffset : normalZ;
-                transform.position = new Vector3(position.Value.x, position.Value.y, z);
+                Vector3 targetPosition = new(position.Value.x, position.Value.y, z);
+                SyncPosition(targetPosition);
             }
 
             UpdateText();
+        }
+
+        private void SyncPosition(Vector3 targetPosition)
+        {
+            if (isPressed)
+            {
+                moveTween?.Kill();
+                moveTween = null;
+                transform.position = targetPosition;
+                lastTargetPosition = targetPosition;
+                hasTargetPosition = true;
+                return;
+            }
+
+            if (!hasTargetPosition)
+            {
+                transform.position = targetPosition;
+                lastTargetPosition = targetPosition;
+                hasTargetPosition = true;
+                return;
+            }
+
+            if ((lastTargetPosition - targetPosition).sqrMagnitude <= 0.0001f)
+                return;
+
+            lastTargetPosition = targetPosition;
+            moveTween?.Kill();
+            moveTween = transform
+                .DOMove(targetPosition, moveTweenDuration)
+                .SetEase(Ease.OutQuad);
+        }
+
+        private void OnDestroy()
+        {
+            moveTween?.Kill();
         }
 
         public void SetPressed(bool pressed)

@@ -15,6 +15,7 @@ namespace OneMoreSpoon.Input
 
         private SelectionState selectionState;
         private NodeMoveSystem nodeMoveSystem;
+        private ClusterSeparationSystem clusterSeparationSystem;
         private EdgeConnectionState edgeConnectionState;
         private Camera mainCamera;
         private NodeView selectedView;
@@ -27,11 +28,13 @@ namespace OneMoreSpoon.Input
             SelectionState selectionState,
             SelectionVisualService selectionVisualService,
             NodeMoveSystem nodeMoveSystem,
+            ClusterSeparationSystem clusterSeparationSystem,
             EdgeConnectionState edgeConnectionState)
         {
             this.selectionState = selectionState;
             this.selectionVisualService = selectionVisualService;
             this.nodeMoveSystem = nodeMoveSystem;
+            this.clusterSeparationSystem = clusterSeparationSystem;
             this.edgeConnectionState = edgeConnectionState;
         }
 
@@ -91,7 +94,10 @@ namespace OneMoreSpoon.Input
         private void EndPointer()
         {
             if (draggingView != null)
+            {
                 draggingView.SetPressed(false);
+                clusterSeparationSystem.RelaxAround(draggingView.EntityId);
+            }
 
             draggingView = null;
         }

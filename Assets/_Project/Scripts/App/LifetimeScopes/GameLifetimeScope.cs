@@ -105,6 +105,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.Register<SubstanceStackSystem>(Lifetime.Singleton);
             builder.Register<MergeSystem>(Lifetime.Singleton);
             builder.Register<EdgeBlockEquipSystem>(Lifetime.Singleton);
+            builder.Register<ClusterSeparationSystem>(Lifetime.Singleton);
 
             // ── Factories ──────────────────────────────────────────
             builder.Register<NodeFactory>(Lifetime.Singleton);
