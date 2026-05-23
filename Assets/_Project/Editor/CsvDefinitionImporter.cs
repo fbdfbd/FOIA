@@ -258,6 +258,8 @@ namespace OneMoreSpoon.Editor
         private static T FindOrCreate<T>(string folder, string id, string idPropName)
             where T : ScriptableObject
         {
+            var expectedPath = $"{folder}/{typeof(T).Name}_{id}.asset";
+
             foreach (var guid in AssetDatabase.FindAssets($"t:{typeof(T).Name}", new[] { folder }))
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
@@ -267,8 +269,12 @@ namespace OneMoreSpoon.Editor
                     return existing;
             }
 
+            var existingAtExpectedPath = AssetDatabase.LoadAssetAtPath<T>(expectedPath);
+            if (existingAtExpectedPath != null)
+                return existingAtExpectedPath;
+
             var asset = ScriptableObject.CreateInstance<T>();
-            AssetDatabase.CreateAsset(asset, $"{folder}/{typeof(T).Name}_{id}.asset");
+            AssetDatabase.CreateAsset(asset, expectedPath);
             return asset;
         }
 

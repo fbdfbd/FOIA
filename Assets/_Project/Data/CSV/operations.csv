@@ -1,40 +1,11 @@
 operationId,displayName,category,baseTags,duration,baseOutputIds,outputTags
-op_cut,절단하기,Cut,,4,,method:cut|shape_change
-op_separate,분리하기,Contact,,5,,method:separate|cleaning
-op_press,압착하기,Contact,,5,,method:press|moisture_extract
-op_mix,혼합하기,Mix,,6,,method:mix|dispersion
-op_coat,입히기,Contact,,5,,method:coat|surface_apply
-op_shape,성형하기,Combine,,6,,method:shape|form_control
-op_bake,굽기,Heat,,8,,method:dry_heat|surface_heat|browning
-op_boil,끓이기,Heat,,8,,method:wet_heat|extraction|liquid_body
-op_fry,튀기기,Heat,,7,,method:oil_heat|surface_heat|crisping
-op_trial_evaluate,실패 분석하기,None,,2,,eval:trial
-op_final_evaluate,완성 평가하기,None,,2,,eval:final
-op_cut_rough,거칠게 절단하기,Cut,,4,,method:cut|shape_change|issue:uneven
-op_cut_wasteful,낭비하며 절단하기,Cut,,4,,method:cut|shape_change|issue:scrap
-op_separate_messy,지저분하게 분리하기,Contact,,5,,method:separate|cleaning|issue:impurity
-op_separate_leaky,흘리며 분리하기,Contact,,5,,method:separate|cleaning|issue:juice_separation
-op_separate_fragile,깨지게 분리하기,Contact,,5,,method:separate|cleaning|issue:breakage
-op_press_rough,거칠게 압착하기,Contact,,5,,method:press|moisture_extract|issue:uneven
-op_press_wasteful,흩날리게 압착하기,Contact,,5,,method:press|moisture_extract|issue:scrap
-op_press_leaky,즙이 새게 압착하기,Contact,,5,,method:press|moisture_extract|issue:juice_separation
-op_press_weak,약하게 압착하기,Contact,,5,,method:press|moisture_extract|issue:excess_moisture
-op_press_hard,강하게 압착하기,Contact,,5,,method:press|moisture_extract|issue:moisture_loss
-op_mix_wet,물기 많게 혼합하기,Mix,,6,,method:mix|dispersion|issue:excess_moisture
-op_mix_runny,묽게 혼합하기,Mix,,6,,method:mix|dispersion|issue:low_viscosity
-op_mix_weak,약하게 결합시키기,Mix,,6,,method:mix|dispersion|issue:weak_binding
-op_mix_lumpy,뭉치게 혼합하기,Mix,,6,,method:mix|dispersion|issue:clumping
-op_mix_poor,덜 섞기,Mix,,6,,method:mix|dispersion|issue:poor_dispersion
-op_mix_bland,향이 퍼지지 않게 혼합하기,Mix,,6,,method:mix|dispersion|issue:weak_flavor
-op_coat_weak,얇게 실패한 코팅하기,Contact,,5,,method:coat|surface_apply|issue:coating_failure
-op_coat_filmy,두껍게 막을 만들기,Contact,,5,,method:coat|surface_apply|issue:surface_film
-op_shape_fragile,부서지게 성형하기,Combine,,6,,method:shape|form_control|issue:breakage
-op_shape_dry,마르게 성형하기,Combine,,6,,method:shape|form_control|issue:moisture_loss
-op_bake_under,약하게 굽기,Heat,,8,,method:dry_heat|surface_heat|issue:underheated_core
-op_bake_over,과하게 굽기,Heat,,8,,method:dry_heat|surface_heat|issue:overheated_surface
-op_bake_pale,색 없이 굽기,Heat,,8,,method:dry_heat|surface_heat|issue:browning_lack
-op_bake_soggy,눅눅하게 굽기,Heat,,8,,method:dry_heat|surface_heat|issue:sogginess
-op_bake_dry,마르게 굽기,Heat,,8,,method:dry_heat|surface_heat|issue:moisture_loss
-op_bake_filmy,막이 생기게 굽기,Heat,,8,,method:dry_heat|surface_heat|issue:surface_film
-op_bake_bland,향 없이 굽기,Heat,,8,,method:dry_heat|surface_heat|issue:weak_flavor
-op_boil_thin,묽게 끓이기,Heat,,8,,method:wet_heat|extraction|liquid_body|issue:thin_body
+op_default,?? ??,Transfer,,5,,
+op_cut,??? ??,Transfer,,4,,
+op_separate,?? ??,Transfer,,5,,
+op_press,?? ??,Transfer,,5,,
+op_mix,?? ??,Transfer,,6,,
+op_coat,??? ??,Transfer,,5,,
+op_shape,?? ??,Transfer,,6,,
+op_bake,?? ??,Transfer,,8,,
+op_boil,??? ??,Transfer,,8,,
+op_fry,??? ??,Transfer,,7,,

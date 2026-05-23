@@ -15,11 +15,13 @@ namespace OneMoreSpoon.Input
     {
         [SerializeField] private LayerMask nodeLayer;
         [SerializeField] private LineRenderer previewLine; 
+        [SerializeField] private string defaultOperationId = "op_default";
         [SerializeField] private SO_OperationDefinition defaultOperationDefinition;
 
         private EdgeConnectionState edgeConnectionState;
         private EdgeFactory edgeFactory;
         private EdgeViewFactory edgeViewFactory;
+        private OperationDefinitionRegistry operationDefinitionRegistry;
 
         private Camera mainCamera;
         private NodeView fromView;
@@ -28,11 +30,13 @@ namespace OneMoreSpoon.Input
         public void Construct(
             EdgeConnectionState edgeConnectionState,
             EdgeFactory edgeFactory,
-            EdgeViewFactory edgeViewFactory)
+            EdgeViewFactory edgeViewFactory,
+            OperationDefinitionRegistry operationDefinitionRegistry)
         {
             this.edgeConnectionState = edgeConnectionState;
             this.edgeFactory = edgeFactory;
             this.edgeViewFactory = edgeViewFactory;
+            this.operationDefinitionRegistry = operationDefinitionRegistry;
         }
 
         private void Awake()
@@ -98,7 +102,7 @@ namespace OneMoreSpoon.Input
             if (edgeFactory.TryCreateEdge(
                 edgeConnectionState.FromNodeId,
                 toView.EntityId,
-                defaultOperationDefinition,
+                ResolveDefaultOperationDefinition(),
                 out var edgeId))
             {
                 edgeViewFactory.Create(edgeId);
@@ -150,6 +154,20 @@ namespace OneMoreSpoon.Input
         {
             return EventSystem.current != null
                 && EventSystem.current.IsPointerOverGameObject();
+        }
+
+        private SO_OperationDefinition ResolveDefaultOperationDefinition()
+        {
+            if (operationDefinitionRegistry != null &&
+                operationDefinitionRegistry.TryGet(defaultOperationId, out var definition))
+            {
+                return definition;
+            }
+
+            if (defaultOperationDefinition == null)
+                Debug.LogWarning($"[EdgeConnection] Default operation not found id={defaultOperationId}");
+
+            return defaultOperationDefinition;
         }
     }
 }

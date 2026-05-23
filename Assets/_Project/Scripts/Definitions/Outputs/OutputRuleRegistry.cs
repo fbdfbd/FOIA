@@ -32,6 +32,8 @@ namespace OneMoreSpoon.Game.Definitions
 
                 this.rules.Add(rule);
             }
+
+            this.rules.Sort(CompareSpecificity);
         }
 
         public bool TryGetMatch(
@@ -81,6 +83,38 @@ namespace OneMoreSpoon.Game.Definitions
             }
 
             return true;
+        }
+
+        private static int CompareSpecificity(
+            SO_OutputRuleDefinition left,
+            SO_OutputRuleDefinition right)
+        {
+            var historyCompare = CountNonEmpty(right.RequiredHistorySequence)
+                .CompareTo(CountNonEmpty(left.RequiredHistorySequence));
+            if (historyCompare != 0)
+                return historyCompare;
+
+            var tagCompare = CountNonEmpty(right.RequiredTags)
+                .CompareTo(CountNonEmpty(left.RequiredTags));
+            if (tagCompare != 0)
+                return tagCompare;
+
+            return string.CompareOrdinal(left.RuleId, right.RuleId);
+        }
+
+        private static int CountNonEmpty(IReadOnlyList<string> values)
+        {
+            if (values == null)
+                return 0;
+
+            var count = 0;
+            foreach (var value in values)
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                    count++;
+            }
+
+            return count;
         }
 
         private static bool MatchesHistorySequence(
