@@ -40,6 +40,10 @@ namespace OneMoreSpoon.App.LifetimeScopes
         [SerializeField] private SubstanceView substanceViewPrefab;
         [SerializeField] private FlowView flowViewPrefab;
 
+        [Header("Play Area")]
+        [SerializeField] private SpriteRenderer mainGamePanelRenderer;
+        [SerializeField] private float nodePlaecementPadding = 0.4f;
+
         protected override void Configure(IContainerBuilder builder)
         {
             // ── Config ─────────────────────────────────────────────
@@ -54,6 +58,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.RegisterInstance(new SubstanceDefinitionRegistry(substanceDefinitions));
             builder.RegisterInstance(new OutputRuleRegistry(outputRuleDefinitions));
             builder.RegisterInstance(new MergeRecipeRegistry(mergeRecipeDefinitions));
+            builder.RegisterInstance(new PlayAreaBoundsSystem(mainGamePanelRenderer, nodePlaecementPadding));
 
             // ── Core State ─────────────────────────────────────────
             builder.Register<GameWorld>(Lifetime.Singleton);
