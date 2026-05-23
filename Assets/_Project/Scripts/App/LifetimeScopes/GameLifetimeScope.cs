@@ -1,3 +1,4 @@
+using System;
 using OneMoreSpoon.App.Bootstrap;
 using OneMoreSpoon.App.Config;
 using OneMoreSpoon.App.Loop;
@@ -23,11 +24,8 @@ namespace OneMoreSpoon.App.LifetimeScopes
     public sealed class GameLifetimeScope : LifetimeScope
     {
         [Header("Initial Test Data")]
+        [SerializeField] private SO_DefinitionCatalog definitionCatalog;
         [SerializeField] private SO_NodeDefinition[] initialNodeDefinitions;
-        [SerializeField] private SO_OperationDefinition[] operationDefinitions;
-        [SerializeField] private SO_SubstanceDefinition[] substanceDefinitions;
-        [SerializeField] private SO_OutputRuleDefinition[] outputRuleDefinitions;
-        [SerializeField] private SO_MergeRecipeDefinition[] mergeRecipeDefinitions;
         [SerializeField] private InitialSubstanceStack[] initialSubstanceStacks;
         [SerializeField] private Vector2 substanceInventoryOrigin = new(-4f, -3f);
         [SerializeField] private Vector2 substanceInventorySpacing = new(1.7f, 0f);
@@ -42,6 +40,22 @@ namespace OneMoreSpoon.App.LifetimeScopes
 
         protected override void Configure(IContainerBuilder builder)
         {
+            var nodeDefinitions = definitionCatalog != null
+                ? definitionCatalog.NodeDefinitions
+                : Array.Empty<SO_NodeDefinition>();
+            var operationDefinitions = definitionCatalog != null
+                ? definitionCatalog.OperationDefinitions
+                : Array.Empty<SO_OperationDefinition>();
+            var substanceDefinitions = definitionCatalog != null
+                ? definitionCatalog.SubstanceDefinitions
+                : Array.Empty<SO_SubstanceDefinition>();
+            var outputRuleDefinitions = definitionCatalog != null
+                ? definitionCatalog.OutputRuleDefinitions
+                : Array.Empty<SO_OutputRuleDefinition>();
+            var mergeRecipeDefinitions = definitionCatalog != null
+                ? definitionCatalog.MergeRecipeDefinitions
+                : Array.Empty<SO_MergeRecipeDefinition>();
+
             // ── Config ─────────────────────────────────────────────
             builder.RegisterInstance(new InitialGameConfig(initialNodeDefinitions));
             builder.RegisterInstance(new InitialSubstanceInventoryConfig(
@@ -49,7 +63,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
                 substanceInventoryOrigin,
                 substanceInventorySpacing
             ));
-            builder.RegisterInstance(new NodeDefinitionRegistry(initialNodeDefinitions));
+            builder.RegisterInstance(new NodeDefinitionRegistry(nodeDefinitions));
             builder.RegisterInstance(new OperationDefinitionRegistry(operationDefinitions));
             builder.RegisterInstance(new SubstanceDefinitionRegistry(substanceDefinitions));
             builder.RegisterInstance(new OutputRuleRegistry(outputRuleDefinitions));

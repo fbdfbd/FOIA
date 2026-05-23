@@ -37,6 +37,7 @@ namespace OneMoreSpoon.Game.Definitions
         public bool TryGetMatch(
             string substanceId,
             TagComponent tags,
+            FlowHistoryComponent history,
             out SO_OutputRuleDefinition rule)
         {
             foreach (var candidate in rules)
@@ -45,6 +46,9 @@ namespace OneMoreSpoon.Game.Definitions
                     continue;
 
                 if (!MatchesTags(candidate, tags))
+                    continue;
+
+                if (!MatchesHistorySequence(candidate, history))
                     continue;
 
                 rule = candidate;
@@ -77,6 +81,34 @@ namespace OneMoreSpoon.Game.Definitions
             }
 
             return true;
+        }
+
+        private static bool MatchesHistorySequence(
+            SO_OutputRuleDefinition rule,
+            FlowHistoryComponent history)
+        {
+            var requiredSequence = rule.RequiredHistorySequence;
+            if (requiredSequence == null || requiredSequence.Count <= 0)
+                return true;
+
+            if (history == null)
+                return false;
+
+            var matchIndex = 0;
+            foreach (var entry in history.Entries)
+            {
+                while (matchIndex < requiredSequence.Count
+                    && string.IsNullOrWhiteSpace(requiredSequence[matchIndex]))
+                    matchIndex++;
+
+                if (matchIndex < requiredSequence.Count && entry == requiredSequence[matchIndex])
+                    matchIndex++;
+
+                if (matchIndex >= requiredSequence.Count)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

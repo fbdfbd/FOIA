@@ -1,3 +1,76 @@
 substanceId,displayName,kind,baseTags,baseValue,addedTags,durationMultiplier,valueMultiplier
-substance_test_1,TESTSUB,Material,,0,,1,1
-substance_merge_,MERGE,Material,,0,,1,1
+src_wheat,밀,SourceMaterial,source:wheat|domain:grain|base:starch|origin:plant,0,,1,1
+src_soybean,콩,SourceMaterial,source:soybean|domain:bean|base:protein|origin:plant,0,,1,1
+src_egg,달걀,SourceMaterial,source:egg|domain:egg|base:protein|origin:animal|base:emulsifier,0,,1,1
+src_chicken,닭고기,SourceMaterial,source:chicken|domain:meat|base:protein|origin:animal,0,,1,1
+src_onion,양파,SourceMaterial,source:onion|domain:vegetable|base:aromatic|origin:plant,0,,1,1
+trait_uneven,불균일,Material,trait:shape|issue:uneven,0,,1,1
+trait_scrap,자투리,Material,trait:waste|issue:scrap,0,,1,1
+trait_impurity,불순물,Material,trait:cleanliness|issue:impurity,0,,1,1
+trait_juice_separation,즙분리,Material,trait:separation|issue:juice_separation,0,,1,1
+trait_excess_moisture,수분과다,Material,trait:moisture|issue:excess_moisture,0,,1,1
+trait_moisture_loss,수분손실,Material,trait:moisture|issue:moisture_loss,0,,1,1
+trait_weak_binding,결착부족,Material,trait:structure|issue:weak_binding,0,,1,1
+trait_breakage,부서짐,Material,trait:structure|issue:breakage,0,,1,1
+trait_low_viscosity,점성부족,Material,trait:body|issue:low_viscosity,0,,1,1
+trait_clumping,뭉침,Material,trait:mixing|issue:clumping,0,,1,1
+trait_poor_dispersion,분산부족,Material,trait:mixing|issue:poor_dispersion,0,,1,1
+trait_coating_failure,코팅부족,Material,trait:surface|issue:coating_failure,0,,1,1
+trait_surface_film,표면막,Material,trait:surface|issue:surface_film,0,,1,1
+trait_sogginess,눅눅함,Material,trait:texture|issue:sogginess,0,,1,1
+trait_underheated_core,내부미열,Material,trait:heat|issue:underheated_core,0,,1,1
+trait_overheated_surface,표면과열,Material,trait:heat|issue:overheated_surface,0,,1,1
+trait_browning_lack,갈변부족,Material,trait:heat|issue:browning_lack,0,,1,1
+trait_weak_flavor,향미부족,Material,trait:flavor|issue:weak_flavor,0,,1,1
+trait_thin_body,농도부족,Material,trait:body|issue:thin_body,0,,1,1
+edge_precise_cut,정밀절단,EdgeBlock,type:edgeblock,0,edge:precise_cut|fix:shape|quality:uniform,1,1
+edge_clean_separation,깨끗한분리,EdgeBlock,type:edgeblock,0,edge:clean_separation|fix:clean|quality:clean,1,1
+edge_press_control,압착제어,EdgeBlock,type:edgeblock,0,edge:press_control|fix:moisture_balance|quality:controlled_press,1,1
+edge_uniform_mix,균일혼합,EdgeBlock,type:edgeblock,0,edge:uniform_mix|fix:dispersion|quality:uniform_mix,1,1
+edge_binding_boost,결착강화,EdgeBlock,type:edgeblock,0,edge:binding_boost|fix:binding|quality:stable_structure,1,1
+edge_viscosity_control,점성조절,EdgeBlock,type:edgeblock,0,edge:viscosity_control|fix:viscosity|quality:body,1,1
+edge_surface_coating,표면코팅,EdgeBlock,type:edgeblock,0,edge:surface_coating|fix:coating|quality:surface,1,1
+edge_heat_transfer,열전달개선,EdgeBlock,type:edgeblock,0,edge:heat_transfer|fix:heat_even|quality:even_cook,1,1
+edge_moisture_retention,수분보존,EdgeBlock,type:edgeblock,0,edge:moisture_retention|fix:moisture_keep|quality:juicy,1,1
+edge_crisping,바삭화,EdgeBlock,type:edgeblock,0,edge:crisping|fix:crisp|quality:crisp,1,1
+edge_browning_boost,갈변촉진,EdgeBlock,type:edgeblock,0,edge:browning_boost|fix:browning|quality:brown,1,1
+edge_flavor_concentration,향미농축,EdgeBlock,type:edgeblock,0,edge:flavor_concentration|fix:flavor|quality:deep_flavor,1,1
+dish_rough_flour,거친 밀가루,Dish,dish:failure|source:wheat|issue:uneven,0,,1,1
+dish_flour_scraps,흩어진 밀가루 자투리,Dish,dish:failure|source:wheat|issue:scrap,0,,1,1
+dish_wet_dough,질척한 반죽,Dish,dish:failure|source:wheat|issue:excess_moisture,0,,1,1
+dish_runny_dough,묽은 반죽,Dish,dish:failure|source:wheat|issue:low_viscosity,0,,1,1
+dish_cracked_dough,갈라진 반죽,Dish,dish:failure|source:wheat|issue:weak_binding,0,,1,1
+dish_soggy_bread,눅눅한 빵,Dish,dish:failure|source:wheat|issue:sogginess,0,,1,1
+dish_burnt_crust,탄 빵껍질,Dish,dish:failure|source:wheat|issue:overheated_surface,0,,1,1
+dish_watery_soymilk,물 많은 콩물,Dish,dish:failure|source:soybean|issue:juice_separation,0,,1,1
+dish_rough_okara,거친 콩비지,Dish,dish:failure|source:soybean|issue:uneven,0,,1,1
+dish_broken_tofu,부서진 두부,Dish,dish:failure|source:soybean|issue:breakage,0,,1,1
+dish_hard_soy_lump,딱딱한 콩덩이,Dish,dish:failure|source:soybean|issue:moisture_loss,0,,1,1
+dish_filmy_soy_patty,눅눅한 콩패티,Dish,dish:failure|source:soybean|issue:surface_film,0,,1,1
+dish_thin_soy_soup,밍밍한 콩수프,Dish,dish:failure|source:soybean|issue:thin_body,0,,1,1
+dish_broken_yolk,터진 노른자,Dish,dish:failure|source:egg|issue:breakage,0,,1,1
+dish_watery_egg_mix,물 같은 계란물,Dish,dish:failure|source:egg|issue:low_viscosity,0,,1,1
+dish_lumpy_egg_mix,뭉친 계란물,Dish,dish:failure|source:egg|issue:clumping,0,,1,1
+dish_poorly_mixed_egg,덜 섞인 계란물,Dish,dish:failure|source:egg|issue:poor_dispersion,0,,1,1
+dish_torn_omelette,찢어진 오믈렛,Dish,dish:failure|source:egg|issue:weak_binding,0,,1,1
+dish_undercooked_omelette,덜 익은 오믈렛,Dish,dish:failure|source:egg|issue:underheated_core,0,,1,1
+dish_rubbery_omelette,고무 같은 오믈렛,Dish,dish:failure|source:egg|issue:moisture_loss,0,,1,1
+dish_dirty_chicken,지저분한 닭살,Dish,dish:failure|source:chicken|issue:impurity,0,,1,1
+dish_bloody_chicken,핏물 많은 닭,Dish,dish:failure|source:chicken|issue:juice_separation,0,,1,1
+dish_failed_chicken_skin,벗겨진 닭껍질,Dish,dish:failure|source:chicken|issue:coating_failure,0,,1,1
+dish_dry_chicken,퍽퍽한 닭,Dish,dish:failure|source:chicken|issue:moisture_loss,0,,1,1
+dish_undercooked_chicken,덜 익은 닭,Dish,dish:failure|source:chicken|issue:underheated_core,0,,1,1
+dish_burnt_chicken_skin,탄 닭껍질,Dish,dish:failure|source:chicken|issue:overheated_surface,0,,1,1
+dish_bland_chicken_roast,밋밋한 닭구이,Dish,dish:failure|source:chicken|issue:weak_flavor,0,,1,1
+dish_uneven_onion,들쭉날쭉한 양파,Dish,dish:failure|source:onion|issue:uneven,0,,1,1
+dish_onion_scraps,양파 자투리 더미,Dish,dish:failure|source:onion|issue:scrap,0,,1,1
+dish_watery_onion_base,물 많은 양파베이스,Dish,dish:failure|source:onion|issue:excess_moisture,0,,1,1
+dish_weak_onion_base,향 없는 양파베이스,Dish,dish:failure|source:onion|issue:weak_flavor,0,,1,1
+dish_pale_onion,덜 볶인 양파,Dish,dish:failure|source:onion|issue:browning_lack,0,,1,1
+dish_burnt_onion,탄 양파,Dish,dish:failure|source:onion|issue:overheated_surface,0,,1,1
+dish_thin_onion_soup,밍밍한 양파수프,Dish,dish:failure|source:onion|issue:thin_body,0,,1,1
+final_golden_crust_bread,황금 크러스트 빵,FinalDish,source:wheat|dish:final,100,,1,1
+final_tofu_steak,두부 스테이크,FinalDish,source:soybean|dish:final,100,,1,1
+final_souffle_omelette,수플레 오믈렛,FinalDish,source:egg|dish:final,100,,1,1
+final_perfect_roast_chicken,완벽한 로스트 치킨,FinalDish,source:chicken|dish:final,100,,1,1
+final_caramel_onion_soup,카라멜 양파 수프,FinalDish,source:onion|dish:final,100,,1,1

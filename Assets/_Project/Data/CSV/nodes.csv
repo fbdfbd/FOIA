@@ -1,5 +1,14 @@
 definitionId,displayName,processLayer,category,baseTags,addedFlowTags
-node_test_1,NODE1,Prep,Input,,
-node_test_2,NODE2,Cook,Split,,test1234
-node_test_3,NODE3,Finish,Output,,
-node_merge,MERGE,Source,Merge,,
+node_source,기본재료 공급,Source,Input,,stage:source
+node_prep_cut,절단대,Prep,Process,,layer:prep
+node_prep_separate,분리대,Prep,Process,,layer:prep
+node_prep_press,압착대,Prep,Process,,layer:prep
+node_combine_mix,혼합대,Combine,Process,,layer:combine
+node_combine_coat,입히기대,Combine,Process,,layer:combine
+node_combine_shape,성형대,Combine,Process,,layer:combine
+node_cook_bake,구이대,Cook,Process,,layer:cook
+node_cook_boil,끓임대,Cook,Process,,layer:cook
+node_cook_fry,튀김대,Cook,Process,,layer:cook
+node_eval_trial,실패 분석대,Serve,Output,,eval:trial
+node_eval_final,완성 평가대,Serve,Output,,eval:final
+node_merge,노하우 머지대,Source,Merge,,stage:merge

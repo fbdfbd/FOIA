@@ -28,7 +28,7 @@ namespace OneMoreSpoon.App.Bootstrap
                 if (stack == null || stack.SubstanceDefinition == null)
                     continue;
 
-                if (stack.SubstanceDefinition.Kind != SubstanceKind.Material)
+                if (!CanCreateInitialStack(stack.SubstanceDefinition.Kind))
                     continue;
 
                 Vector2 position = config.Origin + config.Spacing * i;
@@ -40,6 +40,14 @@ namespace OneMoreSpoon.App.Bootstrap
                     position
                 );
             }
+        }
+
+        private static bool CanCreateInitialStack(SubstanceKind kind)
+        {
+            return kind == SubstanceKind.Material
+                || kind == SubstanceKind.SourceMaterial
+                || kind == SubstanceKind.TraitShard
+                || kind == SubstanceKind.EdgeBlock;
         }
     }
 }

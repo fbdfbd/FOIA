@@ -20,6 +20,7 @@ namespace OneMoreSpoon.Game.Core
         public readonly Dictionary<GameEntityId, EdgeBlockSlotComponent> EdgeBlockSlots = new();
         public readonly Dictionary<GameEntityId, SubstanceComponent> Substances = new();
         public readonly Dictionary<GameEntityId, FlowComponent> Flows = new();
+        public readonly Dictionary<GameEntityId, FlowHistoryComponent> FlowHistories = new();
         public readonly Dictionary<GameEntityId, SubstanceStackComponent> SubstanceStacks = new();
         public readonly Dictionary<GameEntityId, MergeSlotComponent> MergeSlots = new();
 
@@ -81,6 +82,7 @@ namespace OneMoreSpoon.Game.Core
 
             Substances[entityId] = new SubstanceComponent(substanceId);
             Flows[entityId] = new FlowComponent(startNodeId);
+            FlowHistories[entityId] = new FlowHistoryComponent();
             Tags[entityId] = new TagComponent(baseTags);
 
             Debug.Log($"[Flow] Created entity={entityId} substance={substanceId} startNode={startNodeId} tags=[{string.Join(", ", baseTags)}]");
