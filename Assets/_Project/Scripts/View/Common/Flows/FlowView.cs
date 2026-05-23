@@ -1,4 +1,5 @@
 using OneMoreSpoon.Game.Components;
+using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.View.Common;
 using TMPro;
 using UnityEngine;
@@ -8,6 +9,13 @@ namespace OneMoreSpoon.View.Flows
     public sealed class FlowView : EntityView
     {
         [SerializeField] private TMP_Text labelText;
+
+        private SubstanceDefinitionRegistry definitionRegistry;
+
+        public void Initialize(SubstanceDefinitionRegistry definitionRegistry)
+        {
+            this.definitionRegistry = definitionRegistry;
+        }
 
         private void LateUpdate()
         {
@@ -67,6 +75,13 @@ namespace OneMoreSpoon.View.Flows
 
             if (!World.Substances.TryGetValue(EntityId, out var substance))
                 return;
+
+            if (definitionRegistry != null &&
+                definitionRegistry.TryGet(substance.SubstanceId, out var definition))
+            {
+                labelText.text = definition.DisplayName;
+                return;
+            }
 
             labelText.text = substance.SubstanceId;
         }

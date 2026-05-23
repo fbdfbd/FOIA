@@ -32,11 +32,14 @@ namespace OneMoreSpoon.Game.Definitions
 
                 this.rules.Add(rule);
             }
+
+            this.rules.Sort(CompareSpecificity);
         }
 
         public bool TryGetMatch(
             string substanceId,
             TagComponent tags,
+            FlowHistoryComponent history,
             out SO_OutputRuleDefinition rule)
         {
             foreach (var candidate in rules)
@@ -45,6 +48,9 @@ namespace OneMoreSpoon.Game.Definitions
                     continue;
 
                 if (!MatchesTags(candidate, tags))
+                    continue;
+
+                if (!MatchesHistorySequence(candidate, history))
                     continue;
 
                 rule = candidate;
@@ -77,6 +83,66 @@ namespace OneMoreSpoon.Game.Definitions
             }
 
             return true;
+        }
+
+        private static int CompareSpecificity(
+            SO_OutputRuleDefinition left,
+            SO_OutputRuleDefinition right)
+        {
+            var historyCompare = CountNonEmpty(right.RequiredHistorySequence)
+                .CompareTo(CountNonEmpty(left.RequiredHistorySequence));
+            if (historyCompare != 0)
+                return historyCompare;
+
+            var tagCompare = CountNonEmpty(right.RequiredTags)
+                .CompareTo(CountNonEmpty(left.RequiredTags));
+            if (tagCompare != 0)
+                return tagCompare;
+
+            return string.CompareOrdinal(left.RuleId, right.RuleId);
+        }
+
+        private static int CountNonEmpty(IReadOnlyList<string> values)
+        {
+            if (values == null)
+                return 0;
+
+            var count = 0;
+            foreach (var value in values)
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                    count++;
+            }
+
+            return count;
+        }
+
+        private static bool MatchesHistorySequence(
+            SO_OutputRuleDefinition rule,
+            FlowHistoryComponent history)
+        {
+            var requiredSequence = rule.RequiredHistorySequence;
+            if (requiredSequence == null || requiredSequence.Count <= 0)
+                return true;
+
+            if (history == null)
+                return false;
+
+            var matchIndex = 0;
+            foreach (var entry in history.Entries)
+            {
+                while (matchIndex < requiredSequence.Count
+                    && string.IsNullOrWhiteSpace(requiredSequence[matchIndex]))
+                    matchIndex++;
+
+                if (matchIndex < requiredSequence.Count && entry == requiredSequence[matchIndex])
+                    matchIndex++;
+
+                if (matchIndex >= requiredSequence.Count)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

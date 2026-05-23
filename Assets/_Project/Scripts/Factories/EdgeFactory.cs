@@ -29,7 +29,10 @@ namespace OneMoreSpoon.Game.Factories
                 return false;
 
             if (operationDefinition == null)
+            {
+                Debug.LogWarning($"[EdgeConnection] Rejected from={fromNodeId} to={toNodeId} reason=OperationDefinitionMissing");
                 return false;
+            }
 
             if (!world.Nodes.TryGetValue(fromNodeId, out var fromNode))
                 return false;

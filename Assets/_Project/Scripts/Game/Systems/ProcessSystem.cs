@@ -66,9 +66,9 @@ namespace OneMoreSpoon.Game.Systems
                     continue;
                 }
 
-                if (substanceDefinition.Kind != SubstanceKind.Material)
+                if (!CanSpawnFlow(substanceDefinition.Kind))
                 {
-                    Debug.LogWarning($"[FlowSpawn] Skipped substance={request.SubstanceId} targetNode={request.TargetNodeId} reason=SubstanceIsNotMaterial kind={substanceDefinition.Kind}");
+                    Debug.LogWarning($"[FlowSpawn] Skipped substance={request.SubstanceId} targetNode={request.TargetNodeId} reason=SubstanceCannotSpawnFlow kind={substanceDefinition.Kind}");
                     continue;
                 }
 
@@ -152,6 +152,7 @@ namespace OneMoreSpoon.Game.Systems
 
                 var completedEdgeId = flow.CurrentEdgeId;
 
+                ApplyOperationEffects(flowEntityId, completedEdgeId);
                 ApplyEdgeBlockEffects(flowEntityId, completedEdgeId);
 
                 if (toNode.Category == NodeCategory.Output)
@@ -174,6 +175,24 @@ namespace OneMoreSpoon.Game.Systems
         {
         }
 
+        private static bool CanSpawnFlow(SubstanceKind kind)
+        {
+            return kind == SubstanceKind.Material
+                || kind == SubstanceKind.SourceMaterial;
+        }
+
+        private void ApplyOperationEffects(GameEntityId flowEntityId, GameEntityId edgeId)
+        {
+            if (!world.Edges.TryGetValue(edgeId, out var edge))
+                return;
+
+            if (!operationDefinitionRegistry.TryGet(edge.OperationDefinitionId, out var operationDefinition))
+                return;
+
+            AddFlowHistory(flowEntityId, $"operation:{edge.OperationDefinitionId}");
+            AddFlowTags(flowEntityId, operationDefinition.OutputTags, $"Operation edge={edgeId} operation={edge.OperationDefinitionId}");
+        }
+
         private void ApplyEdgeBlockEffects(GameEntityId flowEntityId, GameEntityId edgeId)
         {
             if (!world.Edges.TryGetValue(edgeId, out var edge))
@@ -191,6 +210,7 @@ namespace OneMoreSpoon.Game.Systems
             if (blockDefinition.Kind != SubstanceKind.EdgeBlock)
                 return;
 
+            AddFlowHistory(flowEntityId, $"edgeBlock:{slot.EquippedSubstanceId}");
             AddFlowTags(flowEntityId, blockDefinition.AddedTags, $"EdgeBlock edge={edgeId} block={slot.EquippedSubstanceId}");
         }
 
@@ -202,6 +222,7 @@ namespace OneMoreSpoon.Game.Systems
             if (!nodeDefinitionRegistry.TryGet(node.DefinitionId, out var definition))
                 return;
 
+            AddFlowHistory(flowEntityId, $"node:{node.DefinitionId}");
             AddFlowTags(flowEntityId, definition.AddedFlowTags, $"Node node={nodeId} definition={node.DefinitionId}");
         }
 
@@ -234,6 +255,15 @@ namespace OneMoreSpoon.Game.Systems
 
                 Debug.Log($"[FlowTag] Added entity={flowEntityId} source={source} tag={tag}");
             }
+        }
+
+        private void AddFlowHistory(GameEntityId flowEntityId, string entry)
+        {
+            if (!world.FlowHistories.TryGetValue(flowEntityId, out var history))
+                return;
+
+            history.Add(entry);
+            Debug.Log($"[FlowHistory] Added entity={flowEntityId} entry={entry}");
         }
 
         private void ResolveOutputs(float deltaTime)
@@ -273,8 +303,9 @@ namespace OneMoreSpoon.Game.Systems
             }
 
             world.Tags.TryGetValue(flowEntityId, out var tags);
+            world.FlowHistories.TryGetValue(flowEntityId, out var history);
 
-            if (outputRuleRegistry.TryGetMatch(substance.SubstanceId, tags, out var rule))
+            if (outputRuleRegistry.TryGetMatch(substance.SubstanceId, tags, history, out var rule))
             {
                 Debug.Log($"[Output] RuleMatched entity={flowEntityId} rule={rule.RuleId} substance={substance.SubstanceId}");
                 CreateRuleOutputStacks(rule, outputPosition.Value, outputIndex);
