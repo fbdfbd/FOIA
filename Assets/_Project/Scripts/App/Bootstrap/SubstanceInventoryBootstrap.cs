@@ -1,6 +1,7 @@
 using OneMoreSpoon.App.Config;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.Game.Factories;
+using OneMoreSpoon.Game.Systems;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -10,13 +11,16 @@ namespace OneMoreSpoon.App.Bootstrap
     {
         private readonly InitialSubstanceInventoryConfig config;
         private readonly SubstanceStackFactory stackFactory;
+        private readonly PlayAreaBoundsSystem playAreaBounds;
 
         public SubstanceInventoryBootstrap(
             InitialSubstanceInventoryConfig config,
-            SubstanceStackFactory stackFactory)
+            SubstanceStackFactory stackFactory, 
+            PlayAreaBoundsSystem playAreaBounds)
         {
             this.config = config;
             this.stackFactory = stackFactory;
+            this.playAreaBounds = playAreaBounds;
         }
 
         public void Start()
@@ -32,6 +36,7 @@ namespace OneMoreSpoon.App.Bootstrap
                     continue;
 
                 Vector2 position = config.Origin + config.Spacing * i;
+                position = playAreaBounds.Clamp(position); 
 
                 stackFactory.CreateStack(
                     stack.SubstanceDefinition,

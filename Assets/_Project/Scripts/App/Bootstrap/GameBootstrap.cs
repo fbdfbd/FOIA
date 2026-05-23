@@ -1,5 +1,6 @@
 using OneMoreSpoon.App.Config;
 using OneMoreSpoon.Game.Factories;
+using OneMoreSpoon.Game.Systems;
 using OneMoreSpoon.View.Factories;
 using UnityEngine;
 using VContainer.Unity;
@@ -11,15 +12,18 @@ namespace OneMoreSpoon.App.Bootstrap
         private readonly InitialGameConfig config;
         private readonly NodeFactory nodeFactory;
         private readonly NodeViewFactory nodeViewFactory;
+        private readonly PlayAreaBoundsSystem playAreaBounds;
 
         public GameBootstrap(
             InitialGameConfig config,
             NodeFactory nodeFactory,
-            NodeViewFactory nodeViewFactory)
+            NodeViewFactory nodeViewFactory,
+            PlayAreaBoundsSystem playAreaBounds)
         {
             this.config = config;
             this.nodeFactory = nodeFactory;
             this.nodeViewFactory = nodeViewFactory;
+            this.playAreaBounds = playAreaBounds;
         }
 
         public void Start()
@@ -32,6 +36,7 @@ namespace OneMoreSpoon.App.Bootstrap
                     continue;
 
                 var position = new Vector2(i * 2f, 0f);
+                position = playAreaBounds.Clamp(position);
 
                 var entityId = nodeFactory.CreateNode(definition, position);
                 nodeViewFactory.Create(entityId);

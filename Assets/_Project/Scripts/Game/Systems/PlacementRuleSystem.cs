@@ -7,10 +7,12 @@ namespace OneMoreSpoon.Game.Systems
     public sealed class PlacementRuleSystem
     {
         private readonly GameWorld world;
+        private readonly PlayAreaBoundsSystem playAreaBoundsSystem;
 
-        public PlacementRuleSystem(GameWorld world)
+        public PlacementRuleSystem(GameWorld world, PlayAreaBoundsSystem playAreaBoundsSystem)
         {
             this.world = world;
+            this.playAreaBoundsSystem = playAreaBoundsSystem;
         }
 
         public bool CanMoveTo(GameEntityId nodeId, Vector2 targetPosition)
@@ -28,6 +30,16 @@ namespace OneMoreSpoon.Game.Systems
             }
 
             return true;
+        }
+
+        public Vector2 ClampNodePosition(Vector2 targetPosition)
+        {
+            return playAreaBoundsSystem.Clamp(targetPosition);
+        }
+
+        public bool CanCreateNodeAt(Vector2 targetPosition)
+        {
+            return playAreaBoundsSystem.Contains(targetPosition);
         }
     }
 }

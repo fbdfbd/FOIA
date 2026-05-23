@@ -8,10 +8,12 @@ namespace OneMoreSpoon.Game.Systems
     public sealed class SubstanceStackSystem
     {
         private readonly GameWorld world;
+        private readonly PlayAreaBoundsSystem playAreaBounds;
 
-        public SubstanceStackSystem(GameWorld world)
+        public SubstanceStackSystem(GameWorld world, PlayAreaBoundsSystem playAreaBounds)
         {
             this.world = world;
+            this.playAreaBounds = playAreaBounds;
         }
 
         public bool TryConsume(GameEntityId stackId)
@@ -55,7 +57,8 @@ namespace OneMoreSpoon.Game.Systems
             if (!world.SubstanceStacks.ContainsKey(stackId))
                 return false;
 
-            world.Positions[stackId] = new PositionComponent(position);
+            Vector2 clampedPosition = playAreaBounds.Clamp(position);
+            world.Positions[stackId] = new PositionComponent(clampedPosition);
             return true;
         }
     }

@@ -23,7 +23,8 @@ namespace OneMoreSpoon.Game.Systems
             if (!placementRuleSystem.CanMoveTo(nodeId, targetPosition))
                 return false;
 
-            world.Positions[nodeId] = new PositionComponent(targetPosition);
+            Vector2 clampedPosition = placementRuleSystem.ClampNodePosition(targetPosition);
+            world.Positions[nodeId] = new PositionComponent(clampedPosition);
             return true;
         }
     }
