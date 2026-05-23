@@ -12,8 +12,11 @@ namespace OneMoreSpoon.View.Substances
         [SerializeField] private SpriteRenderer backgroundRenderer;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text amountText;
+        [SerializeField] private float normalZ = 0f;
+        [SerializeField] private float pressedZOffset = -0.5f;
 
         private SubstanceDefinitionRegistry definitionRegistry;
+        private bool isPressed;
 
         public void Initialize(SubstanceDefinitionRegistry definitionRegistry)
         {
@@ -42,9 +45,17 @@ namespace OneMoreSpoon.View.Substances
                 return;
 
             if (World.Positions.TryGetValue(EntityId, out var position))
-                transform.position = position.Value;
+            {
+                float z = isPressed ? normalZ + pressedZOffset : normalZ;
+                transform.position = new Vector3(position.Value.x, position.Value.y, z);
+            }
 
             UpdateText();
+        }
+
+        public void SetPressed(bool pressed)
+        {
+            isPressed = pressed;
         }
 
         private void UpdateText()

@@ -75,6 +75,7 @@ namespace OneMoreSpoon.Input
 
             Select(hitView);
             draggingView = hitView;
+            draggingView.SetPressed(true);
             pointerToNodeOffset = (Vector2)hitView.transform.position - GetPointerWorldPosition();
         }
 
@@ -89,6 +90,9 @@ namespace OneMoreSpoon.Input
 
         private void EndPointer()
         {
+            if (draggingView != null)
+                draggingView.SetPressed(false);
+
             draggingView = null;
         }
 
@@ -100,6 +104,9 @@ namespace OneMoreSpoon.Input
 
         private void ClearSelection()
         {
+            if (draggingView != null)
+                draggingView.SetPressed(false);
+
             selectedView = null;
             draggingView = null;
             selectionVisualService.Clear();

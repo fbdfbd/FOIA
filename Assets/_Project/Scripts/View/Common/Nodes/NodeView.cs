@@ -10,6 +10,10 @@ namespace OneMoreSpoon.View.Nodes
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Color normalColor = Color.white;
         [SerializeField] private Color selectedColor = Color.yellow;
+        [SerializeField] private float normalZ = 0f;
+        [SerializeField] private float pressedZOffset = -0.5f;
+
+        private bool isPressed;
 
         private void Awake()
         {
@@ -28,7 +32,8 @@ namespace OneMoreSpoon.View.Nodes
             if (!World.Positions.TryGetValue(EntityId, out var position))
                 return;
 
-            transform.position = position.Value;
+            float z = isPressed ? normalZ + pressedZOffset : normalZ;
+            transform.position = new Vector3(position.Value.x, position.Value.y, z);
         }
 
         public void SetSelected(bool selected)
@@ -37,6 +42,11 @@ namespace OneMoreSpoon.View.Nodes
                 return;
 
             spriteRenderer.color = selected ? selectedColor : normalColor;
+        }
+
+        public void SetPressed(bool pressed)
+        {
+            isPressed = pressed;
         }
 
         public void SetLabel(string text)

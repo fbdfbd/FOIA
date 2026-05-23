@@ -80,6 +80,7 @@ namespace OneMoreSpoon.Input
                 return;
 
             selectionVisualService.SelectSubstance(draggingView);
+            draggingView.SetPressed(true);
             dragStartPosition = draggingView.transform.position;
             pointerToViewOffset = (Vector2)draggingView.transform.position - GetPointerWorldPosition();
         }
@@ -103,7 +104,7 @@ namespace OneMoreSpoon.Input
             if (inputNode != null)
             {
                 DropOnInputNode(inputNode);
-                draggingView = null;
+                ReleaseDraggingView();
                 return;
             }
 
@@ -112,7 +113,7 @@ namespace OneMoreSpoon.Input
             if (mergeNode != null)
             {
                 DropOnMergeNode(mergeNode);
-                draggingView = null;
+                ReleaseDraggingView();
                 return;
             }
 
@@ -121,12 +122,20 @@ namespace OneMoreSpoon.Input
             if (edge != null)
             {
                 DropOnEdge(edge);
-                draggingView = null;
+                ReleaseDraggingView();
                 return;
             }
 
             if (RaycastBlockingObject())
                 stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+
+            ReleaseDraggingView();
+        }
+
+        private void ReleaseDraggingView()
+        {
+            if (draggingView != null)
+                draggingView.SetPressed(false);
 
             draggingView = null;
         }
