@@ -1,14 +1,12 @@
-using OneMoreSpoon.Game.Definitions;
-
 namespace OneMoreSpoon.App.Config
 {
     public sealed class InitialGameConfig
     {
-        public SO_NodeDefinition[] InitialNodes { get; }
+        public InitialNodeSpawn[] InitialNodes { get; }
 
-        public InitialGameConfig(SO_NodeDefinition[] initialNodes)
+        public InitialGameConfig(InitialNodeSpawn[] initialNodes)
         {
-            InitialNodes = initialNodes;
+            InitialNodes = initialNodes ?? new InitialNodeSpawn[0];
         }
     }
 }

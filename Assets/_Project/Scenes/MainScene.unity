@@ -1527,32 +1527,8 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  definitionCatalog: {fileID: 11400000, guid: 8f1f05a8e8704d64b87d688dfbc57cd1, type: 2}
-  initialNodeDefinitions:
-  - {fileID: 11400000, guid: 10ea361ae2f37294b9be08718e0fd0f1, type: 2}
-  - {fileID: 11400000, guid: 4c3cbff5136b05f409a468675ccb0bde, type: 2}
-  - {fileID: 11400000, guid: 53d2d6168a0125a40bd83a7134e0aeca, type: 2}
-  - {fileID: 11400000, guid: b3894b796b2774a4393481a56579a441, type: 2}
-  - {fileID: 11400000, guid: eb5ed77fc30aa2243a292bc2681857a1, type: 2}
-  - {fileID: 11400000, guid: 379c129ca8f65ad4ca73914f2c289517, type: 2}
-  - {fileID: 11400000, guid: d5bf65f8c8d853f43ab2c5fd9aeb9bfe, type: 2}
-  - {fileID: 11400000, guid: 83ffdc1841270af40bbccbc9f333bfb5, type: 2}
-  - {fileID: 11400000, guid: ce60dc12b8c890d4b8fc57f8d00b68c8, type: 2}
-  - {fileID: 11400000, guid: 502c5c92948d2a64fbc0a2f17c246253, type: 2}
-  - {fileID: 11400000, guid: 2be7dd5093f139945a4f72f97a39e19a, type: 2}
-  - {fileID: 11400000, guid: f8d912b18480340409c035da51e9b0fc, type: 2}
-  initialSubstanceStacks:
-  - SubstanceDefinition: {fileID: 11400000, guid: 50ae376212e1d33409042c738899b9d0, type: 2}
-    Amount: 0
-    IsInfinite: 1
-  - SubstanceDefinition: {fileID: 11400000, guid: 50033ad93d3378a48ace8b1382237645, type: 2}
-    Amount: 0
-    IsInfinite: 1
-  - SubstanceDefinition: {fileID: 11400000, guid: 9bf600cdbcd8f5b49a07e0e7b579f132, type: 2}
-    Amount: 0
-    IsInfinite: 1
-  substanceInventoryOrigin: {x: -4, y: -3}
-  substanceInventorySpacing: {x: 1.7, y: 0}
+  definitionCatalog: {fileID: 11400000, guid: 7d1e9d255f996fe4890aaf2b5ebb1a70, type: 2}
+  initialLevelLayout: {fileID: 11400000, guid: ac5dc5fdc7b4e1044ba5e32f720deb3c, type: 2}
   viewRegistry: {fileID: 490406068}
   inputNodeViewPrefab: {fileID: 158862403785399452, guid: 7b756fef13a6ebe449d822578c270186, type: 3}
   outputNodeViewPrefab: {fileID: 1700252867415424330, guid: e42a2434a16c492478f97b18c33de5c4, type: 3}

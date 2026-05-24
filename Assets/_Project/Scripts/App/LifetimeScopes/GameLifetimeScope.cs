@@ -32,10 +32,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
     {
         [Header("Initial Test Data")]
         [SerializeField] private SO_DefinitionCatalog definitionCatalog;
-        [SerializeField] private SO_NodeDefinition[] initialNodeDefinitions;
-        [SerializeField] private InitialSubstanceStack[] initialSubstanceStacks;
-        [SerializeField] private Vector2 substanceInventoryOrigin = new(-4f, -3f);
-        [SerializeField] private Vector2 substanceInventorySpacing = new(1.7f, 0f);
+        [SerializeField] private SO_InitialLevelLayout initialLevelLayout;
 
         [Header("View")]
         [SerializeField] private ViewRegistry viewRegistry;
@@ -79,12 +76,14 @@ namespace OneMoreSpoon.App.LifetimeScopes
                 : Array.Empty<SO_SubstanceInspectDefinition>();
 
             // ── Config ─────────────────────────────────────────────
-            builder.RegisterInstance(new InitialGameConfig(initialNodeDefinitions));
+            builder.RegisterInstance(new InitialGameConfig(
+                initialLevelLayout != null
+                    ? initialLevelLayout.InitialNodes
+                    : Array.Empty<InitialNodeSpawn>()));
             builder.RegisterInstance(new InitialSubstanceInventoryConfig(
-                initialSubstanceStacks,
-                substanceInventoryOrigin,
-                substanceInventorySpacing
-            ));
+                initialLevelLayout != null
+                    ? initialLevelLayout.InitialSubstanceStacks
+                    : Array.Empty<InitialSubstanceStack>()));
             builder.RegisterInstance(new NodeDefinitionRegistry(nodeDefinitions));
             builder.RegisterInstance(new OperationDefinitionRegistry(operationDefinitions));
             builder.RegisterInstance(new SubstanceDefinitionRegistry(substanceDefinitions));

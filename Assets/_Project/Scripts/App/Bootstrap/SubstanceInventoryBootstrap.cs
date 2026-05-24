@@ -35,7 +35,7 @@ namespace OneMoreSpoon.App.Bootstrap
                 if (!CanCreateInitialStack(stack.SubstanceDefinition.Kind))
                     continue;
 
-                Vector2 position = config.Origin + config.Spacing * i;
+                Vector2 position = stack.Position;
                 position = playAreaBounds.Clamp(position); 
 
                 stackFactory.CreateStack(
