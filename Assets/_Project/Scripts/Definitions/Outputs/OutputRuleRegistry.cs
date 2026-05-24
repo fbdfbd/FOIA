@@ -36,6 +36,21 @@ namespace OneMoreSpoon.Game.Definitions
             this.rules.Sort(CompareSpecificity);
         }
 
+        public bool FindByResult(string substanceId, out SO_OutputRuleDefinition rule)
+        {
+            foreach (var r in rules)
+            {
+                if (r.ResultSubstance?.SubstanceId == substanceId)
+                {
+                    rule = r;
+                    return true;
+                }
+            }
+
+            rule = null;
+            return false;
+        }
+
         public bool TryGetMatch(
             string substanceId,
             TagComponent tags,

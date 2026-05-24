@@ -10,6 +10,7 @@ namespace OneMoreSpoon.Input
         [SerializeField] private LayerMask blockingLayer;
         [SerializeField, Min(0.1f)] private float zoomInSize = 3f;
         [SerializeField, Min(0.1f)] private float zoomOutSize = 8f;
+        [SerializeField, Min(0.0001f)] private float zoomStep = 0.005f;
 
         private float targetZoomSize;
         private bool isZoomInitialized;
@@ -39,13 +40,16 @@ namespace OneMoreSpoon.Input
 
         private void HandleZoom()
         {
+            if (IsPointerOverUI())
+                return;
+
             float scrollY = Mouse.current.scroll.ReadValue().y;
 
-            if (scrollY > 0f)
-                targetZoomSize = zoomInSize;
-
-            if (scrollY < 0f)
-                targetZoomSize = zoomOutSize;
+            if (scrollY != 0f)
+                targetZoomSize = Mathf.Clamp(
+                    targetZoomSize - scrollY * zoomStep,
+                    zoomInSize,
+                    zoomOutSize);
 
             targetCamera.orthographicSize = Mathf.Lerp(
                 targetCamera.orthographicSize,

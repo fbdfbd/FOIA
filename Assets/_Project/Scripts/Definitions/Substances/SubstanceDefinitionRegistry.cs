@@ -6,6 +6,7 @@ namespace OneMoreSpoon.Game.Definitions
     public sealed class SubstanceDefinitionRegistry
     {
         private readonly Dictionary<string, SO_SubstanceDefinition> definitions = new();
+        private readonly List<SO_SubstanceDefinition> allDefinitions = new();
 
         public SubstanceDefinitionRegistry(IEnumerable<SO_SubstanceDefinition> definitions)
         {
@@ -30,8 +31,11 @@ namespace OneMoreSpoon.Game.Definitions
                 }
 
                 this.definitions.Add(definition.SubstanceId, definition);
+                this.allDefinitions.Add(definition);
             }
         }
+
+        public IReadOnlyList<SO_SubstanceDefinition> GetAll() => allDefinitions;
 
         public bool TryGet(string substanceId, out SO_SubstanceDefinition definition)
         {

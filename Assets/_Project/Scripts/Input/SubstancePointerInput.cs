@@ -129,6 +129,21 @@ namespace OneMoreSpoon.Input
                 return;
             }
 
+            var trashCan = RaycastTrashCanView();
+
+            if (trashCan != null)
+            {
+                DropOnTrashCan();
+                return;
+            }
+
+            if (RaycastAnyNodeView())
+            {
+                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+                ReleaseDraggingView();
+                return;
+            }
+
             ReleaseDraggingView();
         }
 
@@ -287,6 +302,47 @@ namespace OneMoreSpoon.Input
 
                 if (edgeView != null)
                     return edgeView;
+            }
+
+            return null;
+        }
+
+        private void DropOnTrashCan()
+        {
+            if (!world.SubstanceStacks.TryGetValue(draggingView.EntityId, out var stack))
+                return;
+
+            if (stack.IsInfinite)
+            {
+                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+                draggingView.SetPressed(false);
+                draggingView = null;
+                return;
+            }
+
+            RemoveDraggedView();
+        }
+
+        private bool RaycastAnyNodeView()
+        {
+            var hits = Physics2D.RaycastAll(GetPointerWorldPosition(), Vector2.zero);
+
+            foreach (var hit in hits)
+                if (hit.collider.GetComponentInParent<NodeView>() != null)
+                    return true;
+
+            return false;
+        }
+
+        private TrashCanView RaycastTrashCanView()
+        {
+            var hits = Physics2D.RaycastAll(GetPointerWorldPosition(), Vector2.zero);
+
+            foreach (var hit in hits)
+            {
+                var trashCan = hit.collider.GetComponentInParent<TrashCanView>();
+                if (trashCan != null)
+                    return trashCan;
             }
 
             return null;
