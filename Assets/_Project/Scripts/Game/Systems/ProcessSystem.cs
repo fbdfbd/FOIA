@@ -13,6 +13,7 @@ namespace OneMoreSpoon.Game.Systems
     {
         private const float DefaultEdgeDuration = 5f;
         private const float MinEdgeDuration = 0.01f;
+        private const float InputDepartureInterval = 1f;
         private static readonly Vector2 OutputStackOffset = new(0f, -1.2f);
         private static readonly Vector2 OutputStackSpacing = new(0.6f, 0f);
 
@@ -25,6 +26,8 @@ namespace OneMoreSpoon.Game.Systems
         private readonly DiscoveryService discoveryService;
         private readonly List<GameEntityId> flowBuffer = new();
         private readonly Dictionary<GameEntityId, GameEntityId> lastAmbiguousRouteNodeByFlow = new();
+        private readonly Dictionary<GameEntityId, float> inputDepartureCooldowns = new();
+        private readonly List<GameEntityId> inputCooldownNodeBuffer = new();
 
         public ProcessSystem(
             GameWorld world,
@@ -47,10 +50,32 @@ namespace OneMoreSpoon.Game.Systems
         public void Tick(float deltaTime)
         {
             SpawnQueuedFlows(deltaTime);
+            UpdateInputDepartureCooldowns(deltaTime);
             RouteWaitingFlows(deltaTime);
             MoveFlows(deltaTime);
             ApplyArrivalEffects(deltaTime);
             ResolveOutputs(deltaTime);
+        }
+
+        private void UpdateInputDepartureCooldowns(float deltaTime)
+        {
+            inputCooldownNodeBuffer.Clear();
+
+            foreach (GameEntityId nodeId in inputDepartureCooldowns.Keys)
+                inputCooldownNodeBuffer.Add(nodeId);
+
+            foreach (GameEntityId nodeId in inputCooldownNodeBuffer)
+            {
+                float remainingTime = inputDepartureCooldowns[nodeId] - deltaTime;
+
+                if (remainingTime <= 0f)
+                {
+                    inputDepartureCooldowns.Remove(nodeId);
+                    continue;
+                }
+
+                inputDepartureCooldowns[nodeId] = remainingTime;
+            }
         }
 
         private void SpawnQueuedFlows(float deltaTime)
@@ -99,6 +124,9 @@ namespace OneMoreSpoon.Game.Systems
                     flowBuffer.Add(pair.Key);
             }
 
+            flowBuffer.Sort((firstFlowId, secondFlowId) =>
+                firstFlowId.Value.CompareTo(secondFlowId.Value));
+
             foreach (var flowEntityId in flowBuffer)
             {
                 if (!world.Flows.TryGetValue(flowEntityId, out var flow))
@@ -119,8 +147,17 @@ namespace OneMoreSpoon.Game.Systems
                 if (!TryFindNextEdge(flowEntityId, flow.CurrentNodeId, out var edgeId))
                     continue;
 
+                if (node.Category == NodeCategory.Input && inputDepartureCooldowns.ContainsKey(flow.CurrentNodeId))
+                {
+                    continue;
+                }
+
                 flow.BeginEdge(edgeId);
                 world.Flows[flowEntityId] = flow;
+
+                if (node.Category == NodeCategory.Input)
+                    inputDepartureCooldowns[flow.CurrentNodeId] = InputDepartureInterval;
+
                 Debug.Log($"[Flow] Route started entity={flowEntityId} fromNode={flow.CurrentNodeId} edge={edgeId}");
             }
         }
