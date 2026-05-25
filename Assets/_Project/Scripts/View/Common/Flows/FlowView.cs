@@ -10,6 +10,7 @@ namespace OneMoreSpoon.View.Flows
     {
         [SerializeField] private TMP_Text labelText;
         [SerializeField] private float flowZ = -0.25f;
+        [SerializeField] private Vector2 positionOffset = new Vector2(0, -0.15f);
 
         private SubstanceDefinitionRegistry definitionRegistry;
 
@@ -27,7 +28,10 @@ namespace OneMoreSpoon.View.Flows
                 return;
 
             if (TryGetPosition(flow, out var position))
-                transform.position = new Vector3(position.x, position.y, flowZ);
+            {
+                Vector2 displayPosition = position + positionOffset;
+                transform.position = new Vector3(displayPosition.x, displayPosition.y, flowZ);
+            }
 
             UpdateLabel();
         }

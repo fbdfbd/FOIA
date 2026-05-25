@@ -211,6 +211,11 @@ namespace OneMoreSpoon.Input
                 return;
             }
 
+            //InputNodeMaterialView materialView = inputNode.GetComponent<InputNodeMaterialView>();
+
+            //if (materialView != null)
+            //    materialView.SetMaterialName(definition.DisplayName);
+
             Debug.Log($"[SubstanceDrop] Succeeded stack={draggingView.EntityId} substance={stack.SubstanceId} targetNode={inputNode.EntityId}");
 
             if (stackSystem.IsEmpty(draggingView.EntityId))

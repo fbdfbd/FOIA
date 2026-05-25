@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB2ED"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
   m_sharedMaterial: {fileID: 9113515966723835499, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.3
+  m_fontSize: 9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -389,6 +389,7 @@ GameObject:
   - component: {fileID: 3668343471080936549}
   - component: {fileID: 6953736643278610429}
   - component: {fileID: 158862403785399452}
+  - component: {fileID: 1665055784922054420}
   m_Layer: 7
   m_Name: NodeViewPrefab_Input
   m_TagString: Untagged
@@ -536,3 +537,16 @@ MonoBehaviour:
   normalZ: 0
   pressedZOffset: 10
   moveTweenDuration: 0.14
+--- !u!114 &1665055784922054420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6891795589303473909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 529c0b3bfb8ac9540aa7af03a28d7ece, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.View.Nodes.InputNodeMaterialView
+  materialNameText: {fileID: 7347979567201103061}
