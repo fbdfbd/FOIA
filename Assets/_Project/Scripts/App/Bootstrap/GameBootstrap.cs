@@ -30,12 +30,13 @@ namespace OneMoreSpoon.App.Bootstrap
         {
             for (int i = 0; i < config.InitialNodes.Length; i++)
             {
-                var definition = config.InitialNodes[i];
+                var spawn = config.InitialNodes[i];
 
-                if (definition == null)
+                if (spawn == null || spawn.Definition == null)
                     continue;
 
-                var position = new Vector2(i * 2f, 0f);
+                var definition = spawn.Definition;
+                var position = spawn.Position;
                 position = playAreaBounds.Clamp(position);
 
                 var entityId = nodeFactory.CreateNode(definition, position);

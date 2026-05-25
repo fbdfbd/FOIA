@@ -33,6 +33,21 @@ namespace OneMoreSpoon.Game.Definitions
             }
         }
 
+        public bool FindByResult(string substanceId, out SO_MergeRecipeDefinition recipe)
+        {
+            foreach (var r in recipes)
+            {
+                if (r.ResultSubstance?.SubstanceId == substanceId)
+                {
+                    recipe = r;
+                    return true;
+                }
+            }
+
+            recipe = null;
+            return false;
+        }
+
         public bool TryGetMatch(
             IReadOnlyList<string> inputSubstanceIds,
             out SO_MergeRecipeDefinition recipe)

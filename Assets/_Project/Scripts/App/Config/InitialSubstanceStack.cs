@@ -1,5 +1,6 @@
 using OneMoreSpoon.Game.Definitions;
 using System;
+using UnityEngine;
 
 namespace OneMoreSpoon.App.Config
 {
@@ -9,5 +10,6 @@ namespace OneMoreSpoon.App.Config
         public SO_SubstanceDefinition SubstanceDefinition;
         public int Amount = 1;
         public bool IsInfinite;
+        public Vector2 Position;
     }
 }

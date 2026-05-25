@@ -1,5 +1,6 @@
 using OneMoreSpoon.App.State;
 using OneMoreSpoon.Game.Systems;
+using OneMoreSpoon.View.Common;
 using OneMoreSpoon.View.Nodes;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -20,6 +21,7 @@ namespace OneMoreSpoon.Input
         private Camera mainCamera;
         private NodeView selectedView;
         private NodeView draggingView;
+        private Vector2 dragStartPosition;
         private Vector2 pointerToNodeOffset;
         private SelectionVisualService selectionVisualService;
 
@@ -82,6 +84,7 @@ namespace OneMoreSpoon.Input
             Select(hitView);
             draggingView = hitView;
             draggingView.SetPressed(true);
+            dragStartPosition = hitView.transform.position;
             pointerToNodeOffset = (Vector2)hitView.transform.position - GetPointerWorldPosition();
         }
 
@@ -95,6 +98,17 @@ namespace OneMoreSpoon.Input
         }
 
         private void EndPointer()
+        {
+            if (draggingView == null)
+                return;
+
+            if (RaycastTrashCanView())
+                nodeMoveSystem.TryMoveNode(draggingView.EntityId, dragStartPosition);
+
+            ReleaseDraggingNode();
+        }
+
+        private void ReleaseDraggingNode()
         {
             if (draggingView != null)
             {
@@ -166,6 +180,18 @@ namespace OneMoreSpoon.Input
             foreach (RaycastHit2D hit in hits)
             {
                 if (hit.collider.GetComponentInParent<MergeSlotHandle>() != null)
+                    return true;
+            }
+
+            return false;
+        }
+        private bool RaycastTrashCanView()
+        {
+            var hits = Physics2D.RaycastAll(GetPointerWorldPosition(), Vector2.zero);
+
+            foreach (var hit in hits)
+            {
+                if (hit.collider.GetComponentInParent<TrashCanView>() != null)
                     return true;
             }
 

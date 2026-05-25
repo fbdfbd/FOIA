@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using OneMoreSpoon.App.Config;
 using OneMoreSpoon.App.LifetimeScopes;
 using OneMoreSpoon.Game.Definitions;
 using UnityEditor;
@@ -16,6 +17,7 @@ namespace OneMoreSpoon.Editor
         private const string CsvBase = "Assets/_Project/Data/CSV";
         private const string GenBase = "Assets/_Project/Data/Generated";
         private const string CatalogPath = GenBase + "/SO_DefinitionCatalog.asset";
+        private const string InitialLayoutPath = "Assets/_Project/Data/SO_InitialLevelLayout.asset";
 
         private const string NodeDir = GenBase + "/Node";
         private const string SubstanceDir = GenBase + "/Substance";
@@ -24,6 +26,29 @@ namespace OneMoreSpoon.Editor
         private const string RecipeDir = GenBase + "/MergeRecipe";
         private const string NodeInspectDir = GenBase + "/NodeInspect";
         private const string SubstanceInspectDir = GenBase + "/SubstanceInspect";
+
+        private static readonly string[] InitialNodeIds =
+        {
+            "node_bake",
+            "node_boil",
+            "node_coat",
+            "node_cut",
+            "node_fry",
+            "node_input",
+            "node_merge",
+            "node_mix",
+            "node_output",
+            "node_press",
+            "node_seperate",
+            "node_shape"
+        };
+
+        private static readonly string[] InitialSubstanceIds =
+        {
+            "src_chicken",
+            "src_onion",
+            "src_wheat"
+        };
 
         [MenuItem("OneMoreSpoon/Import Definitions from CSV")]
         public static void ImportAll()
@@ -38,10 +63,11 @@ namespace OneMoreSpoon.Editor
             ImportNodeInspects();
             ImportSubstanceInspects();
             RefreshCatalog();
+            RefreshInitialLevelLayout();
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("[CsvImporter] Imported definitions and refreshed catalog.");
+            Debug.Log("[CsvImporter] Imported definitions and refreshed startup assets.");
         }
 
         [MenuItem("OneMoreSpoon/Import Definitions from CSV and Wire Catalog")]
@@ -267,23 +293,48 @@ namespace OneMoreSpoon.Editor
             Debug.Log($"[CsvImporter] Catalog refreshed: {CatalogPath}");
         }
 
+        private static void RefreshInitialLevelLayout()
+        {
+            var layout = AssetDatabase.LoadAssetAtPath<SO_InitialLevelLayout>(InitialLayoutPath);
+            if (layout == null)
+            {
+                layout = ScriptableObject.CreateInstance<SO_InitialLevelLayout>();
+                AssetDatabase.CreateAsset(layout, InitialLayoutPath);
+            }
+
+            var existingNodePositions = ReadInitialNodePositions(layout);
+            var existingSubstanceStacks = ReadInitialSubstanceStacks(layout);
+            var nodeLookup = LoadGeneratedAssetLookup<SO_NodeDefinition>(NodeDir, "definitionId");
+            var substanceLookup = LoadGeneratedAssetLookup<SO_SubstanceDefinition>(SubstanceDir, "substanceId");
+
+            var so = new SerializedObject(layout);
+            SetInitialNodes(so, nodeLookup, existingNodePositions);
+            SetInitialSubstanceStacks(so, substanceLookup, existingSubstanceStacks);
+            so.ApplyModifiedProperties();
+
+            EditorUtility.SetDirty(layout);
+            Debug.Log($"[CsvImporter] Initial level layout refreshed: {InitialLayoutPath}");
+        }
+
         private static void WireActiveSceneCatalog()
         {
             var scope = FindActiveSceneGameLifetimeScope();
             var catalog = AssetDatabase.LoadAssetAtPath<SO_DefinitionCatalog>(CatalogPath);
-            if (scope == null || catalog == null)
+            var layout = AssetDatabase.LoadAssetAtPath<SO_InitialLevelLayout>(InitialLayoutPath);
+            if (scope == null || catalog == null || layout == null)
             {
-                Debug.LogWarning("[CsvImporter] Could not wire catalog. Scope or catalog is missing.");
+                Debug.LogWarning("[CsvImporter] Could not wire startup assets. Scope, catalog, or initial layout is missing.");
                 return;
             }
 
             var so = new SerializedObject(scope);
             so.FindProperty("definitionCatalog").objectReferenceValue = catalog;
+            so.FindProperty("initialLevelLayout").objectReferenceValue = layout;
             so.ApplyModifiedProperties();
 
             EditorUtility.SetDirty(scope);
             EditorSceneManager.MarkSceneDirty(scope.gameObject.scene);
-            Debug.Log($"[CsvImporter] Wired catalog to GameLifetimeScope: {scope.name}");
+            Debug.Log($"[CsvImporter] Wired startup assets to GameLifetimeScope: {scope.name}");
         }
 
         private static GameLifetimeScope FindActiveSceneGameLifetimeScope()
@@ -347,6 +398,115 @@ namespace OneMoreSpoon.Editor
             }
 
             return assets.ToArray();
+        }
+
+        private static Dictionary<string, T> LoadGeneratedAssetLookup<T>(string folder, string idPropName)
+            where T : UnityEngine.Object
+        {
+            var lookup = new Dictionary<string, T>();
+            var assets = LoadGeneratedAssets<T>(folder);
+            foreach (var asset in assets)
+            {
+                var id = ReadStringProperty(asset, idPropName);
+                if (!string.IsNullOrEmpty(id))
+                    lookup[id] = asset;
+            }
+
+            return lookup;
+        }
+
+        private static Dictionary<string, Vector2> ReadInitialNodePositions(SO_InitialLevelLayout layout)
+        {
+            var positions = new Dictionary<string, Vector2>();
+            var prop = new SerializedObject(layout).FindProperty("initialNodes");
+            if (prop == null) return positions;
+
+            for (var i = 0; i < prop.arraySize; i++)
+            {
+                var element = prop.GetArrayElementAtIndex(i);
+                var definition = element.FindPropertyRelative("Definition").objectReferenceValue;
+                var id = ReadStringProperty(definition, "definitionId");
+                if (!string.IsNullOrEmpty(id))
+                    positions[id] = element.FindPropertyRelative("Position").vector2Value;
+            }
+
+            return positions;
+        }
+
+        private static Dictionary<string, InitialSubstanceStackSnapshot> ReadInitialSubstanceStacks(SO_InitialLevelLayout layout)
+        {
+            var snapshots = new Dictionary<string, InitialSubstanceStackSnapshot>();
+            var prop = new SerializedObject(layout).FindProperty("initialSubstanceStacks");
+            if (prop == null) return snapshots;
+
+            for (var i = 0; i < prop.arraySize; i++)
+            {
+                var element = prop.GetArrayElementAtIndex(i);
+                var definition = element.FindPropertyRelative("SubstanceDefinition").objectReferenceValue;
+                var id = ReadStringProperty(definition, "substanceId");
+                if (string.IsNullOrEmpty(id))
+                    continue;
+
+                snapshots[id] = new InitialSubstanceStackSnapshot(
+                    element.FindPropertyRelative("Amount").intValue,
+                    element.FindPropertyRelative("IsInfinite").boolValue,
+                    element.FindPropertyRelative("Position").vector2Value);
+            }
+
+            return snapshots;
+        }
+
+        private static void SetInitialNodes(
+            SerializedObject so,
+            IReadOnlyDictionary<string, SO_NodeDefinition> lookup,
+            IReadOnlyDictionary<string, Vector2> existingPositions)
+        {
+            var prop = so.FindProperty("initialNodes");
+            if (prop == null) return;
+
+            prop.ClearArray();
+            for (var i = 0; i < InitialNodeIds.Length; i++)
+            {
+                var id = InitialNodeIds[i];
+                prop.InsertArrayElementAtIndex(i);
+                var element = prop.GetArrayElementAtIndex(i);
+                element.FindPropertyRelative("Definition").objectReferenceValue =
+                    lookup.TryGetValue(id, out var definition) ? definition : null;
+                element.FindPropertyRelative("Position").vector2Value =
+                    existingPositions.TryGetValue(id, out var position) ? position : Vector2.zero;
+            }
+        }
+
+        private static void SetInitialSubstanceStacks(
+            SerializedObject so,
+            IReadOnlyDictionary<string, SO_SubstanceDefinition> lookup,
+            IReadOnlyDictionary<string, InitialSubstanceStackSnapshot> existingStacks)
+        {
+            var prop = so.FindProperty("initialSubstanceStacks");
+            if (prop == null) return;
+
+            prop.ClearArray();
+            for (var i = 0; i < InitialSubstanceIds.Length; i++)
+            {
+                var id = InitialSubstanceIds[i];
+                var stack = existingStacks.TryGetValue(id, out var existing)
+                    ? existing
+                    : new InitialSubstanceStackSnapshot(0, true, Vector2.zero);
+
+                prop.InsertArrayElementAtIndex(i);
+                var element = prop.GetArrayElementAtIndex(i);
+                element.FindPropertyRelative("SubstanceDefinition").objectReferenceValue =
+                    lookup.TryGetValue(id, out var definition) ? definition : null;
+                element.FindPropertyRelative("Amount").intValue = stack.Amount;
+                element.FindPropertyRelative("IsInfinite").boolValue = stack.IsInfinite;
+                element.FindPropertyRelative("Position").vector2Value = stack.Position;
+            }
+        }
+
+        private static string ReadStringProperty(UnityEngine.Object asset, string propName)
+        {
+            if (asset == null) return null;
+            return new SerializedObject(asset).FindProperty(propName)?.stringValue;
         }
 
         private static void SetObjectArray<T>(SerializedObject so, string propName, IReadOnlyList<T> assets)
@@ -540,6 +700,20 @@ namespace OneMoreSpoon.Editor
                 out var result)
                 ? result
                 : fallback;
+
+        private readonly struct InitialSubstanceStackSnapshot
+        {
+            public readonly int Amount;
+            public readonly bool IsInfinite;
+            public readonly Vector2 Position;
+
+            public InitialSubstanceStackSnapshot(int amount, bool isInfinite, Vector2 position)
+            {
+                Amount = amount;
+                IsInfinite = isInfinite;
+                Position = position;
+            }
+        }
 
         private static void EnsureGeneratedFolders()
         {

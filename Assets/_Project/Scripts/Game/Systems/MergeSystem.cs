@@ -1,3 +1,4 @@
+using OneMoreSpoon.App.Encyclopedia;
 using OneMoreSpoon.Game.Components;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
@@ -19,6 +20,7 @@ namespace OneMoreSpoon.Game.Systems
         private readonly SubstanceStackSystem stackSystem;
         private readonly MergeRecipeRegistry recipeRegistry;
         private readonly SubstanceDefinitionRegistry substanceDefinitionRegistry;
+        private readonly DiscoveryService discoveryService;
         private readonly List<GameEntityId> mergeNodeBuffer = new();
         private readonly List<GameEntityId> remainingStackBuffer = new();
         private readonly List<string> inputSubstanceBuffer = new();
@@ -27,12 +29,14 @@ namespace OneMoreSpoon.Game.Systems
             GameWorld world,
             SubstanceStackSystem stackSystem,
             MergeRecipeRegistry recipeRegistry,
-            SubstanceDefinitionRegistry substanceDefinitionRegistry)
+            SubstanceDefinitionRegistry substanceDefinitionRegistry,
+            DiscoveryService discoveryService)
         {
             this.world = world;
             this.stackSystem = stackSystem;
             this.recipeRegistry = recipeRegistry;
             this.substanceDefinitionRegistry = substanceDefinitionRegistry;
+            this.discoveryService = discoveryService;
         }
 
         public void Tick(float deltaTime)
@@ -162,6 +166,7 @@ namespace OneMoreSpoon.Game.Systems
                 MoveStackToSlotPosition(mergeNodeId, slot.StackIds[i], i);
 
             Vector2 resultPosition = GetMergeNodePosition(mergeNodeId) + ResultOffset;
+            discoveryService.NotifyEncountered(recipe.ResultSubstance.SubstanceId);
             var resultStackId = world.CreateSubstanceStack(
                 recipe.ResultSubstance.SubstanceId,
                 recipe.ResultAmount,

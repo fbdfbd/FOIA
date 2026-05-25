@@ -1,5 +1,7 @@
 using OneMoreSpoon.App.Bootstrap;
 using OneMoreSpoon.App.Config;
+using OneMoreSpoon.App.Encyclopedia;
+using OneMoreSpoon.App.Encyclopedia.Providers;
 using OneMoreSpoon.App.Inspect;
 using OneMoreSpoon.App.Inspect.Providers;
 using OneMoreSpoon.App.Loop;
@@ -18,6 +20,7 @@ using OneMoreSpoon.View.Flows;
 using OneMoreSpoon.View.Nodes;
 using OneMoreSpoon.View.Substances;
 using OneMoreSpoon.View.UI;
+using OneMoreSpoon.View.UI.Encyclopedia;
 using System;
 using UnityEngine;
 using VContainer;
@@ -29,10 +32,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
     {
         [Header("Initial Test Data")]
         [SerializeField] private SO_DefinitionCatalog definitionCatalog;
-        [SerializeField] private SO_NodeDefinition[] initialNodeDefinitions;
-        [SerializeField] private InitialSubstanceStack[] initialSubstanceStacks;
-        [SerializeField] private Vector2 substanceInventoryOrigin = new(-4f, -3f);
-        [SerializeField] private Vector2 substanceInventorySpacing = new(1.7f, 0f);
+        [SerializeField] private SO_InitialLevelLayout initialLevelLayout;
 
         [Header("View")]
         [SerializeField] private ViewRegistry viewRegistry;
@@ -45,6 +45,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
         [SerializeField] private SubstanceView substanceViewPrefab;
         [SerializeField] private FlowView flowViewPrefab;
         [SerializeField] private InspectPanelView inspectPanelViewPrefab;
+        [SerializeField] private EncyclopediaView encyclopediaViewPrefab;
 
         [Header("Play Area")]
         [SerializeField] private SpriteRenderer mainGamePanelRenderer;
@@ -75,12 +76,14 @@ namespace OneMoreSpoon.App.LifetimeScopes
                 : Array.Empty<SO_SubstanceInspectDefinition>();
 
             // ── Config ─────────────────────────────────────────────
-            builder.RegisterInstance(new InitialGameConfig(initialNodeDefinitions));
+            builder.RegisterInstance(new InitialGameConfig(
+                initialLevelLayout != null
+                    ? initialLevelLayout.InitialNodes
+                    : Array.Empty<InitialNodeSpawn>()));
             builder.RegisterInstance(new InitialSubstanceInventoryConfig(
-                initialSubstanceStacks,
-                substanceInventoryOrigin,
-                substanceInventorySpacing
-            ));
+                initialLevelLayout != null
+                    ? initialLevelLayout.InitialSubstanceStacks
+                    : Array.Empty<InitialSubstanceStack>()));
             builder.RegisterInstance(new NodeDefinitionRegistry(nodeDefinitions));
             builder.RegisterInstance(new OperationDefinitionRegistry(operationDefinitions));
             builder.RegisterInstance(new SubstanceDefinitionRegistry(substanceDefinitions));
@@ -123,6 +126,15 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.Register<InspectDataService>(Lifetime.Singleton);
             builder.Register<SelectionVisualService>(Lifetime.Singleton);
 
+            // ── Encyclopedia ───────────────────────────────────────
+            builder.Register<DiscoveryState>(Lifetime.Singleton);
+            builder.Register<DiscoveryService>(Lifetime.Singleton);
+            builder.Register<DishDetailProvider>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<EdgeBlockDetailProvider>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<TraitShardDetailProvider>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<SourceMaterialDetailProvider>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<EncyclopediaDetailService>(Lifetime.Singleton);
+
             // ── View (Prefabs & Registry) ──────────────────────────
             builder.RegisterComponent(viewRegistry);
             builder.RegisterInstance(edgeViewPrefab);
@@ -130,6 +142,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.RegisterInstance(substanceViewPrefab);
             builder.RegisterInstance(flowViewPrefab);
             builder.RegisterInstance(inspectPanelViewPrefab);
+            builder.RegisterInstance(encyclopediaViewPrefab);
 
             // ── Input ──────────────────────────────────────────────
             builder.RegisterComponentInHierarchy<EdgeConnectionInput>();
@@ -148,6 +161,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.RegisterEntryPoint<EdgeBlockIndicatorSyncSystem>();
             builder.RegisterEntryPoint<InspectPanelSyncSystem>();
             builder.RegisterEntryPoint<MergeSlotTextSyncSystem>();
+            builder.RegisterEntryPoint<EncyclopediaSyncSystem>();
         }
     }
 }

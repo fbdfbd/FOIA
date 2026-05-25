@@ -1,6 +1,8 @@
+using OneMoreSpoon.App.State;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using VContainer;
 
 namespace OneMoreSpoon.Input
 {
@@ -10,11 +12,21 @@ namespace OneMoreSpoon.Input
         [SerializeField] private LayerMask blockingLayer;
         [SerializeField, Min(0.1f)] private float zoomInSize = 3f;
         [SerializeField, Min(0.1f)] private float zoomOutSize = 8f;
+        [SerializeField, Min(0.0001f)] private float zoomStep = 0.005f;
 
         private float targetZoomSize;
         private bool isZoomInitialized;
         private bool isPanning;
+        private bool isLeftButtonPanning;
+        private bool nextPanUsesLeftButton;
         private Vector2 panAnchorWorldPosition;
+        private EdgeConnectionState edgeConnectionState;
+
+        [Inject]
+        public void Construct(EdgeConnectionState edgeConnectionState)
+        {
+            this.edgeConnectionState = edgeConnectionState;
+        }
 
         private void Awake()
         {
@@ -39,13 +51,16 @@ namespace OneMoreSpoon.Input
 
         private void HandleZoom()
         {
+            if (IsPointerOverUI())
+                return;
+
             float scrollY = Mouse.current.scroll.ReadValue().y;
 
-            if (scrollY > 0f)
-                targetZoomSize = zoomInSize;
-
-            if (scrollY < 0f)
-                targetZoomSize = zoomOutSize;
+            if (scrollY != 0f)
+                targetZoomSize = Mathf.Clamp(
+                    targetZoomSize - scrollY * zoomStep,
+                    zoomInSize,
+                    zoomOutSize);
 
             targetCamera.orthographicSize = Mathf.Lerp(
                 targetCamera.orthographicSize,
@@ -55,14 +70,17 @@ namespace OneMoreSpoon.Input
 
         private void HandlePan()
         {
-            if (Mouse.current.rightButton.wasPressedThisFrame)
+            if (IsPanPressedThisFrame())
                 BeginPan();
 
-            if (isPanning && Mouse.current.rightButton.isPressed)
+            if (isPanning && IsActivePanButtonPressed())
                 Pan();
 
-            if (Mouse.current.rightButton.wasReleasedThisFrame)
+            if (isPanning && IsActivePanButtonReleasedThisFrame())
+            {
                 isPanning = false;
+                isLeftButtonPanning = false;
+            }
         }
 
         private void BeginPan()
@@ -74,7 +92,42 @@ namespace OneMoreSpoon.Input
                 return;
 
             isPanning = true;
+            isLeftButtonPanning = nextPanUsesLeftButton;
             panAnchorWorldPosition = GetPointerWorldPosition();
+        }
+
+        private bool IsPanPressedThisFrame()
+        {
+            if (Mouse.current.rightButton.wasPressedThisFrame)
+            {
+                nextPanUsesLeftButton = false;
+                return true;
+            }
+
+            if (IsEdgeConnecting())
+                return false;
+
+            nextPanUsesLeftButton = true;
+            return Mouse.current.leftButton.wasPressedThisFrame;
+        }
+
+        private bool IsActivePanButtonPressed()
+        {
+            return isLeftButtonPanning
+                ? Mouse.current.leftButton.isPressed
+                : Mouse.current.rightButton.isPressed;
+        }
+
+        private bool IsActivePanButtonReleasedThisFrame()
+        {
+            return isLeftButtonPanning
+                ? Mouse.current.leftButton.wasReleasedThisFrame
+                : Mouse.current.rightButton.wasReleasedThisFrame;
+        }
+
+        private bool IsEdgeConnecting()
+        {
+            return edgeConnectionState != null && edgeConnectionState.IsConnecting;
         }
 
         private void Pan()

@@ -1,3 +1,4 @@
+using OneMoreSpoon.App.Encyclopedia;
 using OneMoreSpoon.App.Messaging;
 using OneMoreSpoon.Game.Components;
 using OneMoreSpoon.Game.Core;
@@ -21,6 +22,7 @@ namespace OneMoreSpoon.Game.Systems
         private readonly OperationDefinitionRegistry operationDefinitionRegistry;
         private readonly OutputRuleRegistry outputRuleRegistry;
         private readonly ToastMessageQueue toastMessageQueue;
+        private readonly DiscoveryService discoveryService;
         private readonly List<GameEntityId> flowBuffer = new();
         private readonly Dictionary<GameEntityId, GameEntityId> lastAmbiguousRouteNodeByFlow = new();
 
@@ -30,7 +32,8 @@ namespace OneMoreSpoon.Game.Systems
             SubstanceDefinitionRegistry substanceDefinitionRegistry,
             OperationDefinitionRegistry operationDefinitionRegistry,
             OutputRuleRegistry outputRuleRegistry,
-            ToastMessageQueue toastMessageQueue)
+            ToastMessageQueue toastMessageQueue,
+            DiscoveryService discoveryService)
         {
             this.world = world;
             this.nodeDefinitionRegistry = nodeDefinitionRegistry;
@@ -38,6 +41,7 @@ namespace OneMoreSpoon.Game.Systems
             this.operationDefinitionRegistry = operationDefinitionRegistry;
             this.outputRuleRegistry = outputRuleRegistry;
             this.toastMessageQueue = toastMessageQueue;
+            this.discoveryService = discoveryService;
         }
 
         public void Tick(float deltaTime)
@@ -324,6 +328,7 @@ namespace OneMoreSpoon.Game.Systems
             int outputIndex)
         {
             Vector2 resultPosition = GetOutputStackPosition(outputPosition, outputIndex, 0);
+            discoveryService.NotifyEncountered(rule.ResultSubstance.SubstanceId);
             var resultStackId = world.CreateSubstanceStack(
                 rule.ResultSubstance.SubstanceId,
                 rule.ResultAmount,
@@ -339,6 +344,7 @@ namespace OneMoreSpoon.Game.Systems
                     continue;
 
                 Vector2 byproductPosition = GetOutputStackPosition(outputPosition, outputIndex, slotIndex);
+                discoveryService.NotifyEncountered(byproduct.Substance.SubstanceId);
                 var byproductStackId = world.CreateSubstanceStack(
                     byproduct.Substance.SubstanceId,
                     byproduct.Amount,
@@ -356,6 +362,7 @@ namespace OneMoreSpoon.Game.Systems
             int outputIndex)
         {
             Vector2 stackPosition = GetOutputStackPosition(outputPosition, outputIndex, 0);
+            discoveryService.NotifyEncountered(substanceId);
             var stackId = world.CreateSubstanceStack(substanceId, 1, false, stackPosition);
 
             Debug.Log($"[Output] ResultCreated rule=Fallback substance={substanceId} amount=1 stack={stackId}");
