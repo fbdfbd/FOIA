@@ -1,6 +1,7 @@
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.View.Common;
+using OneMoreSpoon.Game.Components;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace OneMoreSpoon.View.Substances
         [SerializeField] private SpriteRenderer backgroundRenderer;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text amountText;
+        [SerializeField] private TMP_Text titleText;
         [SerializeField] private float normalZ = 0f;
         [SerializeField] private float pressedZOffset = -0.5f;
         [SerializeField] private float moveTweenDuration = 0.14f;
@@ -31,11 +33,13 @@ namespace OneMoreSpoon.View.Substances
         public void SetVisuals(
             SpriteRenderer backgroundRenderer,
             TMP_Text nameText,
-            TMP_Text amountText)
+            TMP_Text amountText,
+            TMP_Text titleText)
         {
             this.backgroundRenderer = backgroundRenderer;
             this.nameText = nameText;
             this.amountText = amountText;
+            this.titleText = titleText;
         }
 
         private void Awake()
@@ -104,15 +108,46 @@ namespace OneMoreSpoon.View.Substances
             if (!World.SubstanceStacks.TryGetValue(EntityId, out var stack))
                 return;
 
-            if (nameText != null &&
-                definitionRegistry != null &&
-                definitionRegistry.TryGet(stack.SubstanceId, out var definition))
+            if (definitionRegistry == null || !definitionRegistry.TryGet(stack.SubstanceId, out SO_SubstanceDefinition definition))
             {
-                nameText.text = definition.DisplayName;
+                return;
             }
+
+            if (nameText != null)
+                nameText.text = definition.DisplayName;
 
             if (amountText != null)
                 amountText.text = stack.IsInfinite ? "INF" : $"x{stack.Amount}";
+
+            if (titleText != null)
+                titleText.text = GetTitle(definition.Kind);
+        }
+
+        private string GetTitle(SubstanceKind kind)
+        {
+            switch (kind)
+            {
+                case SubstanceKind.EdgeBlock:
+                    return "엣지블럭";
+
+                case SubstanceKind.TraitShard:
+                    return "부산물";
+
+                case SubstanceKind.SourceMaterial:
+                    return "원재료";
+
+                case SubstanceKind.Dish:
+                    return "요리";
+
+                case SubstanceKind.FinalDish:
+                    return "최종요리";
+
+                case SubstanceKind.Material:
+                    return "재료";
+
+                default:
+                    return string.Empty;
+            }
         }
     }
 }

@@ -155,6 +155,10 @@ MonoBehaviour:
   backgroundRenderer: {fileID: 2413675865854139266}
   nameText: {fileID: 3794580189428127565}
   amountText: {fileID: 5552901298704227577}
+  titleText: {fileID: 5515401744615181504}
+  normalZ: 0
+  pressedZOffset: -0.5
+  moveTweenDuration: 0.14
 --- !u!1 &2816060880684471721
 GameObject:
   m_ObjectHideFlags: 0
