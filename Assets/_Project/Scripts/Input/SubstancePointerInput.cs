@@ -22,6 +22,7 @@ namespace OneMoreSpoon.Input
         private MergeSystem mergeSystem;
         private EdgeBlockEquipSystem edgeBlockEquipSystem;
         private ClusterSeparationSystem clusterSeparationSystem;
+        private SubstanceDockSystem substanceDockSystem;
         private SubstanceDefinitionRegistry substanceDefinitionRegistry;
         private ViewRegistry viewRegistry;
         private SelectionVisualService selectionVisualService;
@@ -38,6 +39,7 @@ namespace OneMoreSpoon.Input
             MergeSystem mergeSystem,
             EdgeBlockEquipSystem edgeBlockEquipSystem,
             ClusterSeparationSystem clusterSeparationSystem,
+            SubstanceDockSystem substanceDockSystem,
             SubstanceDefinitionRegistry substanceDefinitionRegistry,
             ViewRegistry viewRegistry,
             SelectionVisualService selectionVisualService)
@@ -47,6 +49,7 @@ namespace OneMoreSpoon.Input
             this.mergeSystem = mergeSystem;
             this.edgeBlockEquipSystem = edgeBlockEquipSystem;
             this.clusterSeparationSystem = clusterSeparationSystem;
+            this.substanceDockSystem = substanceDockSystem;
             this.substanceDefinitionRegistry = substanceDefinitionRegistry;
             this.viewRegistry = viewRegistry;
             this.selectionVisualService = selectionVisualService;
@@ -83,6 +86,7 @@ namespace OneMoreSpoon.Input
                 return;
 
             selectionVisualService.SelectSubstance(draggingView);
+            substanceDockSystem.BeginDrag(draggingView.EntityId);
             draggingView.SetPressed(true);
             dragStartPosition = draggingView.transform.position;
             pointerToViewOffset = (Vector2)draggingView.transform.position - GetPointerWorldPosition();
@@ -100,6 +104,7 @@ namespace OneMoreSpoon.Input
             pointerToViewOffset = Vector2.zero;
 
             selectionVisualService.SelectSubstance(draggingView);
+            substanceDockSystem.BeginDrag(draggingView.EntityId);
             draggingView.SetPressed(true);
             stackSystem.TryMove(draggingView.EntityId, pointerPosition);
         }
@@ -153,6 +158,13 @@ namespace OneMoreSpoon.Input
                 return;
             }
 
+            if (substanceDockSystem.TryGetDockAt(GetPointerWorldPosition(), out var dockKind) &&
+                substanceDockSystem.TryDock(draggingView.EntityId, dockKind))
+            {
+                ReleaseDraggingView(false);
+                return;
+            }
+
             if (RaycastAnyNodeView())
             {
                 stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
@@ -163,12 +175,18 @@ namespace OneMoreSpoon.Input
             ReleaseDraggingView();
         }
 
-        private void ReleaseDraggingView()
+        private void ReleaseDraggingView(bool markFree = true)
         {
             if (draggingView != null)
             {
+                if (markFree)
+                    substanceDockSystem.MarkFree(draggingView.EntityId);
+
+                substanceDockSystem.EndDrag(draggingView.EntityId);
                 draggingView.SetPressed(false);
-                clusterSeparationSystem.RelaxAround(draggingView.EntityId);
+
+                if (markFree)
+                    clusterSeparationSystem.RelaxAround(draggingView.EntityId);
             }
 
             draggingView = null;
@@ -259,16 +277,30 @@ namespace OneMoreSpoon.Input
 
         private SubstanceView RaycastSubstanceView()
         {
-            var hit = Physics2D.Raycast(
+            var hits = Physics2D.RaycastAll(
                 GetPointerWorldPosition(),
                 Vector2.zero,
                 Mathf.Infinity,
                 substanceLayer);
 
-            if (hit.collider == null)
-                return null;
+            SubstanceView frontView = null;
+            float frontZ = float.PositiveInfinity;
 
-            return hit.collider.GetComponentInParent<SubstanceView>();
+            foreach (var hit in hits)
+            {
+                var view = hit.collider.GetComponentInParent<SubstanceView>();
+
+                if (view == null)
+                    continue;
+
+                if (view.transform.position.z >= frontZ)
+                    continue;
+
+                frontView = view;
+                frontZ = view.transform.position.z;
+            }
+
+            return frontView;
         }
 
         private NodeView RaycastInputNodeView()
@@ -336,12 +368,17 @@ namespace OneMoreSpoon.Input
             if (stack.IsInfinite)
             {
                 stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+                substanceDockSystem.MarkFree(draggingView.EntityId);
+                substanceDockSystem.EndDrag(draggingView.EntityId);
                 draggingView.SetPressed(false);
                 draggingView = null;
                 return;
             }
 
+            var stackId = draggingView.EntityId;
             RemoveDraggedView();
+            substanceDockSystem.EndDrag(stackId);
+            draggingView = null;
         }
 
         private bool RaycastAnyNodeView()

@@ -15,14 +15,21 @@ namespace OneMoreSpoon.Game.Systems
 
         public Vector2 Clamp(Vector2 position)
         {
-            Bounds bounds = panelRenderer.bounds;
+            Bounds bounds = GetInnerBounds();
 
-            float minX = bounds.min.x + padding;
-            float maxX = bounds.max.x - padding;
-            float minY = bounds.min.y + padding;
-            float maxY = bounds.max.y - padding;
+            float minX = bounds.min.x;
+            float maxX = bounds.max.x;
+            float minY = bounds.min.y;
+            float maxY = bounds.max.y;
 
             return new Vector2(Mathf.Clamp(position.x, minX, maxX), Mathf.Clamp(position.y, minY, maxY));
+        }
+
+        public Bounds GetInnerBounds()
+        {
+            Bounds bounds = panelRenderer.bounds;
+            bounds.Expand(-padding * 2f);
+            return bounds;
         }
 
         public bool Contains(Vector2 position)

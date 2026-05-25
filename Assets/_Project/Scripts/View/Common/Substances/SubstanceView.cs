@@ -2,6 +2,7 @@ using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.View.Common;
 using OneMoreSpoon.Game.Components;
+using OneMoreSpoon.Game.Systems;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -20,14 +21,18 @@ namespace OneMoreSpoon.View.Substances
         [SerializeField] private float moveTweenDuration = 0.14f;
 
         private SubstanceDefinitionRegistry definitionRegistry;
+        private SubstanceDockDepthState dockDepthState;
         private bool isPressed;
         private bool hasTargetPosition;
         private Vector3 lastTargetPosition;
         private Tween moveTween;
 
-        public void Initialize(SubstanceDefinitionRegistry definitionRegistry)
+        public void Initialize(
+            SubstanceDefinitionRegistry definitionRegistry,
+            SubstanceDockDepthState dockDepthState)
         {
             this.definitionRegistry = definitionRegistry;
+            this.dockDepthState = dockDepthState;
         }
 
         public void SetVisuals(
@@ -55,7 +60,11 @@ namespace OneMoreSpoon.View.Substances
 
             if (World.Positions.TryGetValue(EntityId, out var position))
             {
-                float z = isPressed ? normalZ + pressedZOffset : normalZ;
+                float z = normalZ + (dockDepthState?.GetDepth(EntityId) ?? 0f);
+
+                if (isPressed)
+                    z += pressedZOffset;
+
                 Vector3 targetPosition = new(position.Value.x, position.Value.y, z);
                 SyncPosition(targetPosition);
             }
