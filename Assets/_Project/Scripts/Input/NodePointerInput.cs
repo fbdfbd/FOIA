@@ -66,6 +66,9 @@ namespace OneMoreSpoon.Input
             if (IsPointerOverUI())
                 return;
 
+            if (RaycastMergeSlotHandle())
+                return;
+
             var hitView = RaycastNodeView();
             if (hitView == null)
             {
@@ -153,6 +156,20 @@ namespace OneMoreSpoon.Input
             Vector2 worldPosition = GetPointerWorldPosition();
             var hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, edgeLayer);
             return hit.collider != null;
+        }
+
+        private bool RaycastMergeSlotHandle()
+        {
+            Vector2 worldPosition = GetPointerWorldPosition();
+            RaycastHit2D[] hits = Physics2D.RaycastAll(worldPosition, Vector2.zero);
+
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider.GetComponentInParent<MergeSlotHandle>() != null)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

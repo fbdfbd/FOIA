@@ -12,6 +12,7 @@ namespace OneMoreSpoon.Game.Systems
         private const float MergeDelay = 1.5f;
         private static readonly Vector2 StackOffset = new(0f, -0.9f);
         private static readonly Vector2 StackSpacing = new(0.55f, 0f);
+        private static readonly Vector2 EjectOffset = new(0f, -1.4f);
         private static readonly Vector2 ResultOffset = new(0f, 0.9f);
 
         private readonly GameWorld world;
@@ -125,7 +126,7 @@ namespace OneMoreSpoon.Game.Systems
             if (!recipeRegistry.TryGetMatch(inputSubstanceBuffer, out var recipe))
             {
                 Debug.Log($"[Merge] RecipeMissing mergeNode={mergeNodeId} inputs=[{string.Join(", ", inputSubstanceBuffer)}]");
-                slot.MarkResolved();
+                EjectStacks(mergeNodeId, slot);
                 return;
             }
 
@@ -206,6 +207,23 @@ namespace OneMoreSpoon.Game.Systems
                 + StackSpacing * slotIndex;
 
             stackSystem.TryMove(stackId, position);
+        }
+
+        private void EjectStacks(GameEntityId mergeNodeId, MergeSlotComponent slot)
+        {
+            remainingStackBuffer.Clear();
+            remainingStackBuffer.AddRange(slot.StackIds);
+
+            slot.Clear();
+
+            for (int i = 0; i < remainingStackBuffer.Count; i++)
+            {
+                Vector2 position = GetMergeNodePosition(mergeNodeId)
+                    + EjectOffset
+                    + StackSpacing * i;
+
+                stackSystem.TryMove(remainingStackBuffer[i], position);
+            }
         }
 
         private Vector2 GetMergeNodePosition(GameEntityId mergeNodeId)

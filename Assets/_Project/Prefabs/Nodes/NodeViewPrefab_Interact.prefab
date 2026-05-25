@@ -158,6 +158,7 @@ MonoBehaviour:
   selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   normalZ: 0
   pressedZOffset: -0.5
+  moveTweenDuration: 0.14
 --- !u!1 &8370085344837913323
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,8 +228,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
-  m_sharedMaterial: {fileID: 697555715455890385, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
+  m_sharedMaterial: {fileID: 9113515966723835499, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -252,7 +253,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.2
+  m_fontSize: 0.25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

@@ -88,6 +88,22 @@ namespace OneMoreSpoon.Input
             pointerToViewOffset = (Vector2)draggingView.transform.position - GetPointerWorldPosition();
         }
 
+        public void BeginExternalDrag(SubstanceView view)
+        {
+            if (view == null)
+                return;
+
+            draggingView = view;
+
+            Vector2 pointerPosition = GetPointerWorldPosition();
+            dragStartPosition = pointerPosition;
+            pointerToViewOffset = Vector2.zero;
+
+            selectionVisualService.SelectSubstance(draggingView);
+            draggingView.SetPressed(true);
+            stackSystem.TryMove(draggingView.EntityId, pointerPosition);
+        }
+
         private void Drag()
         {
             if (draggingView == null)

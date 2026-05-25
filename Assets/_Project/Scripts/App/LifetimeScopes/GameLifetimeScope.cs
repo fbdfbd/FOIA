@@ -137,6 +137,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.RegisterComponentInHierarchy<EdgeSelectionInput>();
             builder.RegisterComponentInHierarchy<SubstancePointerInput>();
             builder.RegisterComponentInHierarchy<CameraViewportInput>();
+            builder.RegisterComponentInHierarchy<MergeSlotDragOutInput>();
 
             // ── Entry Points ───────────────────────────────────────
             builder.RegisterEntryPoint<GameBootstrap>();
@@ -146,6 +147,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.RegisterEntryPoint<SubstanceViewSyncSystem>();
             builder.RegisterEntryPoint<EdgeBlockIndicatorSyncSystem>();
             builder.RegisterEntryPoint<InspectPanelSyncSystem>();
+            builder.RegisterEntryPoint<MergeSlotTextSyncSystem>();
         }
     }
 }
