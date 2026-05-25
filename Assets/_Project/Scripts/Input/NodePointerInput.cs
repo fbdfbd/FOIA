@@ -2,6 +2,7 @@ using OneMoreSpoon.App.State;
 using OneMoreSpoon.Game.Systems;
 using OneMoreSpoon.View.Common;
 using OneMoreSpoon.View.Nodes;
+using OneMoreSpoon.View.Substances;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -74,6 +75,9 @@ namespace OneMoreSpoon.Input
             var hitView = RaycastNodeView();
             if (hitView == null)
             {
+                if (RaycastSubstance())
+                    return;
+
                 if (RaycastEdge())
                     return;
 
@@ -170,6 +174,17 @@ namespace OneMoreSpoon.Input
             Vector2 worldPosition = GetPointerWorldPosition();
             var hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, edgeLayer);
             return hit.collider != null;
+        }
+
+        private bool RaycastSubstance()
+        {
+            var hits = Physics2D.RaycastAll(GetPointerWorldPosition(), Vector2.zero);
+
+            foreach (var hit in hits)
+                if (hit.collider.GetComponentInParent<SubstanceView>() != null)
+                    return true;
+
+            return false;
         }
 
         private bool RaycastMergeSlotHandle()
