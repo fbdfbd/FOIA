@@ -24,12 +24,14 @@ namespace OneMoreSpoon.Game.Systems
             if (!TryGetReturnPosition(edgeId, out var position))
                 return false;
 
-            world.CreateSubstanceStack(slot.EquippedSubstanceId, 1, false, position);
+            foreach (var substanceId in slot.EquippedSubstanceIds)
+                world.CreateSubstanceStack(substanceId, 1, false, position);
 
-            slot.EquippedSubstanceId = string.Empty;
+            var returnedCount = slot.EquippedSubstanceIds.Count;
+            slot.Clear();
             world.EdgeBlockSlots[edgeId] = slot;
 
-            Debug.Log($"[EdgeBlockReturn] Returned edge={edgeId}");
+            Debug.Log($"[EdgeBlockReturn] Returned edge={edgeId} count={returnedCount}");
             return true;
         }
 

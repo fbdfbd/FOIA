@@ -1,6 +1,7 @@
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.View.Common;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -85,14 +86,21 @@ namespace OneMoreSpoon.View.Edges
                 return;
             }
 
-            if (definitionRegistry != null &&
-                definitionRegistry.TryGet(slot.EquippedSubstanceId, out var definition))
+            var displayNames = new List<string>();
+
+            foreach (var substanceId in slot.EquippedSubstanceIds)
             {
-                labelText.text = definition.DisplayName;
-                return;
+                if (definitionRegistry != null &&
+                    definitionRegistry.TryGet(substanceId, out var definition))
+                {
+                    displayNames.Add(definition.DisplayName);
+                    continue;
+                }
+
+                displayNames.Add(substanceId);
             }
 
-            labelText.text = slot.EquippedSubstanceId;
+            labelText.text = string.Join("\n", displayNames);
         }
     }
 }

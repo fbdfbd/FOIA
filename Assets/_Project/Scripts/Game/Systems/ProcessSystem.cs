@@ -207,15 +207,24 @@ namespace OneMoreSpoon.Game.Systems
             if (!world.EdgeBlockSlots.TryGetValue(edgeId, out var slot) || !slot.HasBlock)
                 return;
 
-            if (!substanceDefinitionRegistry.TryGet(slot.EquippedSubstanceId, out var blockDefinition))
+            foreach (var substanceId in slot.EquippedSubstanceIds)
+                ApplyEdgeBlockEffect(flowEntityId, edgeId, substanceId);
+        }
+
+        private void ApplyEdgeBlockEffect(
+            GameEntityId flowEntityId,
+            GameEntityId edgeId,
+            string substanceId)
+        {
+            if (!substanceDefinitionRegistry.TryGet(substanceId, out var blockDefinition))
                 return;
 
             if (blockDefinition.Kind != SubstanceKind.EdgeBlock)
                 return;
 
-            AddFlowHistory(flowEntityId, $"edgeBlock:{slot.EquippedSubstanceId}");
+            AddFlowHistory(flowEntityId, $"edgeBlock:{substanceId}");
             AddFlowHistory(flowEntityId, blockDefinition.AddedTags);
-            AddFlowTags(flowEntityId, blockDefinition.AddedTags, $"EdgeBlock edge={edgeId} block={slot.EquippedSubstanceId}");
+            AddFlowTags(flowEntityId, blockDefinition.AddedTags, $"EdgeBlock edge={edgeId} block={substanceId}");
         }
 
         private void ApplyNodeEffects(GameEntityId flowEntityId, GameEntityId nodeId)

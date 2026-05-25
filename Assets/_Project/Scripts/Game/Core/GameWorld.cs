@@ -68,7 +68,7 @@ namespace OneMoreSpoon.Game.Core
             );
 
             EdgeStates[edgeId] = new EdgeStateComponent(false, false);
-            EdgeBlockSlots[edgeId] = new EdgeBlockSlotComponent(string.Empty);
+            EdgeBlockSlots[edgeId] = new EdgeBlockSlotComponent();
 
             return edgeId;
         }

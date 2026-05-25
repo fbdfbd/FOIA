@@ -10,7 +10,6 @@ namespace OneMoreSpoon.Game.Systems
     {
         private readonly GameWorld world;
         private readonly SubstanceStackSystem stackSystem;
-        private readonly EdgeBlockReturnSystem edgeBlockReturnSystem;
         private readonly SubstanceDefinitionRegistry definitionRegistry;
 
         public EdgeBlockEquipSystem(
@@ -21,7 +20,6 @@ namespace OneMoreSpoon.Game.Systems
         {
             this.world = world;
             this.stackSystem = stackSystem;
-            this.edgeBlockReturnSystem = edgeBlockReturnSystem;
             this.definitionRegistry = definitionRegistry;
         }
 
@@ -63,15 +61,10 @@ namespace OneMoreSpoon.Game.Systems
                 return false;
             }
 
-            if (slot.HasBlock)
+            if (slot.Contains(stack.SubstanceId))
             {
-                Debug.Log($"[EdgeBlockEquip] Replaced edge={edgeId} old={slot.EquippedSubstanceId} next={stack.SubstanceId}");
-
-                if (!edgeBlockReturnSystem.TryReturn(edgeId))
-                {
-                    Debug.LogWarning($"[EdgeBlockEquip] Failed edge={edgeId} stack={stackId} reason=ReturnOldBlockFailed");
-                    return false;
-                }
+                Debug.LogWarning($"[EdgeBlockEquip] Failed edge={edgeId} stack={stackId} substance={stack.SubstanceId} reason=DuplicateBlock");
+                return false;
             }
 
             if (!stackSystem.TryConsume(stackId))
@@ -80,13 +73,13 @@ namespace OneMoreSpoon.Game.Systems
                 return false;
             }
 
-            slot.EquippedSubstanceId = stack.SubstanceId;
+            slot.Add(stack.SubstanceId);
             world.EdgeBlockSlots[edgeId] = slot;
 
             if (stackSystem.IsEmpty(stackId))
                 stackSystem.Remove(stackId);
 
-            Debug.Log($"[EdgeBlockEquip] Succeeded edge={edgeId} stack={stackId} substance={stack.SubstanceId}");
+            Debug.Log($"[EdgeBlockEquip] Succeeded edge={edgeId} stack={stackId} substance={stack.SubstanceId} count={slot.EquippedSubstanceIds.Count}");
             return true;
         }
     }

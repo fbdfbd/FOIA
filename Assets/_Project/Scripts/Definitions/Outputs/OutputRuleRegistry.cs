@@ -143,21 +143,142 @@ namespace OneMoreSpoon.Game.Definitions
             if (history == null)
                 return false;
 
-            var matchIndex = 0;
-            foreach (var entry in history.Entries)
+            return MatchesHistorySequence(requiredSequence, 0, history.Entries, 0);
+        }
+
+        private static bool MatchesHistorySequence(
+            IReadOnlyList<string> requiredSequence,
+            int requiredIndex,
+            IReadOnlyList<string> historyEntries,
+            int historyIndex)
+        {
+            requiredIndex = SkipEmptyRequiredEntries(requiredSequence, requiredIndex);
+
+            if (requiredIndex >= requiredSequence.Count)
+                return true;
+
+            var requiredEntry = requiredSequence[requiredIndex];
+
+            if (IsEdgeHistoryEntry(requiredEntry))
+                return MatchesEdgeHistoryGroup(requiredSequence, requiredIndex, historyEntries, historyIndex);
+
+            for (var i = historyIndex; i < historyEntries.Count; i++)
             {
-                while (matchIndex < requiredSequence.Count
-                    && string.IsNullOrWhiteSpace(requiredSequence[matchIndex]))
-                    matchIndex++;
+                if (historyEntries[i] != requiredEntry)
+                    continue;
 
-                if (matchIndex < requiredSequence.Count && entry == requiredSequence[matchIndex])
-                    matchIndex++;
-
-                if (matchIndex >= requiredSequence.Count)
+                if (MatchesHistorySequence(requiredSequence, requiredIndex + 1, historyEntries, i + 1))
                     return true;
             }
 
             return false;
+        }
+
+        private static bool MatchesEdgeHistoryGroup(
+            IReadOnlyList<string> requiredSequence,
+            int requiredIndex,
+            IReadOnlyList<string> historyEntries,
+            int historyIndex)
+        {
+            var requiredEdges = new Dictionary<string, int>();
+            var nextRequiredIndex = requiredIndex;
+
+            while (nextRequiredIndex < requiredSequence.Count)
+            {
+                var requiredEntry = requiredSequence[nextRequiredIndex];
+
+                if (string.IsNullOrWhiteSpace(requiredEntry))
+                {
+                    nextRequiredIndex++;
+                    continue;
+                }
+
+                if (!IsEdgeHistoryEntry(requiredEntry))
+                    break;
+
+                AddRequiredEdge(requiredEdges, requiredEntry);
+                nextRequiredIndex++;
+            }
+
+            nextRequiredIndex = SkipEmptyRequiredEntries(requiredSequence, nextRequiredIndex);
+
+            if (nextRequiredIndex >= requiredSequence.Count)
+                return ContainsRequiredEdges(historyEntries, historyIndex, historyEntries.Count, requiredEdges);
+
+            var nextRequiredEntry = requiredSequence[nextRequiredIndex];
+
+            for (var i = historyIndex; i < historyEntries.Count; i++)
+            {
+                if (historyEntries[i] != nextRequiredEntry)
+                    continue;
+
+                if (!ContainsRequiredEdges(historyEntries, historyIndex, i, requiredEdges))
+                    continue;
+
+                if (MatchesHistorySequence(requiredSequence, nextRequiredIndex + 1, historyEntries, i + 1))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool ContainsRequiredEdges(
+            IReadOnlyList<string> historyEntries,
+            int startIndex,
+            int endIndex,
+            Dictionary<string, int> requiredEdges)
+        {
+            var remainingEdges = new Dictionary<string, int>(requiredEdges);
+
+            for (var i = startIndex; i < endIndex; i++)
+            {
+                var historyEntry = historyEntries[i];
+
+                if (!IsEdgeHistoryEntry(historyEntry))
+                    continue;
+
+                if (!remainingEdges.TryGetValue(historyEntry, out var remainingCount))
+                    continue;
+
+                if (remainingCount <= 1)
+                    remainingEdges.Remove(historyEntry);
+                else
+                    remainingEdges[historyEntry] = remainingCount - 1;
+
+                if (remainingEdges.Count <= 0)
+                    return true;
+            }
+
+            return remainingEdges.Count <= 0;
+        }
+
+        private static int SkipEmptyRequiredEntries(
+            IReadOnlyList<string> requiredSequence,
+            int requiredIndex)
+        {
+            while (requiredIndex < requiredSequence.Count &&
+                string.IsNullOrWhiteSpace(requiredSequence[requiredIndex]))
+            {
+                requiredIndex++;
+            }
+
+            return requiredIndex;
+        }
+
+        private static bool IsEdgeHistoryEntry(string entry)
+        {
+            return !string.IsNullOrWhiteSpace(entry) &&
+                entry.StartsWith("edge:", System.StringComparison.Ordinal);
+        }
+
+        private static void AddRequiredEdge(
+            Dictionary<string, int> requiredEdges,
+            string edgeEntry)
+        {
+            if (requiredEdges.TryGetValue(edgeEntry, out var count))
+                requiredEdges[edgeEntry] = count + 1;
+            else
+                requiredEdges.Add(edgeEntry, 1);
         }
     }
 }
