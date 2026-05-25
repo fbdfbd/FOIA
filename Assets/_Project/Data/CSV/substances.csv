@@ -36,7 +36,6 @@ edge_flavor_concentration,향미농축,EdgeBlock,,0,edge:flavor_concentration,1,
 edge_viscosity_binding,점성조절+결착강화,EdgeBlock,,0,edge:viscosity_control|edge:binding_boost,1,1
 edge_crisping_browning,바삭화+갈변촉진,EdgeBlock,,0,edge:crisping|edge:browning_boost,1,1
 edge_heat_browning,열전달개선+갈변촉진,EdgeBlock,,0,edge:heat_transfer|edge:browning_boost,1,1
-edge_heat_moisture_browning,열전달개선+수분보존+갈변촉진,EdgeBlock,,0,edge:heat_transfer|edge:moisture_retention|edge:browning_boost,1,1
 edge_browning_flavor,갈변촉진+향미농축,EdgeBlock,,0,edge:browning_boost|edge:flavor_concentration,1,1
 dish_w01,깨진 밀알,Dish,,0,,1,1
 dish_w02,균일하게 쪼갠 밀알,Dish,,0,,1,1
@@ -115,7 +114,6 @@ dish_c35,마른 닭완자구이,Dish,,0,,1,1
 dish_c36,흐트러진 닭완자국,Dish,,0,,1,1
 dish_c37,딱딱한 닭완자튀김,Dish,,0,,1,1
 dish_c38,탄 닭껍질,Dish,,0,,1,1
-dish_c39,완벽한 로스트 치킨,FinalDish,,0,,1,1
 dish_o01,들쭉날쭉한 양파,Dish,,0,,1,1
 dish_o02,균일하게 썬 양파,Dish,,0,,1,1
 dish_o03,흩어진 양파 껍질,Dish,,0,,1,1

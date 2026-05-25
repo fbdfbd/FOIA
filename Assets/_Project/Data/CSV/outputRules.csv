@@ -76,7 +76,6 @@ rule_c35,src_chicken,seperate|shape|bake,node:node_seperate|node:node_shape|node
 rule_c36,src_chicken,seperate|shape|boil,node:node_seperate|node:node_shape|node:node_boil,dish_c36,1
 rule_c37,src_chicken,seperate|shape|fry,node:node_seperate|node:node_shape|node:node_fry,dish_c37,1
 rule_c38,src_chicken,press|coat|bake,node:node_press|node:node_coat|node:node_bake,dish_c38,1
-rule_c39,src_chicken,seperate|edge:clean_separation|coat|edge:surface_coating|bake|edge:heat_transfer|edge:moisture_retention|edge:browning_boost,node:node_seperate|edge:clean_separation|node:node_coat|edge:surface_coating|node:node_bake|edge:heat_transfer|edge:moisture_retention|edge:browning_boost,dish_c39,1
 rule_o01,src_onion,cut,node:node_cut,dish_o01,1
 rule_o02,src_onion,cut|edge:precise_cut,node:node_cut|edge:precise_cut,dish_o02,1
 rule_o03,src_onion,seperate,node:node_seperate,dish_o03,1
