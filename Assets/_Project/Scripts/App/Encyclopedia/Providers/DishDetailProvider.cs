@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using OneMoreSpoon.App.Encyclopedia;
 using OneMoreSpoon.App.Encyclopedia.Data;
 using OneMoreSpoon.Game.Definitions;
 
@@ -9,16 +10,16 @@ namespace OneMoreSpoon.App.Encyclopedia.Providers
     {
         private readonly SubstanceInspectDefinitionRegistry inspectDefinitions;
         private readonly OutputRuleRegistry outputRules;
-        private readonly NodeDefinitionRegistry nodeDefinitions;
+        private readonly RecipeStepTextResolver recipeStepTextResolver;
 
         public DishDetailProvider(
             SubstanceInspectDefinitionRegistry inspectDefinitions,
             OutputRuleRegistry outputRules,
-            NodeDefinitionRegistry nodeDefinitions)
+            RecipeStepTextResolver recipeStepTextResolver)
         {
             this.inspectDefinitions = inspectDefinitions;
             this.outputRules = outputRules;
-            this.nodeDefinitions = nodeDefinitions;
+            this.recipeStepTextResolver = recipeStepTextResolver;
         }
 
         public bool CanHandle(SubstanceKind kind) =>
@@ -45,9 +46,7 @@ namespace OneMoreSpoon.App.Encyclopedia.Providers
             var names = new List<string>();
             foreach (var id in stepIds)
             {
-                var lookupId = id.StartsWith("node:") ? id.Substring(5) : id;
-                var displayName = nodeDefinitions.TryGet(lookupId, out var node) ? node.DisplayName : id;
-                names.Add(displayName);
+                names.Add(recipeStepTextResolver.Resolve(id));
             }
             return names;
         }

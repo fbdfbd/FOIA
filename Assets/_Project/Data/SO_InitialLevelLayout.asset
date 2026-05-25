@@ -13,40 +13,40 @@ MonoBehaviour:
   m_Name: SO_InitialLevelLayout
   m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.App.Config.SO_InitialLevelLayout
   initialNodes:
-  - Definition: {fileID: 11400000, guid: 64cf465cc4a30254884c58e3d1258f55, type: 2}
+  - Definition: {fileID: 11400000, guid: 49173931ee71b4e4f805dba611ddef75, type: 2}
+    Position: {x: -5, y: 5}
+  - Definition: {fileID: 11400000, guid: 9b8845638d08c9443afda762020fa938, type: 2}
+    Position: {x: -4, y: 5}
+  - Definition: {fileID: 11400000, guid: c9a934358af33724586d2f0e22887bbc, type: 2}
+    Position: {x: -3, y: 5}
+  - Definition: {fileID: 11400000, guid: 2e1692a3b0af12e42aea2a27f882754f, type: 2}
+    Position: {x: -2, y: 5}
+  - Definition: {fileID: 11400000, guid: 2762c010fc9ced541a7187071c0fd613, type: 2}
+    Position: {x: -1, y: 5}
+  - Definition: {fileID: 11400000, guid: a20d09844a79ad14ca054cbd74a294c9, type: 2}
+    Position: {x: 0, y: 5}
+  - Definition: {fileID: 11400000, guid: 2a859e3c751aad94ebf1cd5d2fdeb006, type: 2}
     Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 775f33d39073cf641bc7e4925345c8d3, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: c8e7fd27dfb87a54e89233f6b180dd61, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: fc7e884f10db4224daf7e309bfbc612e, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 3a7fe5b6bf1ca674b825b0f742d135d9, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 3593785aab8aa384da4f73e8593db350, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 4be4301585d1f864980dc67e4fc3bae4, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 1dea2235cf25ba641b1fe5ea520ad1bb, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 80b1c12f4f8e42a4b9bb191b50e53d4e, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 00f5f4b39f45a924e99173cd65d6e2fc, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: bf5cce6ae2d71594896b5d4c97027227, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 4cddc0ba3acab2648a317bb582d538cc, type: 2}
-    Position: {x: 0, y: 0}
+  - Definition: {fileID: 11400000, guid: e7edd6cd428f7c041bc8b31df237de7f, type: 2}
+    Position: {x: 1, y: 5}
+  - Definition: {fileID: 11400000, guid: 4d08ea5d59bc85e4d9a658ef368755be, type: 2}
+    Position: {x: 2, y: 5}
+  - Definition: {fileID: 11400000, guid: b6cd9fe20558e584c82948e12926827f, type: 2}
+    Position: {x: 3, y: 5}
+  - Definition: {fileID: 11400000, guid: 01071e72e5ec53b41aa51d47a269392f, type: 2}
+    Position: {x: 4, y: 5}
+  - Definition: {fileID: 11400000, guid: 0cd6c9b78176adb4b9f82ef1908355fb, type: 2}
+    Position: {x: 5, y: 5}
   initialSubstanceStacks:
-  - SubstanceDefinition: {fileID: 11400000, guid: 369cf5240f75525458c9b9aa2494f0ac, type: 2}
+  - SubstanceDefinition: {fileID: 11400000, guid: 913f934bdbdf6b94bb6600fe2970c212, type: 2}
     Amount: 0
     IsInfinite: 1
-    Position: {x: 0, y: 0}
-  - SubstanceDefinition: {fileID: 11400000, guid: d8e97afa155cb124a9ee2b58ce1bb003, type: 2}
+    Position: {x: -5, y: -5}
+  - SubstanceDefinition: {fileID: 11400000, guid: 34d52a0dae2cc1e45ad0cc84334e097b, type: 2}
     Amount: 0
     IsInfinite: 1
-    Position: {x: 0, y: 0}
-  - SubstanceDefinition: {fileID: 11400000, guid: f3b4319ab223b01418d7b759e1dfe404, type: 2}
+    Position: {x: -3, y: -5}
+  - SubstanceDefinition: {fileID: 11400000, guid: 1fc4d1f06324a5c47b0ed90dd0c54f79, type: 2}
     Amount: 0
     IsInfinite: 1
-    Position: {x: 0, y: 0}
+    Position: {x: -1, y: -5}

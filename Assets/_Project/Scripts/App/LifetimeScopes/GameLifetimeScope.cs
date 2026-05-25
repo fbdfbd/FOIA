@@ -130,6 +130,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             // ── Encyclopedia ───────────────────────────────────────
             builder.Register<DiscoveryState>(Lifetime.Singleton);
             builder.Register<DiscoveryService>(Lifetime.Singleton);
+            builder.Register<RecipeStepTextResolver>(Lifetime.Singleton);
             builder.Register<DishDetailProvider>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<EdgeBlockDetailProvider>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<TraitShardDetailProvider>(Lifetime.Singleton).AsImplementedInterfaces();
