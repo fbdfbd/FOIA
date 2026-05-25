@@ -77,7 +77,10 @@ namespace OneMoreSpoon.Presenter
         private void RefreshList()
         {
             var entries = BuildEntries(currentTab);
+            var tabBadges = EncyclopediaTabBadgeBuilder.Build(substanceDefinitions, discoveryService);
+
             encyclopediaView.SetEntries(entries);
+            encyclopediaView.SetTabBadges(tabBadges);
         }
 
         private List<EncyclopediaEntryData> BuildEntries(EncyclopediaTab tab)
@@ -86,7 +89,7 @@ namespace OneMoreSpoon.Presenter
 
             foreach (var def in substanceDefinitions.GetAll())
             {
-                if (!BelongsToTab(def.Kind, tab))
+                if (!EncyclopediaTabMatcher.BelongsToTab(def.Kind, tab))
                     continue;
 
                 result.Add(new EncyclopediaEntryData(
@@ -98,14 +101,5 @@ namespace OneMoreSpoon.Presenter
 
             return result;
         }
-
-        private static bool BelongsToTab(SubstanceKind kind, EncyclopediaTab tab) => tab switch
-        {
-            EncyclopediaTab.Dish         => kind == SubstanceKind.Dish || kind == SubstanceKind.FinalDish,
-            EncyclopediaTab.EdgeBlock    => kind == SubstanceKind.EdgeBlock,
-            EncyclopediaTab.TraitShard   => kind == SubstanceKind.TraitShard,
-            EncyclopediaTab.SourceMaterial => kind == SubstanceKind.SourceMaterial,
-            _ => false
-        };
     }
 }

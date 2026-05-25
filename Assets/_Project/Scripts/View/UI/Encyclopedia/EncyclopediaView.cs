@@ -25,6 +25,9 @@ namespace OneMoreSpoon.View.UI.Encyclopedia
         [Header("Slide")]
         [SerializeField] private SlidePanelView slidePanel;
 
+        [Header("Index Badges")]
+        [SerializeField] private EncyclopediaTabBadgeView tabBadgeView;
+
         public event Action<EncyclopediaTab> OnTabSelected;
         public event Action<string> OnEntrySelected;
 
@@ -63,6 +66,8 @@ namespace OneMoreSpoon.View.UI.Encyclopedia
                 pool[i].gameObject.SetActive(true);
             }
         }
+
+        public void SetTabBadges(IReadOnlyList<EncyclopediaTabBadgeData> badges) => tabBadgeView?.Bind(badges);
 
         public void ShowDetail(EncyclopediaDetailData data) => detailView.Show(data);
         public void HideDetail() => detailView.Hide();
