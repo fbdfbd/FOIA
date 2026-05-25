@@ -15,14 +15,17 @@ namespace OneMoreSpoon.Game.Systems
 
         private readonly GameWorld world;
         private readonly PlayAreaBoundsSystem playAreaBoundsSystem;
+        private readonly SubstanceDockSystem substanceDockSystem;
         private readonly List<ClusterEntity> entities = new();
 
         public ClusterSeparationSystem(
             GameWorld world,
-            PlayAreaBoundsSystem playAreaBoundsSystem)
+            PlayAreaBoundsSystem playAreaBoundsSystem,
+            SubstanceDockSystem substanceDockSystem)
         {
             this.world = world;
             this.playAreaBoundsSystem = playAreaBoundsSystem;
+            this.substanceDockSystem = substanceDockSystem;
         }
 
         public void RelaxAround(GameEntityId anchorId)
@@ -60,6 +63,12 @@ namespace OneMoreSpoon.Game.Systems
 
         private bool IsClusterTarget(GameEntityId entityId)
         {
+            if (world.SubstanceStacks.ContainsKey(entityId) &&
+                substanceDockSystem.IsDocked(entityId))
+            {
+                return false;
+            }
+
             return world.Nodes.ContainsKey(entityId) ||
                 world.SubstanceStacks.ContainsKey(entityId);
         }

@@ -1,4 +1,5 @@
 using OneMoreSpoon.Game.Core;
+using OneMoreSpoon.Game.Systems;
 using OneMoreSpoon.View.Common;
 using OneMoreSpoon.View.Factories;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace OneMoreSpoon.Presenter
     public sealed class SubstanceViewSyncSystem : ITickable
     {
         private readonly GameWorld world;
+        private readonly SubstanceDockSystem dockSystem;
         private readonly SubstanceViewFactory substanceViewFactory;
         private readonly ViewRegistry viewRegistry;
         private readonly HashSet<GameEntityId> knownStackIds = new();
@@ -18,16 +20,19 @@ namespace OneMoreSpoon.Presenter
 
         public SubstanceViewSyncSystem(
             GameWorld world,
+            SubstanceDockSystem dockSystem,
             SubstanceViewFactory substanceViewFactory,
             ViewRegistry viewRegistry)
         {
             this.world = world;
+            this.dockSystem = dockSystem;
             this.substanceViewFactory = substanceViewFactory;
             this.viewRegistry = viewRegistry;
         }
 
         public void Tick()
         {
+            dockSystem.SyncNewEligibleStacks();
             CreateMissingViews();
             RemoveStaleViews();
         }

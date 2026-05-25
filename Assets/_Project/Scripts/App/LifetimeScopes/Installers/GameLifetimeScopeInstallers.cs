@@ -155,6 +155,9 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             builder.Register<EdgeBlockReturnSystem>(Lifetime.Singleton);
             builder.Register<EdgeBlockEquipSystem>(Lifetime.Singleton);
             builder.Register<ClusterSeparationSystem>(Lifetime.Singleton);
+            builder.Register<SubstanceDockLayoutSettings>(Lifetime.Singleton);
+            builder.Register<SubstanceDockDepthState>(Lifetime.Singleton);
+            builder.Register<SubstanceDockSystem>(Lifetime.Singleton);
         }
 
         public static void InstallGameFactories(this IContainerBuilder builder)

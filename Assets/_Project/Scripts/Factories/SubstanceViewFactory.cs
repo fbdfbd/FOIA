@@ -1,5 +1,6 @@
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
+using OneMoreSpoon.Game.Systems;
 using OneMoreSpoon.View.Common;
 using OneMoreSpoon.View.Substances;
 using UnityEngine;
@@ -13,17 +14,20 @@ namespace OneMoreSpoon.View.Factories
         private readonly GameWorld world;
         private readonly ViewRegistry viewRegistry;
         private readonly SubstanceDefinitionRegistry definitionRegistry;
+        private readonly SubstanceDockDepthState dockDepthState;
 
         public SubstanceViewFactory(
             SubstanceView prefab,
             GameWorld world,
             ViewRegistry viewRegistry,
-            SubstanceDefinitionRegistry definitionRegistry)
+            SubstanceDefinitionRegistry definitionRegistry,
+            SubstanceDockDepthState dockDepthState)
         {
             this.prefab = prefab;
             this.world = world;
             this.viewRegistry = viewRegistry;
             this.definitionRegistry = definitionRegistry;
+            this.dockDepthState = dockDepthState;
         }
 
         public SubstanceView Create(GameEntityId stackId)
@@ -37,7 +41,7 @@ namespace OneMoreSpoon.View.Factories
             var view = Object.Instantiate(prefab, position.Value, Quaternion.identity);
 
             view.Bind(stackId, world);
-            view.Initialize(definitionRegistry);
+            view.Initialize(definitionRegistry, dockDepthState);
             viewRegistry.Register(stackId, view);
 
             return view;
