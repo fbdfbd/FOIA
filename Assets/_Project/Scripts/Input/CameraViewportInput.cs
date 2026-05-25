@@ -70,6 +70,12 @@ namespace OneMoreSpoon.Input
 
         private void HandlePan()
         {
+            if (!CanPanViewport())
+            {
+                StopPan();
+                return;
+            }
+
             if (IsPanPressedThisFrame())
                 BeginPan();
 
@@ -81,6 +87,22 @@ namespace OneMoreSpoon.Input
                 isPanning = false;
                 isLeftButtonPanning = false;
             }
+        }
+
+        private bool CanPanViewport()
+        {
+            return !IsZoomedOutLimit();
+        }
+
+        private bool IsZoomedOutLimit()
+        {
+            return targetZoomSize >= zoomOutSize;
+        }
+
+        private void StopPan()
+        {
+            isPanning = false;
+            isLeftButtonPanning = false;
         }
 
         private void BeginPan()

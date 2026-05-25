@@ -152,6 +152,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.RegisterComponentInHierarchy<SubstancePointerInput>();
             builder.RegisterComponentInHierarchy<CameraViewportInput>();
             builder.RegisterComponentInHierarchy<MergeSlotDragOutInput>();
+            builder.RegisterComponentInHierarchy<TrashCanView>();
 
             // ── Entry Points ───────────────────────────────────────
             builder.RegisterEntryPoint<GameBootstrap>();
