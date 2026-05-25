@@ -10,15 +10,18 @@ namespace OneMoreSpoon.Game.Systems
     {
         private readonly GameWorld world;
         private readonly SubstanceStackSystem stackSystem;
+        private readonly EdgeBlockReturnSystem edgeBlockReturnSystem;
         private readonly SubstanceDefinitionRegistry definitionRegistry;
 
         public EdgeBlockEquipSystem(
             GameWorld world,
             SubstanceStackSystem stackSystem,
+            EdgeBlockReturnSystem edgeBlockReturnSystem,
             SubstanceDefinitionRegistry definitionRegistry)
         {
             this.world = world;
             this.stackSystem = stackSystem;
+            this.edgeBlockReturnSystem = edgeBlockReturnSystem;
             this.definitionRegistry = definitionRegistry;
         }
 
@@ -60,9 +63,15 @@ namespace OneMoreSpoon.Game.Systems
                 return false;
             }
 
-            if (!string.IsNullOrEmpty(slot.EquippedSubstanceId))
+            if (slot.HasBlock)
             {
                 Debug.Log($"[EdgeBlockEquip] Replaced edge={edgeId} old={slot.EquippedSubstanceId} next={stack.SubstanceId}");
+
+                if (!edgeBlockReturnSystem.TryReturn(edgeId))
+                {
+                    Debug.LogWarning($"[EdgeBlockEquip] Failed edge={edgeId} stack={stackId} reason=ReturnOldBlockFailed");
+                    return false;
+                }
             }
 
             if (!stackSystem.TryConsume(stackId))
