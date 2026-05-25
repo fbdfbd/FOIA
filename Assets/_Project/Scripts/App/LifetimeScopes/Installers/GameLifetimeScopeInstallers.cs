@@ -7,6 +7,7 @@ using OneMoreSpoon.App.Inspect.Providers;
 using OneMoreSpoon.App.Loop;
 using OneMoreSpoon.App.Messaging;
 using OneMoreSpoon.App.State;
+using OneMoreSpoon.App.Tutorial;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.Game.Factories;
@@ -134,6 +135,13 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
                 refs.OutputNodeViewPrefab,
                 refs.InteractNodeViewPrefab,
                 refs.MergeNodeViewPrefab));
+        }
+
+        public static void InstallTutorial(this IContainerBuilder builder, TutorialDialogView dialogView, TutorialGoalView goalView)
+        {
+            builder.RegisterComponent(dialogView);
+            builder.RegisterComponent(goalView);
+            builder.RegisterEntryPoint<TutorialController>();
         }
 
         public static void InstallGameCore(this IContainerBuilder builder)

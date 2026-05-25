@@ -1,5 +1,6 @@
 using OneMoreSpoon.App.LifetimeScopes.Installers;
 using OneMoreSpoon.App.Config;
+using OneMoreSpoon.App.Tutorial;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.View.Common;
 using OneMoreSpoon.View.Edges;
@@ -34,6 +35,11 @@ namespace OneMoreSpoon.App.LifetimeScopes
         [SerializeField] private InspectPanelView inspectPanelViewPrefab;
         [SerializeField] private EncyclopediaView encyclopediaViewPrefab;
 
+        [Header("Tutorial")]
+        [SerializeField] private bool enableTutorial;
+        [SerializeField] private TutorialDialogView tutorialDialogView;
+        [SerializeField] private TutorialGoalView tutorialGoalView;
+
         [Header("Play Area")]
         [SerializeField] private SpriteRenderer mainGamePanelRenderer;
         [FormerlySerializedAs("nodePlaecementPadding")]
@@ -52,6 +58,9 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.InstallGameViews(refs);
             builder.InstallGameInput();
             builder.InstallGameEntryPoints();
+
+            if (enableTutorial)
+                builder.InstallTutorial(tutorialDialogView, tutorialGoalView);
         }
 
         private GameLifetimeScopeRefs CreateRefs()
