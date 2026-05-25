@@ -107,6 +107,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
             builder.Register<EdgeDeleteSystem>(Lifetime.Singleton);
             builder.Register<SubstanceStackSystem>(Lifetime.Singleton);
             builder.Register<MergeSystem>(Lifetime.Singleton);
+            builder.Register<EdgeBlockReturnSystem>(Lifetime.Singleton);
             builder.Register<EdgeBlockEquipSystem>(Lifetime.Singleton);
             builder.Register<ClusterSeparationSystem>(Lifetime.Singleton);
 
