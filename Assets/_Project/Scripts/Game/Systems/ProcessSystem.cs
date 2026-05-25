@@ -193,7 +193,6 @@ namespace OneMoreSpoon.Game.Systems
                 return;
 
             AddFlowHistory(flowEntityId, $"operation:{edge.OperationDefinitionId}");
-            AddFlowHistory(flowEntityId, operationDefinition.OutputTags);
             AddFlowTags(flowEntityId, operationDefinition.OutputTags, $"Operation edge={edgeId} operation={edge.OperationDefinitionId}");
         }
 
@@ -228,7 +227,6 @@ namespace OneMoreSpoon.Game.Systems
                 return;
 
             AddFlowHistory(flowEntityId, $"node:{node.DefinitionId}");
-            AddFlowHistory(flowEntityId, definition.AddedFlowTags);
             AddFlowTags(flowEntityId, definition.AddedFlowTags, $"Node node={nodeId} definition={node.DefinitionId}");
         }
 

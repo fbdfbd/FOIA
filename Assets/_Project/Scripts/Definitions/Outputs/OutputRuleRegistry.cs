@@ -65,9 +65,6 @@ namespace OneMoreSpoon.Game.Definitions
                 if (!MatchesTags(candidate, tags))
                     continue;
 
-                if (!MatchesTagSequence(candidate, history))
-                    continue;
-
                 if (!MatchesHistorySequence(candidate, history))
                     continue;
 
@@ -139,20 +136,7 @@ namespace OneMoreSpoon.Game.Definitions
             SO_OutputRuleDefinition rule,
             FlowHistoryComponent history)
         {
-            return MatchesSequence(rule.RequiredHistorySequence, history);
-        }
-
-        private static bool MatchesTagSequence(
-            SO_OutputRuleDefinition rule,
-            FlowHistoryComponent history)
-        {
-            return MatchesSequence(rule.RequiredTags, history);
-        }
-
-        private static bool MatchesSequence(
-            IReadOnlyList<string> requiredSequence,
-            FlowHistoryComponent history)
-        {
+            var requiredSequence = rule.RequiredHistorySequence;
             if (requiredSequence == null || requiredSequence.Count <= 0)
                 return true;
 
