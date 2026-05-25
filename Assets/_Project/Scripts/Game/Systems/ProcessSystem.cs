@@ -193,6 +193,7 @@ namespace OneMoreSpoon.Game.Systems
                 return;
 
             AddFlowHistory(flowEntityId, $"operation:{edge.OperationDefinitionId}");
+            AddFlowHistory(flowEntityId, operationDefinition.OutputTags);
             AddFlowTags(flowEntityId, operationDefinition.OutputTags, $"Operation edge={edgeId} operation={edge.OperationDefinitionId}");
         }
 
@@ -214,6 +215,7 @@ namespace OneMoreSpoon.Game.Systems
                 return;
 
             AddFlowHistory(flowEntityId, $"edgeBlock:{slot.EquippedSubstanceId}");
+            AddFlowHistory(flowEntityId, blockDefinition.AddedTags);
             AddFlowTags(flowEntityId, blockDefinition.AddedTags, $"EdgeBlock edge={edgeId} block={slot.EquippedSubstanceId}");
         }
 
@@ -226,6 +228,7 @@ namespace OneMoreSpoon.Game.Systems
                 return;
 
             AddFlowHistory(flowEntityId, $"node:{node.DefinitionId}");
+            AddFlowHistory(flowEntityId, definition.AddedFlowTags);
             AddFlowTags(flowEntityId, definition.AddedFlowTags, $"Node node={nodeId} definition={node.DefinitionId}");
         }
 
@@ -267,6 +270,15 @@ namespace OneMoreSpoon.Game.Systems
 
             history.Add(entry);
             Debug.Log($"[FlowHistory] Added entity={flowEntityId} entry={entry}");
+        }
+
+        private void AddFlowHistory(GameEntityId flowEntityId, IReadOnlyList<string> entries)
+        {
+            if (entries == null || entries.Count <= 0)
+                return;
+
+            foreach (var entry in entries)
+                AddFlowHistory(flowEntityId, entry);
         }
 
         private void ResolveOutputs(float deltaTime)
