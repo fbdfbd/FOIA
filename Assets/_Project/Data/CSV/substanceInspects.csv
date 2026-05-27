@@ -1,45 +1,62 @@
-﻿substanceId
-person_twin
-person_tom
-person_friend_tom
-person_captive_tom
-person_create_tom
-person_replace_tom
-person_james
-person_friend_james
-person_captive_james
-person_create_james
-person_replace_james
-person_emily
-person_friend_emily
-person_captive_emily
-person_create_emily
-person_replace_emily
-
-stance_relaxedness
-stance_curiosity
-stance_affection
-stance_hobby_music
-stance_shamelessness
-stance_vanity
-stance_inferiority_complex
-stance_muscular_type
-stance_steroids
-stance_show_off_desire
-stance_narcissism
-stance_control
-stance_anxiety
-stance_chubby_type
-stance_new_life
-
-edgeblock_stance_friendliness
-edgeblock_stance_seduction
-edgeblock_stance_narcissism
-edgeblock_stance_exercise_addiction
-edgeblock_stance_perfectionism
-edgeblock_stance_pregnancy
-
-stance_prayer
-stance_satisfaction
-stance_desire_to_conquer
-stance_failure
+﻿substanceId,description
+person_twin,"나를 대신해 길 위로 나갈 수 있는 존재. 공원을 지나면 낯선 사람을 데려오거나 여유를 얻고 대화를 거치면 더 깊은 관계의 단서가 생긴다."
+person_tom,"공원에서 마주친 첫 번째 사람. 대화를 거치면 호의를 남기고 다정함을 품은 길을 지나면 지인 톰으로 가까워진다."
+person_friend_tom,"조금 가까워진 톰. 대화는 공감을 남기고 유대감이나 영화적 유혹을 엣지에 두면 더 위험한 관계로 기울어진다."
+person_captive_tom,"돌아갈 곳을 잃은 톰. 공양하면 기도가 남고 그 뒤에는 스캔과 뇌와 몸을 다루는 더 깊은 작업이 열린다."
+person_create_tom,"아직 완성되지 않은 창조의 흔적. 지금의 규칙 안에서는 더 이어지는 길이 거의 보이지 않는다."
+person_replace_tom,"원래 있었던 것처럼 자리를 차지한 톰. 만들어진 존재가 세상에 받아들여졌다는 조용한 증거다."
+person_james,"공원에서 발견할 수 있는 또 다른 사람. 대화는 호기심을 남기고 친근함을 곁들이면 지인 제임스로 다가온다."
+person_friend_james,"가까워진 제임스. 대화는 무관심을 드러내지만 흥미나 음악적 유혹을 엣지에 두면 포획으로 이어질 수 있다."
+person_captive_james,"완전히 손안에 들어온 제임스. 스캔과 뇌와 몸을 어떤 순서와 엣지블록으로 지나게 하느냐에 따라 이야기와 성공과 실패가 갈린다."
+person_create_james,"새로 만들어진 제임스. 방출 노드를 지나 출력하면 교체된 제임스로 바뀐다."
+person_replace_james,"세상 밖으로 내보낸 뒤 남은 결과. 방출된 창조물이 원본의 자리를 대신한다."
+person_emily,"제임스를 거친 뒤 공원에서 만날 수 있는 사람. 대화는 경계심을 남기고 경계완화를 곁들이면 지인 에밀리로 가까워진다."
+person_friend_emily,"가까워진 에밀리. 대화는 다시 경계심을 남기지만 배려나 미술적 유혹을 엣지에 두면 포획으로 이어진다."
+person_captive_emily,"완전히 붙잡힌 에밀리. 스캔과 뇌와 몸의 순서와 완벽주의와 임신 엣지블록이 결과를 결정한다."
+person_create_emily,"새로 만들어진 에밀리. 방출 노드를 지나 출력하면 교체된 에밀리로 바뀐다."
+person_replace_emily,"방출 끝에 세상으로 섞여 들어간 에밀리. 원래 있던 존재를 대신하는 마지막 형태다."
+stance_relaxedness,"공원을 지난 뒤 남는 여유. 호기심과 합성하면 친근함이 되고 호감과 합성하면 흥미가 되며 경계심과 합성하면 경계완화가 된다."
+stance_curiosity,"제임스와의 첫 대화에서 얻는 호기심. 여유와 합성하면 친근함이 된다."
+stance_affection,"친근함을 품은 길에서 생기는 호감. 여유와 합성하면 흥미가 된다."
+stance_hobby_music,"제임스가 음악 쪽으로 기울 때 남는 취미. 흥미와 합성하면 음악적 유혹이 된다."
+stance_hobby_art,"에밀리가 미술 쪽으로 기울 때 남는 취미. 배려와 합성하면 미술적 유혹이 된다."
+stance_shamelessness,"유혹이 너무 노골적으로 성공했을 때 남는 철면피. 관계가 이미 돌이키기 어려운 쪽으로 움직였다는 신호다."
+stance_vanity,"제임스의 뇌를 들여다봤을 때 드러나는 허영심. 열등감과 합성하면 나르시시즘이 된다."
+stance_inferiority_complex,"제임스를 스캔한 뒤 뇌를 보면 드러나는 열등감. 허영심과 합성하면 나르시시즘이 된다."
+stance_muscular_type,"제임스의 몸을 먼저 보면 드러나는 근육형의 단서. 스테로이드와 합성하면 운동중독이 된다."
+stance_steroids,"제임스를 스캔한 뒤 몸을 보면 드러나는 스테로이드의 흔적. 근육형과 합성하면 운동중독이 된다."
+stance_show_off_desire,"스스로를 드러내고 싶어 하는 욕망. 지금의 합성 규칙에는 직접 쓰이지 않지만 제임스의 결핍을 설명하는 조각이다."
+stance_narcissism,"자기애의 흔적. 지금의 합성 규칙에는 직접 쓰이지 않지만 제임스의 성공 경로에는 엣지블록 나르시시즘이 필요하다."
+stance_control,"에밀리의 뇌를 들여다봤을 때 드러나는 통제. 불안과 합성하면 완벽주의가 된다."
+stance_anxiety,"에밀리를 스캔한 뒤 뇌를 보면 드러나는 불안. 통제와 합성하면 완벽주의가 된다."
+stance_chubby_type,"에밀리의 몸을 먼저 보면 드러나는 통통형의 단서. 새 생명과 합성하면 임신이 된다."
+stance_new_life,"에밀리를 스캔한 뒤 몸을 보면 드러나는 새 생명의 흔적. 통통형과 합성하면 임신이 된다."
+stance_indifference,"제임스와 가까워진 뒤에도 남는 무관심. 더 강한 엣지블록이 없으면 관계는 차갑게 흐른다."
+stance_wariness,"에밀리와의 대화에서 남는 경계심. 여유와 합성하면 경계완화가 된다."
+stance_goodwill,"톰과의 대화에서 남는 호의. 여유와 합성하면 다정함이 된다."
+stance_trust,"다정함을 지나며 생긴 신뢰. 공감과 합성하면 유대감이 된다."
+stance_empathy,"톰과 더 가까워질 때 남는 공감. 신뢰와 합성하면 유대감이 된다."
+stance_hobby_movies,"톰이 영화 쪽으로 기울 때 남는 취미. 유대감과 합성하면 영화적 유혹이 된다."
+stance_interest,"에밀리의 경계가 낮아졌을 때 생기는 관심. 여유와 합성하면 배려가 된다."
+trash_story_james,"제임스를 스캔했을 때 남는 이야기. 쓸모없는 것처럼 보이지만 그가 어떤 삶을 지나왔는지 알려주는 찌꺼기다."
+trash_story_emily,"에밀리를 스캔했을 때 남는 이야기. 결과를 만들지는 않지만 이 존재가 비어 있지 않았다는 증거다."
+stance_alienation,"뇌와 몸을 스캔 없이 이어 붙였을 때 생기는 괴리감. 제대로 알지 못한 채 만들면 이렇게 어긋난다."
+stance_emptiness,"몸과 뇌를 잘못된 순서로 다룰 때 남는 공허함. 형태는 있어도 안쪽이 따라오지 못한다."
+stance_distortion,"스캔과 뇌와 몸을 모두 거쳤지만 맞는 엣지블록이 없을 때 남는 왜곡. 순서만 맞는다고 충분한 것은 아니다."
+edgeblock_stance_friendliness,"친근함. 합성은 여유 더하기 호기심. 제임스에게 쓰면 지인 제임스로 가까워지고 호감을 얻는 길이 열린다."
+edgeblock_stance_musical_temptation,"음악적 유혹. 합성은 흥미 더하기 취미 음악. 지인 제임스를 포획된 제임스로 몰아가는 데 쓰인다."
+edgeblock_stance_artistic_temptation,"미술적 유혹. 합성은 배려 더하기 취미 미술. 지인 에밀리를 포획된 에밀리로 몰아가는 데 쓰인다."
+edgeblock_stance_narcissism,"나르시시즘. 합성은 허영심 더하기 열등감. 제임스 생성 성공 경로에서 스캔과 뇌 사이에 필요하다."
+edgeblock_stance_exercise_addiction,"운동중독. 합성은 근육형 더하기 스테로이드. 제임스 생성 성공 경로에서 뇌와 몸 사이에 필요하다."
+edgeblock_stance_perfectionism,"완벽주의. 합성은 통제 더하기 불안. 에밀리 생성 성공 경로에서 스캔과 뇌 사이에 필요하다."
+edgeblock_stance_pregnancy,"임신. 합성은 통통형 더하기 새 생명. 에밀리 생성 성공 경로에서 뇌와 몸 사이에 필요하다."
+edgeblock_stance_consideration,"배려. 합성은 관심 더하기 여유. 에밀리에게 쓰면 취미 미술을 얻는 길이 열린다."
+edgeblock_stance_interest,"흥미. 합성은 여유 더하기 호감. 제임스에게 쓰면 취미 음악을 얻는 길이 열린다."
+edgeblock_stance_tenderness,"다정함. 합성은 여유 더하기 호의. 톰에게 쓰면 신뢰를 얻고 지인 톰으로 가까워진다."
+edgeblock_stance_bond,"유대감. 합성은 신뢰 더하기 공감. 톰에게 쓰면 취미 영화를 얻는 길이 열린다."
+edgeblock_stance_cinematic_allure,"영화적 유혹. 합성은 취미 영화 더하기 유대감. 지인 톰을 포획된 톰으로 몰아가는 데 쓰인다."
+edgeblock_stance_lowered_boundaries,"경계완화. 합성은 여유 더하기 경계심. 에밀리에게 쓰면 관심을 얻고 지인 에밀리로 가까워진다."
+stance_prayer,"공양 뒤에 남는 기도. 포획된 사람을 바치면 이 감정만 조용히 남는다."
+stance_satisfaction,"제대로 된 순서와 엣지블록으로 창조가 완성됐을 때 남는 만족. 성공한 창조의 감각이다."
+stance_desire_to_conquer,"정복하고 싶다는 욕망. 지금의 규칙에는 직접 연결되어 있지 않지만 이 세계의 방향을 설명하는 어두운 단서다."
+stance_failure,"실패의 감각. 잘못된 조합과 순서 끝에서 남는 이름 없는 찌꺼기다."
