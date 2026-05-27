@@ -131,7 +131,8 @@ namespace OneMoreSpoon.App.Rewards
             }
 
             var position = playAreaBounds.Clamp(basePosition + SubstanceRewardOffset + SubstanceRewardSpacing * index);
-            var stackId = world.CreateSubstanceStack(substance.SubstanceId, reward.Amount, false, position);
+            var isInfinite = SubstanceKindRules.IsInfiniteStackKind(substance.Kind);
+            var stackId = world.CreateSubstanceStack(substance.SubstanceId, reward.Amount, isInfinite, position);
 
             Debug.Log($"[FirstDiscoveryReward] Substance granted id={substance.SubstanceId} amount={reward.Amount} stack={stackId}");
             return true;
