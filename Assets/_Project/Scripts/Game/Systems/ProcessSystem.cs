@@ -261,7 +261,7 @@ namespace OneMoreSpoon.Game.Systems
             if (!substanceDefinitionRegistry.TryGet(substanceId, out var blockDefinition))
                 return;
 
-            if (blockDefinition.Kind != SubstanceKind.EdgeBlock)
+            if (!SubstanceKindRules.CanEquipOnEdge(blockDefinition.Kind))
                 return;
 
             AddFlowHistory(flowEntityId, $"edgeBlock:{substanceId}");
@@ -556,7 +556,7 @@ namespace OneMoreSpoon.Game.Systems
     {
         public static bool CanSpawnFlow(SubstanceKind kind)
         {
-            return kind == SubstanceKind.SourceMaterial;
+            return SubstanceKindRules.CanSpawnFlow(kind);
         }
     }
 }

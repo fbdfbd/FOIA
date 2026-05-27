@@ -23,7 +23,7 @@ namespace OneMoreSpoon.App.Encyclopedia.Providers
         }
 
         public bool CanHandle(SubstanceKind kind) =>
-            kind == SubstanceKind.Dish || kind == SubstanceKind.FinalDish;
+            SubstanceKindRules.IsPersonLike(kind);
 
         public EncyclopediaDetailData BuildData(SO_SubstanceDefinition definition)
         {

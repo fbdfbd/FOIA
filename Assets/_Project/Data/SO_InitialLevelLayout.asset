@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3c6e1f9a4d7425c8e0a193f6b2d5874, type: 3}
+  m_Name: SO_InitialLevelLayout
+  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.App.Config.SO_InitialLevelLayout
+  initialNodes:
+  - Definition: {fileID: 11400000, guid: 6c9a07e1e82c655458fe79dd6ac2926c, type: 2}
+    Position: {x: 0, y: 0}
+  - Definition: {fileID: 11400000, guid: 11318a11052d1784d9417c6e4ca5b9c9, type: 2}
+    Position: {x: 0, y: 0}
+  - Definition: {fileID: 11400000, guid: d4de1990dab896f4d8aa79901e12d523, type: 2}
+    Position: {x: 0, y: 0}
+  initialSubstanceStacks:
+  - SubstanceDefinition: {fileID: 11400000, guid: ac51820b3606d6c48ae5e978450b2e08, type: 2}
+    Amount: 0
+    IsInfinite: 1
+    Position: {x: 0, y: 0}

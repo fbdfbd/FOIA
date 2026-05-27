@@ -359,25 +359,27 @@ namespace OneMoreSpoon.Game.Systems
                 return false;
             }
 
-            switch (definition.Kind)
+            if (SubstanceKindRules.IsPersonLike(definition.Kind))
             {
-                case SubstanceKind.Dish:
-                case SubstanceKind.FinalDish:
-                    dockKind = SubstanceDockKind.Dish;
-                    return true;
-
-                case SubstanceKind.EdgeBlock:
-                    dockKind = SubstanceDockKind.EdgeBlock;
-                    return true;
-
-                case SubstanceKind.TraitShard:
-                    dockKind = SubstanceDockKind.TraitShard;
-                    return true;
-
-                default:
-                    dockKind = default;
-                    return false;
+                dockKind = SubstanceDockKind.Dish;
+                return true;
             }
+
+            if (SubstanceKindRules.IsEdgeBlockLike(definition.Kind))
+            {
+                dockKind = SubstanceDockKind.EdgeBlock;
+                return true;
+            }
+
+            if (SubstanceKindRules.IsStanceLike(definition.Kind) ||
+                SubstanceKindRules.IsEtcLike(definition.Kind))
+            {
+                dockKind = SubstanceDockKind.TraitShard;
+                return true;
+            }
+
+            dockKind = default;
+            return false;
         }
 
         private void RemoveStaleStacks()

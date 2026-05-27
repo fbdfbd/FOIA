@@ -1,13 +1,11 @@
-definitionId,description
-node_input,기본재료를 선택해 요리 흐름을 시작합니다.
-node_output,지금까지의 공정 결과를 판정해 요리 또는 실패작을 만듭니다.
-node_merge,실패에서 얻은 특성 조각 2개를 합쳐 공정용 엣지블럭을 만듭니다.
-node_cut,재료를 자르거나 쪼개 크기와 형태를 바꿉니다.
-node_seperate,재료에서 불필요한 부분이나 섞인 성분을 분리합니다.
-node_press,재료를 눌러 수분·즙·밀도를 조절합니다.
-node_mix,재료의 성질을 고르게 퍼뜨려 하나의 베이스로 만듭니다.
-node_coat,재료 표면에 막이나 옷을 입혀 다음 공정을 준비합니다.
-node_shape,재료를 뭉치거나 빚어 원하는 형태로 만듭니다.
-node_bake,마른 열로 익혀 표면의 색과 식감을 만듭니다.
-node_boil,액체 속에서 익히며 맛과 성분을 우려냅니다.
-node_fry,기름 열로 익혀 바삭한 표면을 만듭니다.
+﻿definitionId
+node_base_input
+node_base_output
+node_base_merge
+node_place_park
+node_place_wcc
+node_act_talk
+node_act_offer
+node_unique_scan
+node_unique_brain
+node_unique_body

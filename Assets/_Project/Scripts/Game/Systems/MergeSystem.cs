@@ -97,8 +97,7 @@ namespace OneMoreSpoon.Game.Systems
 
         private static bool CanAddToMerge(SubstanceKind kind)
         {
-            return kind == SubstanceKind.TraitShard
-                || kind == SubstanceKind.EdgeBlock;
+            return SubstanceKindRules.CanMerge(kind);
         }
 
         private void TickMergeSlot(GameEntityId mergeNodeId, float deltaTime)

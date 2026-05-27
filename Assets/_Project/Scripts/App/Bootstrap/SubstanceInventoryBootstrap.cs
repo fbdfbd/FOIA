@@ -49,10 +49,7 @@ namespace OneMoreSpoon.App.Bootstrap
 
         private static bool CanCreateInitialStack(SubstanceKind kind)
         {
-            return kind == SubstanceKind.Material
-                || kind == SubstanceKind.SourceMaterial
-                || kind == SubstanceKind.TraitShard
-                || kind == SubstanceKind.EdgeBlock;
+            return kind != SubstanceKind.Trash;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace OneMoreSpoon.App.Encyclopedia.Providers
             this.mergeRecipes = mergeRecipes;
         }
 
-        public bool CanHandle(SubstanceKind kind) => kind == SubstanceKind.EdgeBlock;
+        public bool CanHandle(SubstanceKind kind) => SubstanceKindRules.IsEdgeBlockLike(kind);
 
         public EncyclopediaDetailData BuildData(SO_SubstanceDefinition definition)
         {

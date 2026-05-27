@@ -49,7 +49,7 @@ namespace OneMoreSpoon.App.Encyclopedia
 
             foreach (var substance in substanceDefinitions.GetAll())
             {
-                if (substance == null || substance.Kind != SubstanceKind.EdgeBlock)
+                if (substance == null || !SubstanceKindRules.CanEquipOnEdge(substance.Kind))
                     continue;
 
                 foreach (var tag in substance.AddedTags)

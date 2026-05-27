@@ -40,7 +40,7 @@ namespace OneMoreSpoon.Editor
                 var so = new SerializedObject(asset);
                 so.FindProperty("substanceId").stringValue = id;
                 so.FindProperty("displayName").stringValue = CsvReader.Get(row, "displayName");
-                ImportAssetUtility.SetEnum(so, "kind", CsvReader.Get(row, "kind"), SubstanceKind.Material);
+                ImportAssetUtility.SetEnum(so, "kind", CsvReader.Get(row, "kind"), SubstanceKind.Trash);
                 ImportAssetUtility.SetStringList(so, "baseTags", CsvReader.Get(row, "baseTags"));
                 so.FindProperty("baseValue").intValue = ImportAssetUtility.ParseInt(CsvReader.Get(row, "baseValue"));
                 ImportAssetUtility.SetStringList(so, "addedTags", CsvReader.Get(row, "addedTags"));
