@@ -70,7 +70,7 @@ emily_body,0,person_captive_emily,node_unique_body,node:node_unique_body,,,stanc
 emily_scan_body,0,person_captive_emily,node_unique_scan|node_unique_body,node:node_unique_scan|node:node_unique_body,,,stance_new_life
 emily_fail_alienation,0,person_captive_emily,node_unique_brain|node_unique_body,node:node_unique_brain|node:node_unique_body,,,stance_alienation
 emily_fail_emptiness,0,person_captive_emily,node_unique_body|node_unique_brain,node:node_unique_body|node:node_unique_brain,,,stance_emptiness
-emily_success,0,person_captive_emily,node_unique_scan|edgeblock_stance_perfectionism|node_unique_brain|edgeblock_stance_pregnancy|node_unique_body,node:node_unique_scan|edge:edgeblock_stance_perfectionism|node:node_unique_brain|edge:edgeblock_stance_pregnancy|node:node_unique_body,,,stance_satisfaction
+emily_success,0,person_captive_emily,node_unique_scan|edgeblock_stance_perfectionism|node_unique_brain|edgeblock_stance_pregnancy|node_unique_body,node:node_unique_scan|edgeBlock:stance_perfectionism|node:node_unique_brain|edgeBlock_stance_pregnancy|node:node_unique_body,,,stance_satisfaction
 emily_fail_distortion,0,person_captive_emily,node_unique_scan|node_unique_brain|node_unique_body,node:node_unique_scan|node:node_unique_brain|node:node_unique_body,,,stance_distortion
 ,,,,,,,
 ,,,,,,,
