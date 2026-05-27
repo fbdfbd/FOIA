@@ -391,7 +391,6 @@ namespace OneMoreSpoon.Game.Systems
             else
             {
                 Debug.LogWarning($"[Output] RuleMissing entity={flowEntityId} substance={substance.SubstanceId} tags=[{GetTagDebugText(tags)}]");
-                CreateFallbackOutputStack(substance.SubstanceId, outputPosition.Value, outputIndex);
             }
 
             ConsumeFlow(flowEntityId, flow);
@@ -450,21 +449,6 @@ namespace OneMoreSpoon.Game.Systems
             }
 
             return true;
-        }
-
-        private void CreateFallbackOutputStack(
-            string substanceId,
-            Vector2 outputPosition,
-            int outputIndex)
-        {
-            Vector2 stackPosition = GetOutputStackPosition(outputPosition, outputIndex, 0);
-            discoveryService.NotifyEncountered(substanceId);
-            var stackId = substanceDefinitionRegistry.TryGet(substanceId, out var definition)
-                ? stackSpawnService.CreateOrTransitionStack(definition, 1, false, stackPosition)
-                : world.CreateSubstanceStack(substanceId, 1, false, stackPosition);
-
-            Debug.Log($"[Output] ResultCreated rule=Fallback substance={substanceId} amount=1 stack={stackId}");
-            firstDiscoveryRewardService.GrantForSubstance(substanceId, stackPosition);
         }
 
         private static Vector2 GetOutputStackPosition(
