@@ -1987,8 +1987,8 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  definitionCatalog: {fileID: 11400000, guid: 784a6a0386c7c7c4f8c8ffb6766711f1, type: 2}
-  initialLevelLayout: {fileID: 11400000, guid: ac5dc5fdc7b4e1044ba5e32f720deb3c, type: 2}
+  definitionCatalog: {fileID: 11400000, guid: 6606e493af64b5547bad687df333af8e, type: 2}
+  initialLevelLayout: {fileID: 11400000, guid: efa33f5912c09024a9e8dfd50c25fd43, type: 2}
   viewRegistry: {fileID: 490406068}
   inputNodeViewPrefab: {fileID: 158862403785399452, guid: 7b756fef13a6ebe449d822578c270186, type: 3}
   outputNodeViewPrefab: {fileID: 1700252867415424330, guid: e42a2434a16c492478f97b18c33de5c4, type: 3}
@@ -2000,6 +2000,9 @@ MonoBehaviour:
   flowViewPrefab: {fileID: 8734692758741452506, guid: 2c2bfdf25dd2a0e44bc9365324243193, type: 3}
   inspectPanelViewPrefab: {fileID: 614641285}
   encyclopediaViewPrefab: {fileID: 896160203}
+  enableTutorial: 0
+  tutorialDialogView: {fileID: 0}
+  tutorialGoalView: {fileID: 0}
   mainGamePanelRenderer: {fileID: 872954707}
   nodePlacementPadding: 0.4
 --- !u!4 &1193802636
@@ -3013,7 +3016,7 @@ PrefabInstance:
     - target: {fileID: 4914288118503269681, guid: 63de2b48b58a6bb479ba14902a8c854c, type: 3}
       propertyPath: defaultOperationDefinition
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 0be6783f9b2faab49b9a349bbeefdcda, type: 2}
     - target: {fileID: 7215761920554021057, guid: 63de2b48b58a6bb479ba14902a8c854c, type: 3}
       propertyPath: m_Name
       value: Input

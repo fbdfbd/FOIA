@@ -13,40 +13,14 @@ MonoBehaviour:
   m_Name: SO_InitialLevelLayout
   m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.App.Config.SO_InitialLevelLayout
   initialNodes:
-  - Definition: {fileID: 11400000, guid: 64cf465cc4a30254884c58e3d1258f55, type: 2}
+  - Definition: {fileID: 11400000, guid: 6c9a07e1e82c655458fe79dd6ac2926c, type: 2}
     Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 775f33d39073cf641bc7e4925345c8d3, type: 2}
+  - Definition: {fileID: 11400000, guid: 11318a11052d1784d9417c6e4ca5b9c9, type: 2}
     Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: c8e7fd27dfb87a54e89233f6b180dd61, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: fc7e884f10db4224daf7e309bfbc612e, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 3a7fe5b6bf1ca674b825b0f742d135d9, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 3593785aab8aa384da4f73e8593db350, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 4be4301585d1f864980dc67e4fc3bae4, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 1dea2235cf25ba641b1fe5ea520ad1bb, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 80b1c12f4f8e42a4b9bb191b50e53d4e, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 00f5f4b39f45a924e99173cd65d6e2fc, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: bf5cce6ae2d71594896b5d4c97027227, type: 2}
-    Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 4cddc0ba3acab2648a317bb582d538cc, type: 2}
+  - Definition: {fileID: 11400000, guid: d4de1990dab896f4d8aa79901e12d523, type: 2}
     Position: {x: 0, y: 0}
   initialSubstanceStacks:
-  - SubstanceDefinition: {fileID: 11400000, guid: 369cf5240f75525458c9b9aa2494f0ac, type: 2}
-    Amount: 0
-    IsInfinite: 1
-    Position: {x: 0, y: 0}
-  - SubstanceDefinition: {fileID: 11400000, guid: d8e97afa155cb124a9ee2b58ce1bb003, type: 2}
-    Amount: 0
-    IsInfinite: 1
-    Position: {x: 0, y: 0}
-  - SubstanceDefinition: {fileID: 11400000, guid: f3b4319ab223b01418d7b759e1dfe404, type: 2}
+  - SubstanceDefinition: {fileID: 11400000, guid: ac51820b3606d6c48ae5e978450b2e08, type: 2}
     Amount: 0
     IsInfinite: 1
     Position: {x: 0, y: 0}

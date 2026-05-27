@@ -89,10 +89,10 @@ namespace OneMoreSpoon.View.Factories
                 case NodeCategory.Merge:
                     return prefabSet.Merge;
 
-                case NodeCategory.Process:
-                case NodeCategory.Split:
-                case NodeCategory.Storage:
-                    return prefabSet.Interact;
+                //case NodeCategory.Process:
+                //case NodeCategory.Split:
+                //case NodeCategory.Storage:
+                    //return prefabSet.Interact;
 
                 default:
                     return prefabSet.Interact;

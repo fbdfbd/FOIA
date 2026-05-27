@@ -12,7 +12,7 @@ namespace OneMoreSpoon.App.Encyclopedia.Providers
             this.inspectDefinitions = inspectDefinitions;
         }
 
-        public bool CanHandle(SubstanceKind kind) => kind == SubstanceKind.TraitShard;
+        public bool CanHandle(SubstanceKind kind) => SubstanceKindRules.IsStanceLike(kind);
 
         public EncyclopediaDetailData BuildData(SO_SubstanceDefinition definition)
         {

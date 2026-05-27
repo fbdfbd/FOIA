@@ -12,6 +12,7 @@ namespace OneMoreSpoon.Editor
         public const string OperationDir = GeneratedBase + "/Operation";
         public const string OutputRuleDir = GeneratedBase + "/OutputRule";
         public const string RecipeDir = GeneratedBase + "/MergeRecipe";
+        public const string FirstDiscoveryRewardDir = GeneratedBase + "/FirstDiscoveryReward";
         public const string NodeInspectDir = GeneratedBase + "/NodeInspect";
         public const string SubstanceInspectDir = GeneratedBase + "/SubstanceInspect";
     }

@@ -15,6 +15,7 @@ namespace OneMoreSpoon.Editor
             ImportOperations();
             ImportOutputRules(substanceLookup);
             ImportMergeRecipes(substanceLookup);
+            ImportFirstDiscoveryRewards(substanceLookup);
             ImportNodeInspects();
             ImportSubstanceInspects();
         }
@@ -39,7 +40,7 @@ namespace OneMoreSpoon.Editor
                 var so = new SerializedObject(asset);
                 so.FindProperty("substanceId").stringValue = id;
                 so.FindProperty("displayName").stringValue = CsvReader.Get(row, "displayName");
-                ImportAssetUtility.SetEnum(so, "kind", CsvReader.Get(row, "kind"), SubstanceKind.Material);
+                ImportAssetUtility.SetEnum(so, "kind", CsvReader.Get(row, "kind"), SubstanceKind.Trash);
                 ImportAssetUtility.SetStringList(so, "baseTags", CsvReader.Get(row, "baseTags"));
                 so.FindProperty("baseValue").intValue = ImportAssetUtility.ParseInt(CsvReader.Get(row, "baseValue"));
                 ImportAssetUtility.SetStringList(so, "addedTags", CsvReader.Get(row, "addedTags"));
@@ -77,7 +78,8 @@ namespace OneMoreSpoon.Editor
                 var so = new SerializedObject(asset);
                 so.FindProperty("definitionId").stringValue = id;
                 so.FindProperty("displayName").stringValue = CsvReader.Get(row, "displayName");
-                ImportAssetUtility.SetEnum(so, "processLayer", CsvReader.Get(row, "processLayer"), ProcessLayer.Source);
+                so.FindProperty("processLayer").intValue =
+                    ImportAssetUtility.ParseInt(CsvReader.Get(row, "processLayer"));
                 ImportAssetUtility.SetEnum(so, "category", CsvReader.Get(row, "category"), NodeCategory.Input);
                 ImportAssetUtility.SetStringList(so, "baseTags", CsvReader.Get(row, "baseTags"));
                 ImportAssetUtility.SetStringList(so, "addedFlowTags", CsvReader.Get(row, "addedFlowTags"));
@@ -145,15 +147,21 @@ namespace OneMoreSpoon.Editor
                     "ruleId");
                 var so = new SerializedObject(asset);
                 so.FindProperty("ruleId").stringValue = id;
+                so.FindProperty("priority").intValue =
+                    ImportAssetUtility.ParseInt(CsvReader.Get(row, "priority"), 0);
                 SetSubstanceRef(so, "requiredSubstance", substanceLookup, CsvReader.Get(row, "requiredSubstanceId"));
                 ImportAssetUtility.SetStringList(so, "requiredTags", CsvReader.Get(row, "requiredTags"));
                 ImportAssetUtility.SetStringList(so, "requiredHistorySequence", CsvReader.Get(row, "requiredHistorySequence"));
+                ImportAssetUtility.SetStringList(
+                    so,
+                    "requiredUndiscoveredSubstanceIds",
+                    CsvReader.Get(row, "requiredUndiscoveredSubstanceIds"));
                 SetSubstanceRef(so, "resultSubstance", substanceLookup, CsvReader.Get(row, "resultSubstanceId"));
                 so.FindProperty("resultAmount").intValue =
                     ImportAssetUtility.ParseInt(CsvReader.Get(row, "resultAmount"), 1);
                 SetByproducts(
                     so,
-                    byproductMap.TryGetValue(id, out var list) ? list : Array.Empty<(string substanceId, int amount)>(),
+                    byproductMap.TryGetValue(id, out var list) ? list : Array.Empty<ByproductImportData>(),
                     substanceLookup);
                 so.ApplyModifiedProperties();
 
@@ -198,6 +206,63 @@ namespace OneMoreSpoon.Editor
             }
 
             Debug.Log($"[CsvImporter] MergeRecipes: {count}");
+        }
+
+        private static void ImportFirstDiscoveryRewards(Dictionary<string, SO_SubstanceDefinition> substanceLookup)
+        {
+            var rows = CsvReader.Read($"{ImportPaths.CsvBase}/firstDiscoveryRewards.csv");
+            if (rows == null)
+                return;
+
+            var count = 0;
+            foreach (var row in rows)
+            {
+                var triggerTypeText = CsvReader.Get(row, "triggerType");
+                var triggerId = CsvReader.Get(row, "triggerId");
+                var rewardTypeText = CsvReader.Get(row, "rewardType");
+                var rewardId = CsvReader.Get(row, "rewardId");
+                if (string.IsNullOrEmpty(triggerTypeText) ||
+                    string.IsNullOrEmpty(triggerId) ||
+                    string.IsNullOrEmpty(rewardTypeText) ||
+                    string.IsNullOrEmpty(rewardId))
+                {
+                    continue;
+                }
+
+                var entryId = BuildFirstDiscoveryRewardEntryId(triggerTypeText, triggerId, rewardTypeText, rewardId);
+                var asset = ImportAssetUtility.FindOrCreate<SO_FirstDiscoveryRewardDefinition>(
+                    ImportPaths.FirstDiscoveryRewardDir,
+                    entryId,
+                    "entryId");
+                var so = new SerializedObject(asset);
+                so.FindProperty("entryId").stringValue = entryId;
+                ImportAssetUtility.SetEnum(
+                    so,
+                    "triggerType",
+                    triggerTypeText,
+                    FirstDiscoveryRewardTriggerType.Substance);
+                so.FindProperty("triggerId").stringValue = triggerId;
+                ImportAssetUtility.SetEnum(
+                    so,
+                    "rewardType",
+                    rewardTypeText,
+                    FirstDiscoveryRewardType.Substance);
+                so.FindProperty("rewardId").stringValue = rewardId;
+                so.FindProperty("amount").intValue =
+                    ImportAssetUtility.ParseInt(CsvReader.Get(row, "amount"), 1);
+                so.FindProperty("rewardGroup").stringValue = CsvReader.Get(row, "rewardGroup");
+                ImportAssetUtility.SetStringList(
+                    so,
+                    "requiredUndiscoveredSubstanceIds",
+                    CsvReader.Get(row, "requiredUndiscoveredSubstanceIds"));
+                so.FindProperty("note").stringValue = CsvReader.Get(row, "note");
+                so.ApplyModifiedProperties();
+
+                EditorUtility.SetDirty(asset);
+                count++;
+            }
+
+            Debug.Log($"[CsvImporter] FirstDiscoveryRewards: {count}");
         }
 
         private static void ImportNodeInspects()
@@ -290,9 +355,23 @@ namespace OneMoreSpoon.Editor
             prop.objectReferenceValue = lookup.TryGetValue(substanceId, out var substance) ? substance : null;
         }
 
+        private readonly struct ByproductImportData
+        {
+            public ByproductImportData(string substanceId, int amount, string requiredUndiscoveredSubstanceIds)
+            {
+                SubstanceId = substanceId;
+                Amount = amount;
+                RequiredUndiscoveredSubstanceIds = requiredUndiscoveredSubstanceIds;
+            }
+
+            public string SubstanceId { get; }
+            public int Amount { get; }
+            public string RequiredUndiscoveredSubstanceIds { get; }
+        }
+
         private static void SetByproducts(
             SerializedObject so,
-            IReadOnlyList<(string substanceId, int amount)> byproducts,
+            IReadOnlyList<ByproductImportData> byproducts,
             IReadOnlyDictionary<string, SO_SubstanceDefinition> lookup)
         {
             var prop = so.FindProperty("byproducts");
@@ -305,15 +384,18 @@ namespace OneMoreSpoon.Editor
                 prop.InsertArrayElementAtIndex(i);
                 var element = prop.GetArrayElementAtIndex(i);
                 element.FindPropertyRelative("substance").objectReferenceValue =
-                    lookup.TryGetValue(byproducts[i].substanceId, out var substance) ? substance : null;
-                element.FindPropertyRelative("amount").intValue = byproducts[i].amount;
+                    lookup.TryGetValue(byproducts[i].SubstanceId, out var substance) ? substance : null;
+                element.FindPropertyRelative("amount").intValue = byproducts[i].Amount;
+                SetStringList(
+                    element.FindPropertyRelative("requiredUndiscoveredSubstanceIds"),
+                    CsvReader.SplitList(byproducts[i].RequiredUndiscoveredSubstanceIds));
             }
         }
 
-        private static Dictionary<string, List<(string substanceId, int amount)>> BuildByproductMap(
+        private static Dictionary<string, List<ByproductImportData>> BuildByproductMap(
             List<Dictionary<string, string>> rows)
         {
-            var map = new Dictionary<string, List<(string substanceId, int amount)>>();
+            var map = new Dictionary<string, List<ByproductImportData>>();
             if (rows == null)
                 return map;
 
@@ -326,14 +408,39 @@ namespace OneMoreSpoon.Editor
 
                 if (!map.TryGetValue(ruleId, out var list))
                 {
-                    list = new List<(string substanceId, int amount)>();
+                    list = new List<ByproductImportData>();
                     map.Add(ruleId, list);
                 }
 
-                list.Add((substanceId, ImportAssetUtility.ParseInt(CsvReader.Get(row, "amount"), 1)));
+                list.Add(new ByproductImportData(
+                    substanceId,
+                    ImportAssetUtility.ParseInt(CsvReader.Get(row, "amount"), 1),
+                    CsvReader.Get(row, "requiredUndiscoveredSubstanceIds")));
             }
 
             return map;
+        }
+
+        private static void SetStringList(SerializedProperty prop, IReadOnlyList<string> values)
+        {
+            if (prop == null)
+                return;
+
+            prop.ClearArray();
+            for (var i = 0; i < values.Count; i++)
+            {
+                prop.InsertArrayElementAtIndex(i);
+                prop.GetArrayElementAtIndex(i).stringValue = values[i];
+            }
+        }
+
+        private static string BuildFirstDiscoveryRewardEntryId(
+            string triggerType,
+            string triggerId,
+            string rewardType,
+            string rewardId)
+        {
+            return $"{triggerType}_{triggerId}_{rewardType}_{rewardId}";
         }
     }
 }

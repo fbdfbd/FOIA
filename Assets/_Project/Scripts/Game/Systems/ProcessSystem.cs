@@ -1,5 +1,6 @@
 using OneMoreSpoon.App.Encyclopedia;
 using OneMoreSpoon.App.Messaging;
+using OneMoreSpoon.App.Rewards;
 using OneMoreSpoon.Game.Components;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
@@ -16,6 +17,7 @@ namespace OneMoreSpoon.Game.Systems
         private const float InputDepartureInterval = 1f;
         private static readonly Vector2 OutputStackOffset = new(0f, -1.2f);
         private static readonly Vector2 OutputStackSpacing = new(0.6f, 0f);
+        private static readonly Vector2 OutputRuleRewardOffset = new(0f, -0.6f);
 
         private readonly GameWorld world;
         private readonly NodeDefinitionRegistry nodeDefinitionRegistry;
@@ -24,6 +26,7 @@ namespace OneMoreSpoon.Game.Systems
         private readonly OutputRuleRegistry outputRuleRegistry;
         private readonly ToastMessageQueue toastMessageQueue;
         private readonly DiscoveryService discoveryService;
+        private readonly FirstDiscoveryRewardService firstDiscoveryRewardService;
         private readonly List<GameEntityId> flowBuffer = new();
         private readonly Dictionary<GameEntityId, GameEntityId> lastAmbiguousRouteNodeByFlow = new();
         private readonly Dictionary<GameEntityId, float> inputDepartureCooldowns = new();
@@ -36,7 +39,8 @@ namespace OneMoreSpoon.Game.Systems
             OperationDefinitionRegistry operationDefinitionRegistry,
             OutputRuleRegistry outputRuleRegistry,
             ToastMessageQueue toastMessageQueue,
-            DiscoveryService discoveryService)
+            DiscoveryService discoveryService,
+            FirstDiscoveryRewardService firstDiscoveryRewardService)
         {
             this.world = world;
             this.nodeDefinitionRegistry = nodeDefinitionRegistry;
@@ -45,6 +49,7 @@ namespace OneMoreSpoon.Game.Systems
             this.outputRuleRegistry = outputRuleRegistry;
             this.toastMessageQueue = toastMessageQueue;
             this.discoveryService = discoveryService;
+            this.firstDiscoveryRewardService = firstDiscoveryRewardService;
         }
 
         public void Tick(float deltaTime)
@@ -256,7 +261,7 @@ namespace OneMoreSpoon.Game.Systems
             if (!substanceDefinitionRegistry.TryGet(substanceId, out var blockDefinition))
                 return;
 
-            if (blockDefinition.Kind != SubstanceKind.EdgeBlock)
+            if (!SubstanceKindRules.CanEquipOnEdge(blockDefinition.Kind))
                 return;
 
             AddFlowHistory(flowEntityId, $"edgeBlock:{substanceId}");
@@ -364,7 +369,12 @@ namespace OneMoreSpoon.Game.Systems
             world.Tags.TryGetValue(flowEntityId, out var tags);
             world.FlowHistories.TryGetValue(flowEntityId, out var history);
 
-            if (outputRuleRegistry.TryGetMatch(substance.SubstanceId, tags, history, out var rule))
+            if (outputRuleRegistry.TryGetMatch(
+                substance.SubstanceId,
+                tags,
+                history,
+                discoveryService.IsEncountered,
+                out var rule))
             {
                 Debug.Log($"[Output] RuleMatched entity={flowEntityId} rule={rule.RuleId} substance={substance.SubstanceId}");
                 CreateRuleOutputStacks(rule, outputPosition.Value, outputIndex);
@@ -393,10 +403,16 @@ namespace OneMoreSpoon.Game.Systems
 
             Debug.Log($"[Output] ResultCreated rule={rule.RuleId} substance={rule.ResultSubstance.SubstanceId} amount={rule.ResultAmount} stack={resultStackId}");
 
+            firstDiscoveryRewardService.GrantForSubstance(rule.ResultSubstance.SubstanceId, resultPosition);
+            firstDiscoveryRewardService.GrantForOutputRule(rule.RuleId, resultPosition + OutputRuleRewardOffset);
+
             int slotIndex = 1;
             foreach (var byproduct in rule.Byproducts)
             {
                 if (byproduct == null || byproduct.Substance == null || byproduct.Amount <= 0)
+                    continue;
+
+                if (!CanCreateByproduct(byproduct))
                     continue;
 
                 Vector2 byproductPosition = GetOutputStackPosition(outputPosition, outputIndex, slotIndex);
@@ -408,8 +424,23 @@ namespace OneMoreSpoon.Game.Systems
                     byproductPosition);
 
                 Debug.Log($"[Output] ByproductCreated rule={rule.RuleId} substance={byproduct.Substance.SubstanceId} amount={byproduct.Amount} stack={byproductStackId}");
+                firstDiscoveryRewardService.GrantForSubstance(byproduct.Substance.SubstanceId, byproductPosition);
                 slotIndex++;
             }
+        }
+
+        private bool CanCreateByproduct(OutputByproduct byproduct)
+        {
+            foreach (var substanceId in byproduct.RequiredUndiscoveredSubstanceIds)
+            {
+                if (string.IsNullOrWhiteSpace(substanceId))
+                    continue;
+
+                if (discoveryService.IsEncountered(substanceId))
+                    return false;
+            }
+
+            return true;
         }
 
         private void CreateFallbackOutputStack(
@@ -422,6 +453,7 @@ namespace OneMoreSpoon.Game.Systems
             var stackId = world.CreateSubstanceStack(substanceId, 1, false, stackPosition);
 
             Debug.Log($"[Output] ResultCreated rule=Fallback substance={substanceId} amount=1 stack={stackId}");
+            firstDiscoveryRewardService.GrantForSubstance(substanceId, stackPosition);
         }
 
         private static Vector2 GetOutputStackPosition(
@@ -524,7 +556,7 @@ namespace OneMoreSpoon.Game.Systems
     {
         public static bool CanSpawnFlow(SubstanceKind kind)
         {
-            return kind == SubstanceKind.SourceMaterial;
+            return SubstanceKindRules.CanSpawnFlow(kind);
         }
     }
 }

@@ -1,283 +1,65 @@
-substanceId,displayName,kind,baseTags,baseValue,addedTags,durationMultiplier,valueMultiplier
-src_wheat,밀,SourceMaterial,source:wheat,0,,1,1
-src_chicken,닭고기,SourceMaterial,source:chicken,0,,1,1
-src_onion,양파,SourceMaterial,source:onion,0,,1,1
-trait_breakage,부서짐,TraitShard,,0,,1,1
-trait_impurity,불순물,TraitShard,,0,,1,1
-trait_uneven,불균일,TraitShard,,0,,1,1
-trait_weak_binding,결착부족,TraitShard,,0,,1,1
-trait_coating_failure,코팅부족,TraitShard,,0,,1,1
-trait_weak_flavor,향미부족,TraitShard,,0,,1,1
-trait_low_viscosity,점성부족,TraitShard,,0,,1,1
-trait_poor_dispersion,분산부족,TraitShard,,0,,1,1
-trait_scrap,자투리,TraitShard,,0,,1,1
-trait_thin_body,농도부족,TraitShard,,0,,1,1
-trait_moisture_loss,수분손실,TraitShard,,0,,1,1
-trait_excess_moisture,수분과다,TraitShard,,0,,1,1
-trait_sogginess,눅눅함,TraitShard,,0,,1,1
-trait_juice_separation,즙분리,TraitShard,,0,,1,1
-trait_clumping,뭉침,TraitShard,,0,,1,1
-trait_surface_film,표면막,TraitShard,,0,,1,1
-trait_underheated_core,내부미열,TraitShard,,0,,1,1
-trait_overheated_surface,표면과열,TraitShard,,0,,1,1
-trait_browning_lack,갈변부족,TraitShard,,0,,1,1
-edge_precise_cut,정밀절단,EdgeBlock,,0,edge:precise_cut,1,1
-edge_clean_separation,깨끗한분리,EdgeBlock,,0,edge:clean_separation,1,1
-edge_press_control,압착제어,EdgeBlock,,0,edge:press_control,1,1
-edge_uniform_mix,균일혼합,EdgeBlock,,0,edge:uniform_mix,1,1
-edge_binding_boost,결착강화,EdgeBlock,,0,edge:binding_boost,1,1
-edge_viscosity_control,점성조절,EdgeBlock,,0,edge:viscosity_control,1,1
-edge_surface_coating,표면코팅,EdgeBlock,,0,edge:surface_coating,1,1
-edge_heat_transfer,열전달개선,EdgeBlock,,0,edge:heat_transfer,1,1
-edge_moisture_retention,수분보존,EdgeBlock,,0,edge:moisture_retention,1,1
-edge_crisping,바삭화,EdgeBlock,,0,edge:crisping,1,1
-edge_browning_boost,갈변촉진,EdgeBlock,,0,edge:browning_boost,1,1
-edge_flavor_concentration,향미농축,EdgeBlock,,0,edge:flavor_concentration,1,1
-edge_viscosity_binding,점성조절+결착강화,EdgeBlock,,0,edge:viscosity_control|edge:binding_boost,1,1
-edge_crisping_browning,바삭화+갈변촉진,EdgeBlock,,0,edge:crisping|edge:browning_boost,1,1
-edge_heat_browning,열전달개선+갈변촉진,EdgeBlock,,0,edge:heat_transfer|edge:browning_boost,1,1
-edge_browning_flavor,갈변촉진+향미농축,EdgeBlock,,0,edge:browning_boost|edge:flavor_concentration,1,1
-dish_w01,깨진 밀알,Dish,,0,,1,1
-dish_w02,균일하게 쪼갠 밀알,Dish,,0,,1,1
-dish_w03,겨 섞인 밀알,Dish,,0,,1,1
-dish_w04,정리된 밀알,Dish,,0,,1,1
-dish_w05,거친 밀가루,Dish,,0,,1,1
-dish_w06,고운 밀가루,Dish,,0,,1,1
-dish_w07,깨진 밀알 반죽,Dish,,0,,1,1
-dish_w08,날가루 묻은 밀알,Dish,,0,,1,1
-dish_w09,부서진 밀덩이,Dish,,0,,1,1
-dish_w10,잡맛 나는 반죽,Dish,,0,,1,1
-dish_w11,겨 묻은 밀가루막,Dish,,0,,1,1
-dish_w12,거친 밀완자,Dish,,0,,1,1
-dish_w13,묽은 반죽,Dish,,0,,1,1
-dish_w14,안정된 밀반죽,Dish,,0,,1,1
-dish_w15,겉가루만 뭉친 덩어리,Dish,,0,,1,1
-dish_w16,갈라진 밀반죽,Dish,,0,,1,1
-dish_w17,단단히 잡힌 밀반죽,Dish,,0,,1,1
-dish_w18,깨진 밀알 빵,Dish,,0,,1,1
-dish_w19,깨진 밀알죽,Dish,,0,,1,1
-dish_w20,흩어진 밀알튀김,Dish,,0,,1,1
-dish_w21,날가루 묻은 밀구이,Dish,,0,,1,1
-dish_w22,풀어진 날가루 국물,Dish,,0,,1,1
-dish_w23,가루 흩어진 튀김 찌꺼기,Dish,,0,,1,1
-dish_w24,깨진 밀덩이구이,Dish,,0,,1,1
-dish_w25,부서진 밀경단탕,Dish,,0,,1,1
-dish_w26,깨진 밀덩이튀김,Dish,,0,,1,1
-dish_w27,겨 냄새 나는 빵,Dish,,0,,1,1
-dish_w28,겨 냄새 나는 밀죽,Dish,,0,,1,1
-dish_w29,거친 밀튀김,Dish,,0,,1,1
-dish_w30,잡맛 나는 밀구이,Dish,,0,,1,1
-dish_w31,겨 섞인 걸쭉한 국물,Dish,,0,,1,1
-dish_w32,잡맛 나는 튀김옷 조각,Dish,,0,,1,1
-dish_w33,거친 밀덩이구이,Dish,,0,,1,1
-dish_w34,거친 밀완자탕,Dish,,0,,1,1
-dish_w35,딱딱한 밀완자튀김,Dish,,0,,1,1
-dish_w36,덜 부푼 빵,Dish,,0,,1,1
-dish_w37,풀어진 밀죽,Dish,,0,,1,1
-dish_w38,기름먹은 밀튀김,Dish,,0,,1,1
-dish_w39,황금 크러스트 빵,FinalDish,,0,,1,1
-dish_c01,찢어진 닭조각,Dish,,0,,1,1
-dish_c02,균일한 닭조각,Dish,,0,,1,1
-dish_c03,지저분한 닭살,Dish,,0,,1,1
-dish_c04,깨끗한 닭살,Dish,,0,,1,1
-dish_c05,핏물 많은 닭,Dish,,0,,1,1
-dish_c06,물기 잡힌 닭살,Dish,,0,,1,1
-dish_c07,뭉친 닭고기 조각,Dish,,0,,1,1
-dish_c08,벗겨진 닭껍질,Dish,,0,,1,1
-dish_c09,부서지는 닭완자,Dish,,0,,1,1
-dish_c10,비린 닭고기 반죽,Dish,,0,,1,1
-dish_c11,고르게 섞인 닭고기 반죽,Dish,,0,,1,1
-dish_c12,얼룩진 닭껍질,Dish,,0,,1,1
-dish_c13,코팅된 닭살,Dish,,0,,1,1
-dish_c14,물러진 닭완자,Dish,,0,,1,1
-dish_c15,질척한 닭고기 반죽,Dish,,0,,1,1
-dish_c16,축축한 닭튀김옷,Dish,,0,,1,1
-dish_c17,단단한 닭완자,Dish,,0,,1,1
-dish_c18,퍽퍽한 닭조각구이,Dish,,0,,1,1
-dish_c19,탁한 닭국물,Dish,,0,,1,1
-dish_c20,흩어진 닭튀김,Dish,,0,,1,1
-dish_c21,벗겨진 닭구이,Dish,,0,,1,1
-dish_c22,풀어진 닭껍질국,Dish,,0,,1,1
-dish_c23,눅눅한 닭튀김,Dish,,0,,1,1
-dish_c24,갈라진 닭패티,Dish,,0,,1,1
-dish_c25,부서진 닭완자탕,Dish,,0,,1,1
-dish_c26,속 덜 익은 닭완자튀김,Dish,,0,,1,1
-dish_c27,밋밋한 닭구이,Dish,,0,,1,1
-dish_c28,묽은 닭수프,Dish,,0,,1,1
-dish_c29,덜 붙은 닭튀김,Dish,,0,,1,1
-dish_c30,덜 익은 로스트 치킨,Dish,,0,,1,1
-dish_c31,촉촉하지만 창백한 로스트 치킨,Dish,,0,,1,1
-dish_c32,겉은 좋은데 퍽퍽한 로스트 치킨,Dish,,0,,1,1
-dish_c33,껍질 풀어진 닭스튜,Dish,,0,,1,1
-dish_c34,바삭한 닭튀김,Dish,,0,,1,1
-dish_c35,마른 닭완자구이,Dish,,0,,1,1
-dish_c36,흐트러진 닭완자국,Dish,,0,,1,1
-dish_c37,딱딱한 닭완자튀김,Dish,,0,,1,1
-dish_c38,탄 닭껍질,Dish,,0,,1,1
-dish_o01,들쭉날쭉한 양파,Dish,,0,,1,1
-dish_o02,균일하게 썬 양파,Dish,,0,,1,1
-dish_o03,흩어진 양파 껍질,Dish,,0,,1,1
-dish_o04,깔끔히 벗긴 양파,Dish,,0,,1,1
-dish_o05,물 많은 양파즙,Dish,,0,,1,1
-dish_o06,농도 잡힌 양파즙,Dish,,0,,1,1
-dish_o07,향 없는 양파베이스,Dish,,0,,1,1
-dish_o08,고르게 섞인 양파베이스,Dish,,0,,1,1
-dish_o09,미끄러운 양파막,Dish,,0,,1,1
-dish_o10,뭉개진 양파덩이,Dish,,0,,1,1
-dish_o11,껍질 섞인 양파베이스,Dish,,0,,1,1
-dish_o12,벗겨지는 양파막,Dish,,0,,1,1
-dish_o13,흐트러진 양파완자,Dish,,0,,1,1
-dish_o14,물 많은 양파베이스,Dish,,0,,1,1
-dish_o15,눅눅한 양파코팅,Dish,,0,,1,1
-dish_o16,질척한 양파덩이,Dish,,0,,1,1
-dish_o17,덜 볶인 양파,Dish,,0,,1,1
-dish_o18,카라멜화 양파,Dish,,0,,1,1
-dish_o19,밍밍한 양파수프,Dish,,0,,1,1
-dish_o20,향 깊은 양파수프,Dish,,0,,1,1
-dish_o21,눅눅한 양파튀김,Dish,,0,,1,1
-dish_o22,미끄러진 양파구이,Dish,,0,,1,1
-dish_o23,풀어진 양파막국물,Dish,,0,,1,1
-dish_o24,벗겨진 양파튀김,Dish,,0,,1,1
-dish_o25,탄 양파덩이,Dish,,0,,1,1
-dish_o26,풀어진 양파완자탕,Dish,,0,,1,1
-dish_o27,속 물컹한 양파튀김,Dish,,0,,1,1
-dish_o28,잡맛 나는 볶은 양파,Dish,,0,,1,1
-dish_o29,껍질 맛 양파수프,Dish,,0,,1,1
-dish_o30,거친 양파튀김,Dish,,0,,1,1
-dish_o31,껍질 붙은 양파구이,Dish,,0,,1,1
-dish_o32,막 뜬 양파국물,Dish,,0,,1,1
-dish_o33,기름먹은 양파껍질튀김,Dish,,0,,1,1
-dish_o34,무너진 양파구이덩이,Dish,,0,,1,1
-dish_o35,흐트러진 양파탕,Dish,,0,,1,1
-dish_o36,갈라진 양파튀김덩이,Dish,,0,,1,1
-dish_o37,탄 양파즙,Dish,,0,,1,1
-dish_o38,진한 양파베이스,Dish,,0,,1,1
-dish_o39,카라멜 양파 수프,FinalDish,,0,,1,1
-dish_w40,덜 섞인 생가루 반죽,Dish,,0,,1,1
-dish_w41,날가루 코팅덩이,Dish,,0,,1,1
-dish_w42,무너진 밀덩이,Dish,,0,,1,1
-dish_w43,탄 밀알구이,Dish,,0,,1,1
-dish_w44,묽은 밀죽,Dish,,0,,1,1
-dish_w45,기름먹은 밀튀김,Dish,,0,,1,1
-dish_w46,깨진 밀알구이,Dish,,0,,1,1
-dish_w47,깨진 밀알죽,Dish,,0,,1,1
-dish_w48,흩어진 밀알튀김,Dish,,0,,1,1
-dish_w49,겨 냄새 나는 밀구이,Dish,,0,,1,1
-dish_w50,탁한 밀죽,Dish,,0,,1,1
-dish_w51,거친 밀튀김,Dish,,0,,1,1
-dish_w52,덜 부푼 납작빵,Dish,,0,,1,1
-dish_w53,풀어진 밀가루죽,Dish,,0,,1,1
-dish_w54,기름먹은 밀가루튀김,Dish,,0,,1,1
-dish_w55,갈라진 생반죽빵,Dish,,0,,1,1
-dish_w56,풀어진 반죽죽,Dish,,0,,1,1
-dish_w57,질척한 반죽튀김,Dish,,0,,1,1
-dish_w58,겉가루만 탄 밀구이,Dish,,0,,1,1
-dish_w59,풀어진 가루막 국물,Dish,,0,,1,1
-dish_w60,벗겨진 밀튀김옷,Dish,,0,,1,1
-dish_w61,단단한 밀덩이구이,Dish,,0,,1,1
-dish_w62,무너진 밀경단국,Dish,,0,,1,1
-dish_w63,속딱딱한 밀경단튀김,Dish,,0,,1,1
-dish_c40,뭉친 생닭반죽,Dish,,0,,1,1
-dish_c41,벗겨지는 닭코팅,Dish,,0,,1,1
-dish_c42,부서지는 생닭완자,Dish,,0,,1,1
-dish_c43,겉만 익은 닭고기,Dish,,0,,1,1
-dish_c44,구운 닭고기,Dish,,0,,1,1
-dish_c45,탁한 닭국물,Dish,,0,,1,1
-dish_c46,진한 닭육수,Dish,,0,,1,1
-dish_c47,눅눅한 닭튀김,Dish,,0,,1,1
-dish_c48,바삭한 닭튀김,Dish,,0,,1,1
-dish_c49,퍽퍽한 닭조각구이,Dish,,0,,1,1
-dish_c50,촉촉한 닭조각구이,Dish,,0,,1,1
-dish_c51,흐린 닭조각국,Dish,,0,,1,1
-dish_c52,흩어진 닭조각튀김,Dish,,0,,1,1
-dish_c53,밋밋한 닭구이,Dish,,0,,1,1
-dish_c54,깔끔한 닭구이,Dish,,0,,1,1
-dish_c55,비린 닭수프,Dish,,0,,1,1
-dish_c56,기름진 닭튀김,Dish,,0,,1,1
-dish_c57,퍽퍽한 압착닭구이,Dish,,0,,1,1
-dish_c58,핏물 뜬 닭국물,Dish,,0,,1,1
-dish_c59,딱딱한 닭튀김,Dish,,0,,1,1
-dish_c60,뭉친 닭고기구이,Dish,,0,,1,1
-dish_c61,흐트러진 닭고기수프,Dish,,0,,1,1
-dish_c62,덜 붙은 닭튀김,Dish,,0,,1,1
-dish_c63,벗겨진 닭구이,Dish,,0,,1,1
-dish_c64,껍질 좋은 닭구이,Dish,,0,,1,1
-dish_c65,풀어진 닭껍질국,Dish,,0,,1,1
-dish_c66,눅눅한 닭튀김옷,Dish,,0,,1,1
-dish_c67,갈라진 닭패티,Dish,,0,,1,1
-dish_c68,부서진 닭완자탕,Dish,,0,,1,1
-dish_c69,속 덜 익은 닭완자튀김,Dish,,0,,1,1
-dish_o40,향 없는 양파베이스,Dish,,0,,1,1
-dish_o41,미끄러운 양파막,Dish,,0,,1,1
-dish_o42,흐트러진 양파덩이,Dish,,0,,1,1
-dish_o43,탄 양파,Dish,,0,,1,1
-dish_o44,구운 양파,Dish,,0,,1,1
-dish_o45,밍밍한 양파국물,Dish,,0,,1,1
-dish_o46,진한 양파육수,Dish,,0,,1,1
-dish_o47,눅눅한 양파튀김,Dish,,0,,1,1
-dish_o48,바삭한 양파튀김,Dish,,0,,1,1
-dish_o49,덜 볶인 양파,Dish,,0,,1,1
-dish_o50,카라멜화 양파,Dish,,0,,1,1
-dish_o51,묽은 양파수프,Dish,,0,,1,1
-dish_o52,향 깊은 양파수프,Dish,,0,,1,1
-dish_o53,기름먹은 양파튀김,Dish,,0,,1,1
-dish_o54,껍질 탄 양파구이,Dish,,0,,1,1
-dish_o55,껍질 맛 양파국물,Dish,,0,,1,1
-dish_o56,거친 양파껍질튀김,Dish,,0,,1,1
-dish_o57,탄 양파즙,Dish,,0,,1,1
-dish_o58,물 많은 양파국물,Dish,,0,,1,1
-dish_o59,터진 양파즙튀김,Dish,,0,,1,1
-dish_o60,향 약한 볶은 양파,Dish,,0,,1,1
-dish_o61,고르게 볶은 양파,Dish,,0,,1,1
-dish_o62,밍밍한 양파수프,Dish,,0,,1,1
-dish_o63,향 깊은 양파수프,Dish,,0,,1,1
-dish_o64,흩어진 양파튀김,Dish,,0,,1,1
-dish_o65,미끄러진 양파구이,Dish,,0,,1,1
-dish_o66,막 뜬 양파국물,Dish,,0,,1,1
-dish_o67,벗겨진 양파튀김,Dish,,0,,1,1
-dish_o68,무너진 양파구이덩이,Dish,,0,,1,1
-dish_o69,흐트러진 양파완자탕,Dish,,0,,1,1
-dish_o70,속 물컹한 양파튀김덩이,Dish,,0,,1,1
-edge_structure_control,구조제어,EdgeBlock,,0,edge:structure_control,1,1
-dish_w64,탄탄한 밀완자,Dish,,0,,1,1
-dish_w65,탄탄한 밀완자구이,Dish,,0,,1,1
-dish_w66,탄탄한 밀경단국,Dish,,0,,1,1
-dish_w67,탄탄한 밀경단튀김,Dish,,0,,1,1
-dish_c70,탄탄한 닭완자,Dish,,0,,1,1
-dish_c71,탄탄한 닭패티구이,Dish,,0,,1,1
-dish_c72,탄탄한 닭완자탕,Dish,,0,,1,1
-dish_c73,탄탄한 닭완자튀김,Dish,,0,,1,1
-dish_o71,탄탄한 양파덩이,Dish,,0,,1,1
-dish_o72,탄탄한 양파구이덩이,Dish,,0,,1,1
-dish_o73,탄탄한 양파완자탕,Dish,,0,,1,1
-dish_o74,탄탄한 양파튀김덩이,Dish,,0,,1,1
-dish_w68,속 익은 밀알구이,Dish,,0,,1,1
-dish_w69,겉 탄 밀알구이,Dish,,0,,1,1
-dish_w70,진한 밀죽,Dish,,0,,1,1
-dish_w71,바삭한 밀튀김,Dish,,0,,1,1
-dish_w72,균일하게 섞인 밀반죽,Dish,,0,,1,1
-dish_w73,깔끔하게 섞인 밀반죽,Dish,,0,,1,1
-dish_w74,고른 밀가루막,Dish,,0,,1,1
-dish_w75,촉촉한 밀알구이,Dish,,0,,1,1
-dish_w76,갈변된 밀알구이,Dish,,0,,1,1
-dish_w77,정밀 갈변 밀알구이,Dish,,0,,1,1
-dish_w78,향 깊은 밀알죽,Dish,,0,,1,1
-dish_w79,고르게 구운 밀반죽,Dish,,0,,1,1
-dish_w80,향 깊은 밀반죽죽,Dish,,0,,1,1
-dish_w81,잘 코팅된 밀구이,Dish,,0,,1,1
-dish_c74,겉 탄 닭고기구이,Dish,,0,,1,1
-dish_c75,균일하게 섞인 닭반죽,Dish,,0,,1,1
-dish_c76,점도 잡힌 닭반죽,Dish,,0,,1,1
-dish_c77,결착된 닭완자,Dish,,0,,1,1
-dish_c78,갈변된 닭조각구이,Dish,,0,,1,1
-dish_c79,향 깊은 닭조각국,Dish,,0,,1,1
-dish_c80,고르게 구운 닭반죽,Dish,,0,,1,1
-dish_c81,향 깊은 닭반죽국,Dish,,0,,1,1
-dish_o75,고르게 익은 양파,Dish,,0,,1,1
-dish_o76,균일한 양파베이스,Dish,,0,,1,1
-dish_o77,깔끔한 양파막,Dish,,0,,1,1
-dish_o78,점도 잡힌 양파즙,Dish,,0,,1,1
-dish_o79,결착된 양파덩이,Dish,,0,,1,1
-dish_o80,촉촉한 양파구이,Dish,,0,,1,1
-dish_o81,갈변된 양파구이,Dish,,0,,1,1
-dish_o82,잘 코팅된 양파구이,Dish,,0,,1,1
+﻿substanceId,displayName,kind,baseTags,baseValue,addedTags,durationMultiplier,valueMultiplier
+person_twin,{{player_name}},Twin,person_twin,0,0,0,0
+person_tom,톰,Person,person_tom,0,0,0,0
+person_friend_tom,지인 톰,Person_Friend,person_friend_tom,0,0,0,0
+person_captive_tom,포획된 톰,Person_Captive,person_captive_tom,0,0,0,0
+person_create_tom,창조된 톰,Person_Replace,person_create_tom,0,0,0,0
+person_replace_tom,교체된 톰,Person_Create,person_replace_tom,0,0,0,0
+person_james,제임스,Person,person_james,0,0,0,0
+person_friend_james,지인 제임스,Person_Friend,person_friend_james,0,0,0,0
+person_captive_james,포획된 제임스,Person_Captive,person_captive_james,0,0,0,0
+person_create_james,창조된 제임스,Person_Replace,person_create_james,0,0,0,0
+person_replace_james,교체된 제임스,Person_Create,person_replace_james,0,0,0,0
+person_emily,에밀리,Person,person_emily,0,0,0,0
+person_friend_emily,지인 에밀리,Person_Friend,person_friend_emily,0,0,0,0
+person_captive_emily,포획된 에밀리,Person_Captive,person_captive_emily,0,0,0,0
+person_create_emily,창조된 에밀리,Person_Create,person_create_emily,0,0,0,0
+person_replace_emily,교체된 에밀리,Person_Replace,person_replace_emily,0,0,0,0
+,,,,,,,
+stance_relaxedness,여유,Stance,stance_relaxedness,0,0,0,0
+stance_curiosity,호기심,Stance,stance_curiosity,0,0,0,0
+stance_affection,호감,Stance,stance_affection,0,0,0,0
+stance_hobby_music,취미(음악),Stance,stance_hobby_music,0,0,0,0
+stance_hobby_art,취미(미술),Stance,stance_hobby_art,0,0,0,0
+stance_shamelessness,철면피,Stance,stance_shamelessness,0,0,0,0
+stance_vanity,허영심,Stance,stance_vanity,0,0,0,0
+stance_inferiority_complex,열등감,Stance,stance_inferiority_complex,0,0,0,0
+stance_muscular_type,근육형,Stance,stance_muscular_type,0,0,0,0
+stance_steroids,스테로이드,Stance,stance_steroids,0,0,0,0
+stance_show_off_desire,과시욕,Stance,stance_show_off_desire,0,0,0,0
+stance_narcissism,자기애,Stance,stance_narcissism,0,0,0,0
+stance_control,통제,Stance,stance_control,0,0,0,0
+stance_anxiety,불안,Stance,stance_anxiety,0,0,0,0
+stance_chubby_type,통통형,Stance,stance_chubby_type,0,0,0,0
+stance_new_life,새 생명,Stance,stance_new_life,0,0,0,0
+stance_indifference,무관심,Stance,stance_indifference,0,0,0,0
+stance_wariness,경계심,Stance,stance_wariness,0,0,0,0
+stance_goodwill,호의,Stance,stance_goodwill,0,0,0,0
+stance_trust,신뢰,Stance,stance_trust,0,0,0,0
+stance_empathy,공감,Stance,stance_empathy,0,0,0,0
+stance_hobby_movies,취미(영화),Stance,stance_hobby_movies,0,0,0,0
+stance_interest,관심,Stance,stance_interest,0,0,0,0
+trash_story_james,제임스의 이야기,Trash,trash_story_james,0,0,0,0
+trash_story_emily,에밀리의 이야기,Trash,trash_story_emily,0,0,0,0
+stance_alienation,괴리감,Stance,stance_alienation,0,0,0,0
+stance_emptiness,공허함,Stance,stance_emptiness,0,0,0,0
+stance_distortion,왜곡,Stance,stance_distortion,0,0,0,0
+,,,,,,,
+edgeblock_stance_friendliness,친근함,EdgeBlock_Stance,edgeblock_stance_friendliness,0,0,0,0
+edgeblock_stance_musical_temptation,음악적 유혹,EdgeBlock_Stance,edgeblock_stance_musical_temptation,0,0,0,0
+edgeblock_stance_artistic_temptation,미술적 유혹,EdgeBlock_Stance,edgeblock_stance_artistic_temptation,,,,
+edgeblock_stance_narcissism,나르시시즘,EdgeBlock_Stance,edgeblock_stance_narcissism,0,0,0,0
+edgeblock_stance_exercise_addiction,운동중독,EdgeBlock_Stance,edgeblock_stance_exercise_addiction,0,0,0,0
+edgeblock_stance_perfectionism,완벽주의,EdgeBlock_Stance,edgeblock_stance_perfectionism,0,0,0,0
+edgeblock_stance_pregnancy,임신,EdgeBlock_Stance,edgeblock_stance_pregnancy,0,0,0,0
+edgeblock_stance_consideration,배려,EdgeBlock_Stance,edgeblock_stance_consideration,0,0,0,0
+edgeblock_stance_interest,흥미,EdgeBlock_Stance,edgeblock_stance_interest,0,0,0,0
+edgeblock_stance_tenderness,다정함,EdgeBlock_Stance,edgeblock_stance_tenderness,0,0,0,0
+edgeblock_stance_bond,유대감,EdgeBlock_Stance,edgeblock_stance_bond,0,0,0,0
+edgeblock_stance_cinematic_allure,영화적 유혹,EdgeBlock_Stance,edgeblock_stance_cinematic_allure,0,0,0,0
+edgeblock_stance_lowered_boundaries,경계완화,EdgeBlock_Stance,edgeblock_stance_lowered_boundaries,0,0,0,0
+,,,,,,,
+stance_prayer,기도,Unique,stance_prayer,0,0,0,0
+stance_satisfaction,만족,Unique,stance_satisfaction,0,0,0,0
+stance_desire_to_conquer,정복욕,Unique,stance_desire_to_conquer,0,0,0,0
+stance_failure,실패,Unique,stance_failure,0,0,0,0

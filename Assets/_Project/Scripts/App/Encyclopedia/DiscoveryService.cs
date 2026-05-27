@@ -30,10 +30,6 @@ namespace OneMoreSpoon.App.Encyclopedia
         public bool IsNew(string substanceId) => state.IsNew(substanceId);
 
         private static bool IsEncyclopediaKind(SubstanceKind kind) =>
-            kind == SubstanceKind.Dish ||
-            kind == SubstanceKind.FinalDish ||
-            kind == SubstanceKind.EdgeBlock ||
-            kind == SubstanceKind.TraitShard ||
-            kind == SubstanceKind.SourceMaterial;
+            SubstanceKindRules.IsEncyclopediaKind(kind);
     }
 }

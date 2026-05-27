@@ -14,6 +14,7 @@ namespace OneMoreSpoon.Game.Definitions
         [SerializeField] private List<SO_SubstanceDefinition> substanceDefinitions = new();
         [SerializeField] private List<SO_OutputRuleDefinition> outputRuleDefinitions = new();
         [SerializeField] private List<SO_MergeRecipeDefinition> mergeRecipeDefinitions = new();
+        [SerializeField] private List<SO_FirstDiscoveryRewardDefinition> firstDiscoveryRewardDefinitions = new();
 
         [Header("Inspect Definitions")]
         [SerializeField] private List<SO_NodeInspectDefinition> nodeInspectDefinitions = new();
@@ -24,6 +25,7 @@ namespace OneMoreSpoon.Game.Definitions
         public IReadOnlyList<SO_SubstanceDefinition> SubstanceDefinitions => substanceDefinitions;
         public IReadOnlyList<SO_OutputRuleDefinition> OutputRuleDefinitions => outputRuleDefinitions;
         public IReadOnlyList<SO_MergeRecipeDefinition> MergeRecipeDefinitions => mergeRecipeDefinitions;
+        public IReadOnlyList<SO_FirstDiscoveryRewardDefinition> FirstDiscoveryRewardDefinitions => firstDiscoveryRewardDefinitions;
         public IReadOnlyList<SO_NodeInspectDefinition> NodeInspectDefinitions => nodeInspectDefinitions;
         public IReadOnlyList<SO_SubstanceInspectDefinition> SubstanceInspectDefinitions => substanceInspectDefinitions;
     }

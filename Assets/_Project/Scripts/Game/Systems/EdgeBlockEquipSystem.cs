@@ -43,7 +43,7 @@ namespace OneMoreSpoon.Game.Systems
                 return false;
             }
 
-            if (definition.Kind != SubstanceKind.EdgeBlock)
+            if (!SubstanceKindRules.CanEquipOnEdge(definition.Kind))
             {
                 Debug.LogWarning($"[EdgeBlockEquip] Failed edge={edgeId} stack={stackId} substance={stack.SubstanceId} reason=SubstanceIsNotEdgeBlock kind={definition.Kind}");
                 return false;

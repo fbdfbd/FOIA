@@ -1,11 +1,1 @@
-operationId,displayName,category,baseTags,duration,baseOutputIds,outputTags
-op_default,?? ??,Transfer,,5,,
-op_cut,??? ??,Transfer,,4,,
-op_separate,?? ??,Transfer,,5,,
-op_press,?? ??,Transfer,,5,,
-op_mix,?? ??,Transfer,,6,,
-op_coat,??? ??,Transfer,,5,,
-op_shape,?? ??,Transfer,,6,,
-op_bake,?? ??,Transfer,,8,,
-op_boil,??? ??,Transfer,,8,,
-op_fry,??? ??,Transfer,,7,,
+﻿operationId,displayName,category,baseTags,duration,baseOutputIds,outputTags

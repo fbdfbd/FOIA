@@ -1,4 +1,5 @@
 using OneMoreSpoon.App.Encyclopedia;
+using OneMoreSpoon.App.Rewards;
 using OneMoreSpoon.Game.Components;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
@@ -15,12 +16,14 @@ namespace OneMoreSpoon.Game.Systems
         private static readonly Vector2 StackSpacing = new(0.55f, 0f);
         private static readonly Vector2 EjectOffset = new(0f, -1.4f);
         private static readonly Vector2 ResultOffset = new(0f, 0.9f);
+        private static readonly Vector2 MergeRecipeRewardOffset = new(0f, -0.6f);
 
         private readonly GameWorld world;
         private readonly SubstanceStackSystem stackSystem;
         private readonly MergeRecipeRegistry recipeRegistry;
         private readonly SubstanceDefinitionRegistry substanceDefinitionRegistry;
         private readonly DiscoveryService discoveryService;
+        private readonly FirstDiscoveryRewardService firstDiscoveryRewardService;
         private readonly List<GameEntityId> mergeNodeBuffer = new();
         private readonly List<GameEntityId> remainingStackBuffer = new();
         private readonly List<string> inputSubstanceBuffer = new();
@@ -30,13 +33,15 @@ namespace OneMoreSpoon.Game.Systems
             SubstanceStackSystem stackSystem,
             MergeRecipeRegistry recipeRegistry,
             SubstanceDefinitionRegistry substanceDefinitionRegistry,
-            DiscoveryService discoveryService)
+            DiscoveryService discoveryService,
+            FirstDiscoveryRewardService firstDiscoveryRewardService)
         {
             this.world = world;
             this.stackSystem = stackSystem;
             this.recipeRegistry = recipeRegistry;
             this.substanceDefinitionRegistry = substanceDefinitionRegistry;
             this.discoveryService = discoveryService;
+            this.firstDiscoveryRewardService = firstDiscoveryRewardService;
         }
 
         public void Tick(float deltaTime)
@@ -92,8 +97,7 @@ namespace OneMoreSpoon.Game.Systems
 
         private static bool CanAddToMerge(SubstanceKind kind)
         {
-            return kind == SubstanceKind.TraitShard
-                || kind == SubstanceKind.EdgeBlock;
+            return SubstanceKindRules.CanMerge(kind);
         }
 
         private void TickMergeSlot(GameEntityId mergeNodeId, float deltaTime)
@@ -175,6 +179,8 @@ namespace OneMoreSpoon.Game.Systems
                 resultPosition);
 
             Debug.Log($"[Merge] RecipeResolved mergeNode={mergeNodeId} recipe={recipe.RecipeId} result={recipe.ResultSubstance.SubstanceId} amount={recipe.ResultAmount} stack={resultStackId}");
+            firstDiscoveryRewardService.GrantForSubstance(recipe.ResultSubstance.SubstanceId, resultPosition);
+            firstDiscoveryRewardService.GrantForMergeRecipe(recipe.RecipeId, resultPosition + MergeRecipeRewardOffset);
         }
 
         private bool TryBuildInputList(

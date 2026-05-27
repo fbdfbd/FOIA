@@ -1,4 +1,5 @@
 using OneMoreSpoon.Game.Components;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -55,6 +56,7 @@ namespace OneMoreSpoon.Game.Definitions
             string substanceId,
             TagComponent tags,
             FlowHistoryComponent history,
+            Func<string, bool> isSubstanceEncountered,
             out SO_OutputRuleDefinition rule)
         {
             foreach (var candidate in rules)
@@ -66,6 +68,9 @@ namespace OneMoreSpoon.Game.Definitions
                     continue;
 
                 if (!MatchesHistorySequence(candidate, history))
+                    continue;
+
+                if (!MatchesUndiscoveredConditions(candidate, isSubstanceEncountered))
                     continue;
 
                 rule = candidate;
@@ -100,10 +105,30 @@ namespace OneMoreSpoon.Game.Definitions
             return true;
         }
 
+        private static bool MatchesUndiscoveredConditions(
+            SO_OutputRuleDefinition rule,
+            Func<string, bool> isSubstanceEncountered)
+        {
+            foreach (var substanceId in rule.RequiredUndiscoveredSubstanceIds)
+            {
+                if (string.IsNullOrWhiteSpace(substanceId))
+                    continue;
+
+                if (isSubstanceEncountered != null && isSubstanceEncountered(substanceId))
+                    return false;
+            }
+
+            return true;
+        }
+
         private static int CompareSpecificity(
             SO_OutputRuleDefinition left,
             SO_OutputRuleDefinition right)
         {
+            var priorityCompare = right.Priority.CompareTo(left.Priority);
+            if (priorityCompare != 0)
+                return priorityCompare;
+
             var historyCompare = CountNonEmpty(right.RequiredHistorySequence)
                 .CompareTo(CountNonEmpty(left.RequiredHistorySequence));
             if (historyCompare != 0)
