@@ -9,3 +9,4 @@ node_act_offer,공양,1,Act,,node_act_offer
 node_unique_scan,스캔,1,Unique,,node_unique_scan
 node_unique_brain,생성1-뇌,40,Unique,,node_unique_brain
 node_unique_body,생성2-몸,40,Unique,,node_unique_body
+node_act_kickout,방출,45,Act,,node_act_kickout
