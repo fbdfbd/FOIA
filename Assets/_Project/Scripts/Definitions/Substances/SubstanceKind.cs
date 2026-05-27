@@ -49,6 +49,15 @@ namespace OneMoreSpoon.Game.Definitions
                 || kind == SubstanceKind.Person_Create;
         }
 
+        public static bool IsInfiniteStackKind(SubstanceKind kind)
+        {
+            return kind == SubstanceKind.Person
+                || kind == SubstanceKind.Person_Friend
+                || kind == SubstanceKind.Person_Captive
+                || kind == SubstanceKind.Person_Replace
+                || kind == SubstanceKind.Person_Create;
+        }
+
         public static bool IsStanceLike(SubstanceKind kind)
         {
             return kind == SubstanceKind.Stance;
