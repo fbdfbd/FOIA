@@ -1,7 +1,9 @@
 using OneMoreSpoon.App.Encyclopedia;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
+using OneMoreSpoon.Game.Factories;
 using OneMoreSpoon.Game.Systems;
+using OneMoreSpoon.View.Factories;
 using UnityEngine;
 
 namespace OneMoreSpoon.App.Rewards
@@ -10,6 +12,8 @@ namespace OneMoreSpoon.App.Rewards
     {
         private static readonly Vector2 SubstanceRewardOffset = new(0f, -0.8f);
         private static readonly Vector2 SubstanceRewardSpacing = new(0.55f, 0f);
+        private static readonly Vector2 NodeRewardOffset = new(0f, 1.2f);
+        private static readonly Vector2 NodeRewardSpacing = new(1.4f, 0f);
 
         private readonly GameWorld world;
         private readonly FirstDiscoveryRewardRegistry rewardRegistry;
@@ -17,7 +21,8 @@ namespace OneMoreSpoon.App.Rewards
         private readonly DiscoveryService discoveryService;
         private readonly SubstanceDefinitionRegistry substanceDefinitions;
         private readonly NodeDefinitionRegistry nodeDefinitions;
-        private readonly NodeInventoryState nodeInventory;
+        private readonly NodeFactory nodeFactory;
+        private readonly NodeViewFactory nodeViewFactory;
         private readonly PlayAreaBoundsSystem playAreaBounds;
 
         public FirstDiscoveryRewardService(
@@ -27,7 +32,8 @@ namespace OneMoreSpoon.App.Rewards
             DiscoveryService discoveryService,
             SubstanceDefinitionRegistry substanceDefinitions,
             NodeDefinitionRegistry nodeDefinitions,
-            NodeInventoryState nodeInventory,
+            NodeFactory nodeFactory,
+            NodeViewFactory nodeViewFactory,
             PlayAreaBoundsSystem playAreaBounds)
         {
             this.world = world;
@@ -36,7 +42,8 @@ namespace OneMoreSpoon.App.Rewards
             this.discoveryService = discoveryService;
             this.substanceDefinitions = substanceDefinitions;
             this.nodeDefinitions = nodeDefinitions;
-            this.nodeInventory = nodeInventory;
+            this.nodeFactory = nodeFactory;
+            this.nodeViewFactory = nodeViewFactory;
             this.playAreaBounds = playAreaBounds;
         }
 
@@ -66,6 +73,7 @@ namespace OneMoreSpoon.App.Rewards
 
             var rewards = rewardRegistry.GetRewards(triggerType, triggerId);
             var substanceRewardIndex = 0;
+            var nodeRewardIndex = 0;
 
             foreach (var reward in rewards)
             {
@@ -88,8 +96,11 @@ namespace OneMoreSpoon.App.Rewards
 
                 if (reward.RewardType == FirstDiscoveryRewardType.Node)
                 {
-                    if (AddNodeReward(reward))
+                    if (CreateNodeReward(reward, basePosition, nodeRewardIndex))
+                    {
                         rewardState.TryClaimGroup(reward.RewardGroup);
+                        nodeRewardIndex += reward.Amount;
+                    }
                 }
             }
         }
@@ -126,7 +137,10 @@ namespace OneMoreSpoon.App.Rewards
             return true;
         }
 
-        private bool AddNodeReward(SO_FirstDiscoveryRewardDefinition reward)
+        private bool CreateNodeReward(
+            SO_FirstDiscoveryRewardDefinition reward,
+            Vector2 basePosition,
+            int index)
         {
             if (!nodeDefinitions.TryGet(reward.RewardId, out var node))
             {
@@ -134,8 +148,14 @@ namespace OneMoreSpoon.App.Rewards
                 return false;
             }
 
-            nodeInventory.Add(node.DefinitionId, reward.Amount);
-            Debug.Log($"[FirstDiscoveryReward] Node granted id={node.DefinitionId} amount={reward.Amount}");
+            for (int i = 0; i < reward.Amount; i++)
+            {
+                var position = playAreaBounds.Clamp(basePosition + NodeRewardOffset + NodeRewardSpacing * (index + i));
+                var entityId = nodeFactory.CreateNode(node, position);
+                nodeViewFactory.Create(entityId);
+                Debug.Log($"[FirstDiscoveryReward] Node created id={node.DefinitionId} entity={entityId}");
+            }
+
             return true;
         }
     }
