@@ -289,7 +289,7 @@ namespace OneMoreSpoon.Game.Systems
             if (!world.Nodes.TryGetValue(edge.ToNodeId, out var toNode))
                 return false;
 
-            return fromNode.ProcessLayer < toNode.ProcessLayer;
+            return fromNode.ProcessLayer <= toNode.ProcessLayer;
         }
 
         private void AddFlowTags(

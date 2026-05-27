@@ -92,7 +92,7 @@ namespace OneMoreSpoon.View.Edges
             if (!World.Nodes.TryGetValue(toNodeId, out var toNode))
                 return false;
 
-            return fromNode.ProcessLayer < toNode.ProcessLayer;
+            return fromNode.ProcessLayer <= toNode.ProcessLayer;
         }
 
         private void UpdateWidth()
