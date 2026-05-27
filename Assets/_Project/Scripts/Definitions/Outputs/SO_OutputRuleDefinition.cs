@@ -10,6 +10,7 @@ namespace OneMoreSpoon.Game.Definitions
     {
         [Header("Identity")]
         [SerializeField] private string ruleId;
+        [SerializeField] private int priority;
 
         [Header("Match")]
         [SerializeField] private SO_SubstanceDefinition requiredSubstance;
@@ -24,6 +25,7 @@ namespace OneMoreSpoon.Game.Definitions
         [SerializeField] private List<OutputByproduct> byproducts = new();
 
         public string RuleId => ruleId;
+        public int Priority => priority;
         public SO_SubstanceDefinition RequiredSubstance => requiredSubstance;
         public IReadOnlyList<string> RequiredTags => requiredTags;
         public IReadOnlyList<string> RequiredHistorySequence => requiredHistorySequence;

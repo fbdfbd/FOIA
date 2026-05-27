@@ -146,6 +146,8 @@ namespace OneMoreSpoon.Editor
                     "ruleId");
                 var so = new SerializedObject(asset);
                 so.FindProperty("ruleId").stringValue = id;
+                so.FindProperty("priority").intValue =
+                    ImportAssetUtility.ParseInt(CsvReader.Get(row, "priority"), 0);
                 SetSubstanceRef(so, "requiredSubstance", substanceLookup, CsvReader.Get(row, "requiredSubstanceId"));
                 ImportAssetUtility.SetStringList(so, "requiredTags", CsvReader.Get(row, "requiredTags"));
                 ImportAssetUtility.SetStringList(so, "requiredHistorySequence", CsvReader.Get(row, "requiredHistorySequence"));

@@ -104,6 +104,10 @@ namespace OneMoreSpoon.Game.Definitions
             SO_OutputRuleDefinition left,
             SO_OutputRuleDefinition right)
         {
+            var priorityCompare = right.Priority.CompareTo(left.Priority);
+            if (priorityCompare != 0)
+                return priorityCompare;
+
             var historyCompare = CountNonEmpty(right.RequiredHistorySequence)
                 .CompareTo(CountNonEmpty(left.RequiredHistorySequence));
             if (historyCompare != 0)

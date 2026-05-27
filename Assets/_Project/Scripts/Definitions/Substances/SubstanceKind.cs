@@ -7,6 +7,12 @@ namespace OneMoreSpoon.Game.Definitions
         SourceMaterial,
         TraitShard,
         Dish,
-        FinalDish
+        FinalDish,
+        Twin,
+        Stance,
+        EdgeBlock_Stance,
+        Person,
+        Person_Friends,
+        Person_Captive,
     }
 }
