@@ -1,4 +1,4 @@
-ruleId,substanceId,amount
+ruleId,substanceId,amount,requiredUndiscoveredSubstanceIds
 rule_w01,trait_breakage,1
 rule_w03,trait_impurity,1
 rule_w05,trait_uneven,1

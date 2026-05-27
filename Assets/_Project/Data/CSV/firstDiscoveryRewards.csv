@@ -1,0 +1,4 @@
+triggerType,triggerId,rewardType,rewardId,amount,rewardGroup,requiredUndiscoveredSubstanceIds,note
+Substance,dish_o21,Substance,trait_soggy,1,,,첫 발견 보상
+OutputRule,rule_o21,Node,node_mix,1,,,믹스 노드 지급
+MergeRecipe,recipe_crisping,Node,node_bake,1,,,굽기 노드 지급

@@ -12,7 +12,11 @@ namespace OneMoreSpoon.Game.Definitions
         Stance,
         EdgeBlock_Stance,
         Person,
-        Person_Friends,
+        Person_Friend,
         Person_Captive,
+        Person_Replace,
+        Person_Create,
+        Unique,
+        Trash,
     }
 }

@@ -40,6 +40,10 @@ namespace OneMoreSpoon.Editor
                 ImportAssetUtility.LoadGeneratedAssets<SO_MergeRecipeDefinition>(ImportPaths.RecipeDir));
             ImportAssetUtility.SetObjectArray(
                 so,
+                "firstDiscoveryRewardDefinitions",
+                ImportAssetUtility.LoadGeneratedAssets<SO_FirstDiscoveryRewardDefinition>(ImportPaths.FirstDiscoveryRewardDir));
+            ImportAssetUtility.SetObjectArray(
+                so,
                 "nodeInspectDefinitions",
                 ImportAssetUtility.LoadGeneratedAssets<SO_NodeInspectDefinition>(ImportPaths.NodeInspectDir));
             ImportAssetUtility.SetObjectArray(

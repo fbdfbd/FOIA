@@ -17,6 +17,7 @@ namespace OneMoreSpoon.Editor
                 ImportPaths.OperationDir,
                 ImportPaths.OutputRuleDir,
                 ImportPaths.RecipeDir,
+                ImportPaths.FirstDiscoveryRewardDir,
                 ImportPaths.NodeInspectDir,
                 ImportPaths.SubstanceInspectDir
             })

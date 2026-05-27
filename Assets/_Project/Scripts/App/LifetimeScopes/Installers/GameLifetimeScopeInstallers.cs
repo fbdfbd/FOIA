@@ -6,6 +6,7 @@ using OneMoreSpoon.App.Inspect;
 using OneMoreSpoon.App.Inspect.Providers;
 using OneMoreSpoon.App.Loop;
 using OneMoreSpoon.App.Messaging;
+using OneMoreSpoon.App.Rewards;
 using OneMoreSpoon.App.State;
 using OneMoreSpoon.App.Tutorial;
 using OneMoreSpoon.Game.Core;
@@ -118,6 +119,10 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
                 definitionCatalog != null
                     ? definitionCatalog.MergeRecipeDefinitions
                     : Array.Empty<SO_MergeRecipeDefinition>()));
+            builder.RegisterInstance(new FirstDiscoveryRewardRegistry(
+                definitionCatalog != null
+                    ? definitionCatalog.FirstDiscoveryRewardDefinitions
+                    : Array.Empty<SO_FirstDiscoveryRewardDefinition>()));
             builder.RegisterInstance(new NodeInspectDefinitionRegistry(
                 definitionCatalog != null
                     ? definitionCatalog.NodeInspectDefinitions
@@ -149,6 +154,8 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             builder.Register<GameWorld>(Lifetime.Singleton);
             builder.Register<SelectionState>(Lifetime.Singleton);
             builder.Register<EdgeConnectionState>(Lifetime.Singleton);
+            builder.Register<FirstDiscoveryRewardState>(Lifetime.Singleton);
+            builder.Register<NodeInventoryState>(Lifetime.Singleton);
             builder.Register<ToastMessageQueue>(Lifetime.Singleton);
         }
 
@@ -166,6 +173,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             builder.Register<SubstanceDockLayoutSettings>(Lifetime.Singleton);
             builder.Register<SubstanceDockDepthState>(Lifetime.Singleton);
             builder.Register<SubstanceDockSystem>(Lifetime.Singleton);
+            builder.Register<FirstDiscoveryRewardService>(Lifetime.Singleton);
         }
 
         public static void InstallGameFactories(this IContainerBuilder builder)
