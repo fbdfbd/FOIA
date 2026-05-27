@@ -25,6 +25,7 @@ namespace OneMoreSpoon.Game.Systems
         private readonly OperationDefinitionRegistry operationDefinitionRegistry;
         private readonly OutputRuleRegistry outputRuleRegistry;
         private readonly SubstanceStackSpawnService stackSpawnService;
+        private readonly NodePassEffectService nodePassEffectService;
         private readonly ToastMessageQueue toastMessageQueue;
         private readonly DiscoveryService discoveryService;
         private readonly FirstDiscoveryRewardService firstDiscoveryRewardService;
@@ -40,6 +41,7 @@ namespace OneMoreSpoon.Game.Systems
             OperationDefinitionRegistry operationDefinitionRegistry,
             OutputRuleRegistry outputRuleRegistry,
             SubstanceStackSpawnService stackSpawnService,
+            NodePassEffectService nodePassEffectService,
             ToastMessageQueue toastMessageQueue,
             DiscoveryService discoveryService,
             FirstDiscoveryRewardService firstDiscoveryRewardService)
@@ -50,6 +52,7 @@ namespace OneMoreSpoon.Game.Systems
             this.operationDefinitionRegistry = operationDefinitionRegistry;
             this.outputRuleRegistry = outputRuleRegistry;
             this.stackSpawnService = stackSpawnService;
+            this.nodePassEffectService = nodePassEffectService;
             this.toastMessageQueue = toastMessageQueue;
             this.discoveryService = discoveryService;
             this.firstDiscoveryRewardService = firstDiscoveryRewardService;
@@ -212,16 +215,19 @@ namespace OneMoreSpoon.Game.Systems
                 if (toNode.Category == NodeCategory.Output)
                 {
                     flow.ArriveAtOutput(edge.ToNodeId);
+                    world.Flows[flowEntityId] = flow;
                     ApplyNodeEffects(flowEntityId, edge.ToNodeId);
                     Debug.Log($"[Flow] ArrivedAtOutput entity={flowEntityId} outputNode={edge.ToNodeId} viaEdge={completedEdgeId}");
+                    continue;
                 }
                 else
                 {
                     flow.ArriveAtNode(edge.ToNodeId);
+                    world.Flows[flowEntityId] = flow;
                     ApplyNodeEffects(flowEntityId, edge.ToNodeId);
+                    nodePassEffectService.ApplyAfterNode(flowEntityId, edge.ToNodeId);
+                    continue;
                 }
-
-                world.Flows[flowEntityId] = flow;
             }
         }
 
@@ -562,6 +568,156 @@ namespace OneMoreSpoon.Game.Systems
         public static bool CanSpawnFlow(SubstanceKind kind)
         {
             return SubstanceKindRules.CanSpawnFlow(kind);
+        }
+    }
+
+    public sealed class NodePassEffectService
+    {
+        private const string OfferNodeId = "node_act_offer";
+        private static readonly Vector2 OfferOutputOffset = new(0f, -0.8f);
+        private static readonly Vector2 OfferOutputSpacing = new(0.6f, 0f);
+        private static readonly Vector2 OfferRuleRewardOffset = new(0f, -0.6f);
+
+        private readonly GameWorld world;
+        private readonly NodeDefinitionRegistry nodeDefinitions;
+        private readonly SubstanceDefinitionRegistry substanceDefinitions;
+        private readonly OutputRuleRegistry outputRuleRegistry;
+        private readonly SubstanceStackSpawnService stackSpawnService;
+        private readonly DiscoveryService discoveryService;
+        private readonly FirstDiscoveryRewardService firstDiscoveryRewardService;
+
+        public NodePassEffectService(
+            GameWorld world,
+            NodeDefinitionRegistry nodeDefinitions,
+            SubstanceDefinitionRegistry substanceDefinitions,
+            OutputRuleRegistry outputRuleRegistry,
+            SubstanceStackSpawnService stackSpawnService,
+            DiscoveryService discoveryService,
+            FirstDiscoveryRewardService firstDiscoveryRewardService)
+        {
+            this.world = world;
+            this.nodeDefinitions = nodeDefinitions;
+            this.substanceDefinitions = substanceDefinitions;
+            this.outputRuleRegistry = outputRuleRegistry;
+            this.stackSpawnService = stackSpawnService;
+            this.discoveryService = discoveryService;
+            this.firstDiscoveryRewardService = firstDiscoveryRewardService;
+        }
+
+        public void ApplyAfterNode(GameEntityId flowEntityId, GameEntityId nodeId)
+        {
+            if (!world.Nodes.TryGetValue(nodeId, out var node))
+                return;
+
+            if (!nodeDefinitions.TryGet(node.DefinitionId, out var nodeDefinition))
+                return;
+
+            if (nodeDefinition.DefinitionId != OfferNodeId)
+                return;
+
+            ApplyOffer(flowEntityId, nodeId);
+        }
+
+        private void ApplyOffer(GameEntityId flowEntityId, GameEntityId nodeId)
+        {
+            if (!world.Substances.TryGetValue(flowEntityId, out var substance))
+                return;
+
+            if (!substanceDefinitions.TryGet(substance.SubstanceId, out var offeredSubstance))
+                return;
+
+            if (offeredSubstance.Kind != SubstanceKind.Person_Captive)
+                return;
+
+            world.Tags.TryGetValue(flowEntityId, out var tags);
+            world.FlowHistories.TryGetValue(flowEntityId, out var history);
+
+            if (!outputRuleRegistry.TryGetMatch(
+                substance.SubstanceId,
+                tags,
+                history,
+                discoveryService.IsEncountered,
+                out var rule))
+            {
+                Debug.LogWarning($"[NodePassEffect] Offer rule missing flow={flowEntityId} substance={substance.SubstanceId}");
+                ConsumeFlow(flowEntityId);
+                return;
+            }
+
+            CreateOfferRuleOutputs(rule, nodeId);
+            ConsumeFlow(flowEntityId);
+
+            Debug.Log($"[NodePassEffect] OfferRuleApplied flow={flowEntityId} rule={rule.RuleId} offered={substance.SubstanceId}");
+        }
+
+        private void CreateOfferRuleOutputs(SO_OutputRuleDefinition rule, GameEntityId nodeId)
+        {
+            var basePosition = world.Positions.TryGetValue(nodeId, out var nodePosition)
+                ? nodePosition.Value
+                : new Vector2();
+
+            var resultPosition = GetOfferOutputPosition(basePosition, 0);
+            discoveryService.NotifyEncountered(rule.ResultSubstance.SubstanceId);
+            var resultStackId = stackSpawnService.CreateOrTransitionStack(
+                rule.ResultSubstance,
+                rule.ResultAmount,
+                false,
+                resultPosition);
+
+            Debug.Log($"[NodePassEffect] OfferResultCreated rule={rule.RuleId} substance={rule.ResultSubstance.SubstanceId} amount={rule.ResultAmount} stack={resultStackId}");
+
+            firstDiscoveryRewardService.GrantForSubstance(rule.ResultSubstance.SubstanceId, resultPosition);
+            firstDiscoveryRewardService.GrantForOutputRule(rule.RuleId, resultPosition + OfferRuleRewardOffset);
+
+            var slotIndex = 1;
+            foreach (var byproduct in rule.Byproducts)
+            {
+                if (byproduct == null || byproduct.Substance == null || byproduct.Amount <= 0)
+                    continue;
+
+                if (!CanCreateByproduct(byproduct))
+                    continue;
+
+                var byproductPosition = GetOfferOutputPosition(basePosition, slotIndex);
+                discoveryService.NotifyEncountered(byproduct.Substance.SubstanceId);
+                var byproductStackId = stackSpawnService.CreateOrTransitionStack(
+                    byproduct.Substance,
+                    byproduct.Amount,
+                    false,
+                    byproductPosition);
+
+                Debug.Log($"[NodePassEffect] OfferByproductCreated rule={rule.RuleId} substance={byproduct.Substance.SubstanceId} amount={byproduct.Amount} stack={byproductStackId}");
+                firstDiscoveryRewardService.GrantForSubstance(byproduct.Substance.SubstanceId, byproductPosition);
+                slotIndex++;
+            }
+        }
+
+        private bool CanCreateByproduct(OutputByproduct byproduct)
+        {
+            foreach (var substanceId in byproduct.RequiredUndiscoveredSubstanceIds)
+            {
+                if (string.IsNullOrWhiteSpace(substanceId))
+                    continue;
+
+                if (discoveryService.IsEncountered(substanceId))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static Vector2 GetOfferOutputPosition(Vector2 basePosition, int slotIndex)
+        {
+            return basePosition + OfferOutputOffset + OfferOutputSpacing * slotIndex;
+        }
+
+        private void ConsumeFlow(GameEntityId flowEntityId)
+        {
+            if (!world.Flows.TryGetValue(flowEntityId, out var flow))
+                return;
+
+            flow.Consume();
+            world.Flows[flowEntityId] = flow;
         }
     }
 }
