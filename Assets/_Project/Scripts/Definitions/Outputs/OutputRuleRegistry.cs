@@ -70,6 +70,9 @@ namespace OneMoreSpoon.Game.Definitions
                 if (!MatchesHistorySequence(candidate, history))
                     continue;
 
+                if (!MatchesDiscoveredConditions(candidate, isSubstanceEncountered))
+                    continue;
+
                 if (!MatchesUndiscoveredConditions(candidate, isSubstanceEncountered))
                     continue;
 
@@ -99,6 +102,22 @@ namespace OneMoreSpoon.Game.Definitions
                     continue;
 
                 if (tags == null || !tags.Has(requiredTag))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static bool MatchesDiscoveredConditions(
+            SO_OutputRuleDefinition rule,
+            Func<string, bool> isSubstanceEncountered)
+        {
+            foreach (var substanceId in rule.RequiredDiscoveredSubstanceIds)
+            {
+                if (string.IsNullOrWhiteSpace(substanceId))
+                    continue;
+
+                if (isSubstanceEncountered == null || !isSubstanceEncountered(substanceId))
                     return false;
             }
 
@@ -138,6 +157,16 @@ namespace OneMoreSpoon.Game.Definitions
                 .CompareTo(CountNonEmpty(left.RequiredTags));
             if (tagCompare != 0)
                 return tagCompare;
+
+            var discoveredCompare = CountNonEmpty(right.RequiredDiscoveredSubstanceIds)
+                .CompareTo(CountNonEmpty(left.RequiredDiscoveredSubstanceIds));
+            if (discoveredCompare != 0)
+                return discoveredCompare;
+
+            var undiscoveredCompare = CountNonEmpty(right.RequiredUndiscoveredSubstanceIds)
+                .CompareTo(CountNonEmpty(left.RequiredUndiscoveredSubstanceIds));
+            if (undiscoveredCompare != 0)
+                return undiscoveredCompare;
 
             return string.CompareOrdinal(left.RuleId, right.RuleId);
         }

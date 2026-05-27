@@ -16,6 +16,7 @@ namespace OneMoreSpoon.Game.Definitions
         [SerializeField] private SO_SubstanceDefinition requiredSubstance;
         [SerializeField] private List<string> requiredTags = new();
         [SerializeField] private List<string> requiredHistorySequence = new();
+        [SerializeField] private List<string> requiredDiscoveredSubstanceIds = new();
         [SerializeField] private List<string> requiredUndiscoveredSubstanceIds = new();
 
         [Header("Result")]
@@ -30,6 +31,7 @@ namespace OneMoreSpoon.Game.Definitions
         public SO_SubstanceDefinition RequiredSubstance => requiredSubstance;
         public IReadOnlyList<string> RequiredTags => requiredTags;
         public IReadOnlyList<string> RequiredHistorySequence => requiredHistorySequence;
+        public IReadOnlyList<string> RequiredDiscoveredSubstanceIds => requiredDiscoveredSubstanceIds;
         public IReadOnlyList<string> RequiredUndiscoveredSubstanceIds => requiredUndiscoveredSubstanceIds;
         public SO_SubstanceDefinition ResultSubstance => resultSubstance;
         public int ResultAmount => Mathf.Max(1, resultAmount);
