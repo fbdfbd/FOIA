@@ -158,6 +158,7 @@ MonoBehaviour:
   selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   normalZ: 0
   pressedZOffset: -0.5
+  moveTweenDuration: 0.14
 --- !u!1 &6235216329081267852
 GameObject:
   m_ObjectHideFlags: 0
@@ -250,12 +251,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.25
+  m_fontSize: 0.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0.001
-  m_fontSizeMax: 9
+  m_fontSizeMax: 0.2
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512

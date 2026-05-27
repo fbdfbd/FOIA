@@ -17,6 +17,7 @@ namespace OneMoreSpoon.Game.Systems
         private const float InputDepartureInterval = 1f;
         private static readonly Vector2 OutputStackOffset = new(0f, -1.2f);
         private static readonly Vector2 OutputStackSpacing = new(0.6f, 0f);
+        private static readonly Vector2 OutputGroupSpacing = new(0f, -0.75f);
         private static readonly Vector2 OutputRuleRewardOffset = new(0f, -0.6f);
 
         private readonly GameWorld world;
@@ -458,7 +459,7 @@ namespace OneMoreSpoon.Game.Systems
         {
             return outputPosition
                 + OutputStackOffset
-                + OutputStackSpacing * outputIndex
+                + OutputGroupSpacing * outputIndex
                 + OutputStackSpacing * slotIndex;
         }
 
