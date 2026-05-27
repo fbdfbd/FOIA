@@ -155,7 +155,6 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             builder.Register<SelectionState>(Lifetime.Singleton);
             builder.Register<EdgeConnectionState>(Lifetime.Singleton);
             builder.Register<FirstDiscoveryRewardState>(Lifetime.Singleton);
-            builder.Register<NodeInventoryState>(Lifetime.Singleton);
             builder.Register<ToastMessageQueue>(Lifetime.Singleton);
         }
 

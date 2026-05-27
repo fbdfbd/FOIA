@@ -19,6 +19,8 @@ MonoBehaviour:
     Position: {x: 0, y: 0}
   - Definition: {fileID: 11400000, guid: d4de1990dab896f4d8aa79901e12d523, type: 2}
     Position: {x: 0, y: 0}
+  - Definition: {fileID: 11400000, guid: 7fa903f8525cbcd42be7319a70beff80, type: 2}
+    Position: {x: 0, y: 0}
   initialSubstanceStacks:
   - SubstanceDefinition: {fileID: 11400000, guid: ac51820b3606d6c48ae5e978450b2e08, type: 2}
     Amount: 0
