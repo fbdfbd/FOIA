@@ -1,5 +1,5 @@
 ﻿substanceId,displayName,kind,baseTags,baseValue,addedTags,durationMultiplier,valueMultiplier
-person_twin,{{player_name}},Twin,person_twin,0,0,0,0
+person_twin,창조된 쌍둥이,Twin,person_twin,0,0,0,0
 person_tom,톰,Person,person_tom,0,0,0,0
 person_friend_tom,지인 톰,Person_Friend,person_friend_tom,0,0,0,0
 person_captive_tom,포획된 톰,Person_Captive,person_captive_tom,0,0,0,0
