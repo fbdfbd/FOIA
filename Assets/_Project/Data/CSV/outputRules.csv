@@ -2,8 +2,8 @@
 twin_park,100,person_twin,node_place_park,node:node_place_park,,person_tom,stance_relaxedness
 twin_park_default,0,person_twin,node_place_park,node:node_place_park,,,stance_relaxedness
 twin_park_talk_default,0,person_twin,node_place_park|node_act_talk,node:node_place_park|node:node_act_talk,,,stance_relaxedness
-twin_park_get_james,50,person_twin,node_place_park,node:node_place_park,person_captive_tom,person_james,stance_curiosity
-twin_park_get_emily,30,person_twin,node_place_park,node:node_place_park,person_captive_james,person_emily,stance_wariness
+twin_park_get_james,50,person_twin,node_place_park,node:node_place_park,person_captive_tom,person_james,stance_relaxedness
+twin_park_get_emily,30,person_twin,node_place_park,node:node_place_park,person_captive_james,person_emily,stance_relaxedness
 ,,,,,,,
 twin_park_talk_tom,60,person_twin,node_place_park|node_act_talk,node:node_place_park|node:node_act_talk,,person_captive_tom,stance_goodwill
 tom_talk,60,person_tom,node_act_talk,node:node_act_talk,,person_captive_tom,stance_goodwill
@@ -74,6 +74,11 @@ emily_success,0,person_captive_emily,node_unique_scan|edgeblock_stance_narcissis
 emily_fail_distortion,0,person_captive_emily,node_unique_scan|node_unique_brain|node_unique_body,node:node_unique_scan|node:node_unique_brain|node:node_unique_body,,,stance_distortion
 ,,,,,,,
 ,,,,,,,
+,,,,,,,
 tom_offer,0,person_captive_tom,node_act_offer,node:node_act_offer,,,stance_prayer
-tom_offer,0,person_captive_tom,node_act_offer,node:node_act_offer,,,stance_prayer
-twin_park,100,person_twin,node_place_park,node:node_place_park,,person_tom,stance_relaxedness
+,,,,,,,
+,,,,,,,
+james_kickout,10,person_create_james,node_act_kickout,node:node_act_kickout,,,
+james_offer,10,person_captive_james,node_act_offer,node:node_act_offer,,,stance_prayer
+emily_kickout,10,person_create_emily,node_act_kickout,node:node_act_kickout,,,
+emily_offer,10,person_captive_emily,node_act_offer,node:node_act_offer,,,stance_prayer

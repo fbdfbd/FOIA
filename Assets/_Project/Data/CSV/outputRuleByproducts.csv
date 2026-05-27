@@ -1,1 +1,3 @@
 ﻿ruleId,substanceId,amount,requiredUndiscoveredSubstanceIds
+james_kickout,person_replace_james,1,
+emily_kickout,person_replace_emily,1,
