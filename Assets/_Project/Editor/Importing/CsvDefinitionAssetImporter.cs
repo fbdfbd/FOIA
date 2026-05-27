@@ -154,6 +154,10 @@ namespace OneMoreSpoon.Editor
                 ImportAssetUtility.SetStringList(so, "requiredHistorySequence", CsvReader.Get(row, "requiredHistorySequence"));
                 ImportAssetUtility.SetStringList(
                     so,
+                    "requiredDiscoveredSubstanceIds",
+                    CsvReader.Get(row, "requiredDiscoveredSubstanceIds"));
+                ImportAssetUtility.SetStringList(
+                    so,
                     "requiredUndiscoveredSubstanceIds",
                     CsvReader.Get(row, "requiredUndiscoveredSubstanceIds"));
                 SetSubstanceRef(so, "resultSubstance", substanceLookup, CsvReader.Get(row, "resultSubstanceId"));
