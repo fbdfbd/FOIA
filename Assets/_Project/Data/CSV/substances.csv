@@ -3,13 +3,13 @@ person_twin,창조된 쌍둥이,Twin,person_twin,0,0,0,0
 person_tom,톰,Person,person_tom,0,0,0,0
 person_friend_tom,지인 톰,Person_Friend,person_friend_tom,0,0,0,0
 person_captive_tom,포획된 톰,Person_Captive,person_captive_tom,0,0,0,0
-person_create_tom,창조된 톰,Person_Replace,person_create_tom,0,0,0,0
-person_replace_tom,교체된 톰,Person_Create,person_replace_tom,0,0,0,0
+person_create_tom,창조된 톰,Person_Create,person_create_tom,0,0,0,0
+person_replace_tom,교체된 톰,Person_Replace,person_replace_tom,0,0,0,0
 person_james,제임스,Person,person_james,0,0,0,0
 person_friend_james,지인 제임스,Person_Friend,person_friend_james,0,0,0,0
 person_captive_james,포획된 제임스,Person_Captive,person_captive_james,0,0,0,0
-person_create_james,창조된 제임스,Person_Replace,person_create_james,0,0,0,0
-person_replace_james,교체된 제임스,Person_Create,person_replace_james,0,0,0,0
+person_create_james,창조된 제임스,Person_Create,person_create_james,0,0,0,0
+person_replace_james,교체된 제임스,Person_Replace,person_replace_james,0,0,0,0
 person_emily,에밀리,Person,person_emily,0,0,0,0
 person_friend_emily,지인 에밀리,Person_Friend,person_friend_emily,0,0,0,0
 person_captive_emily,포획된 에밀리,Person_Captive,person_captive_emily,0,0,0,0

@@ -11,6 +11,12 @@ namespace OneMoreSpoon.View.Substances
 
         public SubstanceDockKind DockKind => dockKind;
 
+        private void Awake()
+        {
+            if (TryGetComponent(out SpriteRenderer spriteRenderer))
+                spriteRenderer.sortingOrder = -10;
+        }
+
         public SubstanceDockArea ToArea()
         {
             return new SubstanceDockArea(

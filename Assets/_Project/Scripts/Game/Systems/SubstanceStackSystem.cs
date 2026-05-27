@@ -415,7 +415,11 @@ namespace OneMoreSpoon.Game.Systems
             if (stackBuffer.Count <= 0)
                 return;
 
-            SubstanceDockArea area = GetArea(dockKind);
+            if (!TryGetArea(dockKind, out SubstanceDockArea area))
+            {
+                Debug.LogWarning($"[SubstanceDock] Area not found kind={dockKind}");
+                return;
+            }
 
             for (int i = 0; i < stackBuffer.Count; i++)
             {
@@ -450,12 +454,12 @@ namespace OneMoreSpoon.Game.Systems
 
             float horizontalSpacing = columns <= 1
                 ? 0f
-                : Mathf.Min(settings.HorizontalSpacing, usableWidth / (columns - 1));
+                : settings.HorizontalSpacing;
 
             float usableHeight = Mathf.Max(0.1f, bounds.size.y - settings.VerticalPadding * 2f);
             float verticalSpacing = rows <= 1
                 ? 0f
-                : Mathf.Min(settings.VerticalSpacing, usableHeight / (rows - 1));
+                : settings.VerticalSpacing;
 
             int column = index % columns;
             int row = index / columns;
@@ -465,13 +469,19 @@ namespace OneMoreSpoon.Game.Systems
                 bounds.max.y - settings.VerticalPadding - verticalSpacing * row);
         }
 
-        private SubstanceDockArea GetArea(SubstanceDockKind dockKind)
+        private bool TryGetArea(SubstanceDockKind dockKind, out SubstanceDockArea dockArea)
         {
             foreach (var area in Areas)
+            {
                 if (area.Kind == dockKind)
-                    return area;
+                {
+                    dockArea = area;
+                    return true;
+                }
+            }
 
-            return default;
+            dockArea = default;
+            return false;
         }
 
         private IReadOnlyList<SubstanceDockArea> FindSceneAreas()

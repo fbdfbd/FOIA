@@ -3174,6 +3174,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2940623091060929926, guid: c2ab735c623997949829843b70677abc, type: 3}
+      propertyPath: m_text
+      value: "\uD2B9\uBCC4\uD55C \uAC83"
+      objectReference: {fileID: 0}
     - target: {fileID: 3233564860967844469, guid: c2ab735c623997949829843b70677abc, type: 3}
       propertyPath: m_Name
       value: EncyclopediaViewPrerab
@@ -3193,6 +3197,10 @@ PrefabInstance:
     - target: {fileID: 4542895580612941473, guid: c2ab735c623997949829843b70677abc, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4883461067600111726, guid: c2ab735c623997949829843b70677abc, type: 3}
+      propertyPath: m_text
+      value: "\uC5E3\uC9C0\uBE14\uB85D"
       objectReference: {fileID: 0}
     - target: {fileID: 5059441701215972146, guid: c2ab735c623997949829843b70677abc, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3248,7 +3256,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8398596416922372067, guid: c2ab735c623997949829843b70677abc, type: 3}
       propertyPath: m_text
-      value: "\uC694\uB9AC"
+      value: "\uC778\uAC04"
       objectReference: {fileID: 0}
     - target: {fileID: 8538486430933728993, guid: c2ab735c623997949829843b70677abc, type: 3}
       propertyPath: m_SizeDelta.y

@@ -1,5 +1,6 @@
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
+using OneMoreSpoon.Game.Rules;
 using UnityEngine;
 using GameEntityId = OneMoreSpoon.Game.Core.EntityId;
 
@@ -43,6 +44,12 @@ namespace OneMoreSpoon.Game.Factories
             if (fromNode.Category == NodeCategory.Merge || toNode.Category == NodeCategory.Merge)
             {
                 Debug.LogWarning($"[EdgeConnection] Rejected from={fromNodeId} to={toNodeId} reason=MergeNodeCannotConnect");
+                return false;
+            }
+
+            if (!EdgeConnectionRule.CanConnect(fromNode.Category, toNode.Category, out var rejectReason))
+            {
+                Debug.LogWarning($"[EdgeConnection] Rejected from={fromNodeId} to={toNodeId} reason={rejectReason}");
                 return false;
             }
 
