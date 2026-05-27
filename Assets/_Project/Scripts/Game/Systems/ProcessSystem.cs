@@ -644,10 +644,11 @@ namespace OneMoreSpoon.Game.Systems
                 return;
             }
 
+            var removedStackCount = stackSpawnService.RemovePersonStacks(substance.SubstanceId);
             CreateOfferRuleOutputs(rule, nodeId);
             ConsumeFlow(flowEntityId);
 
-            Debug.Log($"[NodePassEffect] OfferRuleApplied flow={flowEntityId} rule={rule.RuleId} offered={substance.SubstanceId}");
+            Debug.Log($"[NodePassEffect] OfferRuleApplied flow={flowEntityId} rule={rule.RuleId} offered={substance.SubstanceId} removedStacks={removedStackCount}");
         }
 
         private void CreateOfferRuleOutputs(SO_OutputRuleDefinition rule, GameEntityId nodeId)

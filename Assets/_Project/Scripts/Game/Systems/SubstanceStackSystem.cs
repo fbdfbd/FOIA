@@ -121,6 +121,31 @@ namespace OneMoreSpoon.Game.Systems
             return stackId;
         }
 
+        public int RemovePersonStacks(string substanceId)
+        {
+            if (!PersonSubstanceIdentityParser.TryParse(substanceId, out var identity))
+                return 0;
+
+            matchingPersonStackIds.Clear();
+
+            foreach (var pair in world.SubstanceStacks)
+            {
+                if (!IsSameCharacter(pair.Value.SubstanceId, identity.CharacterKey))
+                    continue;
+
+                matchingPersonStackIds.Add(pair.Key);
+            }
+
+            for (var i = 0; i < matchingPersonStackIds.Count; i++)
+            {
+                var stackId = matchingPersonStackIds[i];
+                world.SubstanceStacks.Remove(stackId);
+                world.Positions.Remove(stackId);
+            }
+
+            return matchingPersonStackIds.Count;
+        }
+
         private bool TryFindExistingPersonStack(
             string characterKey,
             out GameEntityId stackId)
