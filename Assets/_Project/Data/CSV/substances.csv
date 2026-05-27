@@ -45,19 +45,19 @@ stance_alienation,괴리감,Stance,stance_alienation,0,0,0,0
 stance_emptiness,공허함,Stance,stance_emptiness,0,0,0,0
 stance_distortion,왜곡,Stance,stance_distortion,0,0,0,0
 ,,,,,,,
-edgeblock_stance_friendliness,친근함,EdgeBlock_Stance,edgeblock_stance_friendliness,0,0,0,0
-edgeblock_stance_musical_temptation,음악적 유혹,EdgeBlock_Stance,edgeblock_stance_musical_temptation,0,0,0,0
-edgeblock_stance_artistic_temptation,미술적 유혹,EdgeBlock_Stance,edgeblock_stance_artistic_temptation,,,,
-edgeblock_stance_narcissism,나르시시즘,EdgeBlock_Stance,edgeblock_stance_narcissism,0,0,0,0
-edgeblock_stance_exercise_addiction,운동중독,EdgeBlock_Stance,edgeblock_stance_exercise_addiction,0,0,0,0
-edgeblock_stance_perfectionism,완벽주의,EdgeBlock_Stance,edgeblock_stance_perfectionism,0,0,0,0
-edgeblock_stance_pregnancy,임신,EdgeBlock_Stance,edgeblock_stance_pregnancy,0,0,0,0
-edgeblock_stance_consideration,배려,EdgeBlock_Stance,edgeblock_stance_consideration,0,0,0,0
-edgeblock_stance_interest,흥미,EdgeBlock_Stance,edgeblock_stance_interest,0,0,0,0
-edgeblock_stance_tenderness,다정함,EdgeBlock_Stance,edgeblock_stance_tenderness,0,0,0,0
-edgeblock_stance_bond,유대감,EdgeBlock_Stance,edgeblock_stance_bond,0,0,0,0
-edgeblock_stance_cinematic_allure,영화적 유혹,EdgeBlock_Stance,edgeblock_stance_cinematic_allure,0,0,0,0
-edgeblock_stance_lowered_boundaries,경계완화,EdgeBlock_Stance,edgeblock_stance_lowered_boundaries,0,0,0,0
+edgeblock_stance_friendliness,친근함,EdgeBlock_Stance,,0,edgeblock_stance_friendliness,0,0
+edgeblock_stance_musical_temptation,음악적 유혹,EdgeBlock_Stance,,0,edgeblock_stance_musical_temptation,0,0
+edgeblock_stance_artistic_temptation,미술적 유혹,EdgeBlock_Stance,,,edgeblock_stance_artistic_temptation,,
+edgeblock_stance_narcissism,나르시시즘,EdgeBlock_Stance,,0,edgeblock_stance_narcissism,0,0
+edgeblock_stance_exercise_addiction,운동중독,EdgeBlock_Stance,,0,edgeblock_stance_exercise_addiction,0,0
+edgeblock_stance_perfectionism,완벽주의,EdgeBlock_Stance,,0,edgeblock_stance_perfectionism,0,0
+edgeblock_stance_pregnancy,임신,EdgeBlock_Stance,,0,edgeblock_stance_pregnancy,0,0
+edgeblock_stance_consideration,배려,EdgeBlock_Stance,,0,edgeblock_stance_consideration,0,0
+edgeblock_stance_interest,흥미,EdgeBlock_Stance,,0,edgeblock_stance_interest,0,0
+edgeblock_stance_tenderness,다정함,EdgeBlock_Stance,,0,edgeblock_stance_tenderness,0,0
+edgeblock_stance_bond,유대감,EdgeBlock_Stance,,0,edgeblock_stance_bond,0,0
+edgeblock_stance_cinematic_allure,영화적 유혹,EdgeBlock_Stance,,0,edgeblock_stance_cinematic_allure,0,0
+edgeblock_stance_lowered_boundaries,경계완화,EdgeBlock_Stance,,0,edgeblock_stance_lowered_boundaries,0,0
 ,,,,,,,
 stance_prayer,기도,Unique,stance_prayer,0,0,0,0
 stance_satisfaction,만족,Unique,stance_satisfaction,0,0,0,0
