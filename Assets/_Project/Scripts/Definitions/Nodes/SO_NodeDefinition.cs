@@ -13,7 +13,7 @@ namespace OneMoreSpoon.Game.Definitions
         [SerializeField] private string displayName;
 
         [Header("Classification")]
-        [SerializeField] private ProcessLayer processLayer;
+        [SerializeField] private int processLayer;
         [SerializeField] private NodeCategory category;
         [SerializeField] private List<string> baseTags = new();
 
@@ -22,7 +22,7 @@ namespace OneMoreSpoon.Game.Definitions
 
         public string DefinitionId => definitionId;
         public string DisplayName => displayName;
-        public ProcessLayer ProcessLayer => processLayer;
+        public int ProcessLayer => processLayer;
         public NodeCategory Category => category;
         public IReadOnlyList<string> BaseTags => baseTags;
         public IReadOnlyList<string> AddedFlowTags => addedFlowTags;

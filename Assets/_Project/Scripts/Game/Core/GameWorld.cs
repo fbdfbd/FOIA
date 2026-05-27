@@ -31,7 +31,7 @@ namespace OneMoreSpoon.Game.Core
 
         public EntityId CreateNode(
             string definitionId,
-            ProcessLayer processLayer,
+            int processLayer,
             NodeCategory category,
             Vector2 position,
             IReadOnlyList<string> baseTags)

@@ -3,10 +3,10 @@ namespace OneMoreSpoon.Game.Definitions
     public enum NodeCategory
     {
         Input,
-        Process,
+        Output,
         Merge,
-        Split,
-        Storage,
-        Output
+        Place,
+        Act,
+        Unique,
     }
 }

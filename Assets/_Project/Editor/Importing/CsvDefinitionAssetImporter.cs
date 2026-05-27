@@ -77,7 +77,8 @@ namespace OneMoreSpoon.Editor
                 var so = new SerializedObject(asset);
                 so.FindProperty("definitionId").stringValue = id;
                 so.FindProperty("displayName").stringValue = CsvReader.Get(row, "displayName");
-                ImportAssetUtility.SetEnum(so, "processLayer", CsvReader.Get(row, "processLayer"), ProcessLayer.Source);
+                so.FindProperty("processLayer").intValue =
+                    ImportAssetUtility.ParseInt(CsvReader.Get(row, "processLayer"));
                 ImportAssetUtility.SetEnum(so, "category", CsvReader.Get(row, "category"), NodeCategory.Input);
                 ImportAssetUtility.SetStringList(so, "baseTags", CsvReader.Get(row, "baseTags"));
                 ImportAssetUtility.SetStringList(so, "addedFlowTags", CsvReader.Get(row, "addedFlowTags"));
