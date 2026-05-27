@@ -1987,7 +1987,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  definitionCatalog: {fileID: 11400000, guid: 784a6a0386c7c7c4f8c8ffb6766711f1, type: 2}
+  definitionCatalog: {fileID: 11400000, guid: 7d1e9d255f996fe4890aaf2b5ebb1a70, type: 2}
   initialLevelLayout: {fileID: 11400000, guid: ac5dc5fdc7b4e1044ba5e32f720deb3c, type: 2}
   viewRegistry: {fileID: 490406068}
   inputNodeViewPrefab: {fileID: 158862403785399452, guid: 7b756fef13a6ebe449d822578c270186, type: 3}
@@ -2000,6 +2000,9 @@ MonoBehaviour:
   flowViewPrefab: {fileID: 8734692758741452506, guid: 2c2bfdf25dd2a0e44bc9365324243193, type: 3}
   inspectPanelViewPrefab: {fileID: 614641285}
   encyclopediaViewPrefab: {fileID: 896160203}
+  enableTutorial: 0
+  tutorialDialogView: {fileID: 0}
+  tutorialGoalView: {fileID: 0}
   mainGamePanelRenderer: {fileID: 872954707}
   nodePlacementPadding: 0.4
 --- !u!4 &1193802636
