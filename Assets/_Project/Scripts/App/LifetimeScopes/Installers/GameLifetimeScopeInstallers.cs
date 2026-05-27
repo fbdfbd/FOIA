@@ -162,6 +162,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
         {
             builder.Register<PlacementRuleSystem>(Lifetime.Singleton);
             builder.Register<NodeMoveSystem>(Lifetime.Singleton);
+            builder.Register<SubstanceStackSpawnService>(Lifetime.Singleton);
             builder.Register<ProcessSystem>(Lifetime.Singleton);
             builder.Register<EdgeDeleteSystem>(Lifetime.Singleton);
             builder.Register<SubstanceStackSystem>(Lifetime.Singleton);
