@@ -66,6 +66,120 @@ namespace OneMoreSpoon.Game.Systems
         }
     }
 
+    public sealed class SubstanceStackSpawnService
+    {
+        private readonly GameWorld world;
+        private readonly SubstanceDefinitionRegistry substanceDefinitions;
+        private readonly List<GameEntityId> matchingPersonStackIds = new();
+
+        public SubstanceStackSpawnService(
+            GameWorld world,
+            SubstanceDefinitionRegistry substanceDefinitions)
+        {
+            this.world = world;
+            this.substanceDefinitions = substanceDefinitions;
+        }
+
+        public GameEntityId CreateOrTransitionStack(
+            SO_SubstanceDefinition definition,
+            int amount,
+            bool isInfinite,
+            Vector2 position)
+        {
+            if (definition == null)
+                return GameEntityId.Invalid;
+
+            if (!IsStatefulPerson(definition.Kind) ||
+                !PersonSubstanceIdentityParser.TryParse(definition.SubstanceId, out var targetIdentity))
+            {
+                return world.CreateSubstanceStack(
+                    definition.SubstanceId,
+                    Mathf.Max(0, amount),
+                    isInfinite,
+                    position);
+            }
+
+            if (!TryFindExistingPersonStack(targetIdentity.CharacterKey, out var stackId))
+            {
+                return world.CreateSubstanceStack(
+                    definition.SubstanceId,
+                    Mathf.Max(0, amount),
+                    true,
+                    position);
+            }
+
+            var existingStack = world.SubstanceStacks[stackId];
+            world.SubstanceStacks[stackId] = new SubstanceStackComponent(
+                definition.SubstanceId,
+                Mathf.Max(existingStack.Amount, amount),
+                true);
+            world.Positions[stackId] = new PositionComponent(position);
+
+            RemoveExtraPersonStacks(stackId);
+
+            Debug.Log($"[SubstanceStack] PersonTransition character={targetIdentity.CharacterKey} state={targetIdentity.State} stack={stackId} substance={definition.SubstanceId}");
+            return stackId;
+        }
+
+        private bool TryFindExistingPersonStack(
+            string characterKey,
+            out GameEntityId stackId)
+        {
+            matchingPersonStackIds.Clear();
+
+            foreach (var pair in world.SubstanceStacks)
+            {
+                if (!IsSameCharacter(pair.Value.SubstanceId, characterKey))
+                    continue;
+
+                matchingPersonStackIds.Add(pair.Key);
+            }
+
+            matchingPersonStackIds.Sort((left, right) => left.Value.CompareTo(right.Value));
+
+            if (matchingPersonStackIds.Count <= 0)
+            {
+                stackId = GameEntityId.Invalid;
+                return false;
+            }
+
+            stackId = matchingPersonStackIds[0];
+            return true;
+        }
+
+        private void RemoveExtraPersonStacks(GameEntityId retainedStackId)
+        {
+            for (var i = 0; i < matchingPersonStackIds.Count; i++)
+            {
+                var stackId = matchingPersonStackIds[i];
+                if (stackId == retainedStackId)
+                    continue;
+
+                world.SubstanceStacks.Remove(stackId);
+                world.Positions.Remove(stackId);
+            }
+        }
+
+        private bool IsSameCharacter(string substanceId, string characterKey)
+        {
+            if (!substanceDefinitions.TryGet(substanceId, out var definition))
+                return false;
+
+            return IsStatefulPerson(definition.Kind) &&
+                PersonSubstanceIdentityParser.TryParse(substanceId, out var identity) &&
+                identity.CharacterKey == characterKey;
+        }
+
+        private static bool IsStatefulPerson(SubstanceKind kind)
+        {
+            return kind == SubstanceKind.Person
+                || kind == SubstanceKind.Person_Friend
+                || kind == SubstanceKind.Person_Captive
+                || kind == SubstanceKind.Person_Create
+                || kind == SubstanceKind.Person_Replace;
+        }
+    }
+
     public enum SubstanceDockKind
     {
         Dish,

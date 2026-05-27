@@ -24,6 +24,7 @@ namespace OneMoreSpoon.Game.Systems
         private readonly SubstanceDefinitionRegistry substanceDefinitionRegistry;
         private readonly OperationDefinitionRegistry operationDefinitionRegistry;
         private readonly OutputRuleRegistry outputRuleRegistry;
+        private readonly SubstanceStackSpawnService stackSpawnService;
         private readonly ToastMessageQueue toastMessageQueue;
         private readonly DiscoveryService discoveryService;
         private readonly FirstDiscoveryRewardService firstDiscoveryRewardService;
@@ -38,6 +39,7 @@ namespace OneMoreSpoon.Game.Systems
             SubstanceDefinitionRegistry substanceDefinitionRegistry,
             OperationDefinitionRegistry operationDefinitionRegistry,
             OutputRuleRegistry outputRuleRegistry,
+            SubstanceStackSpawnService stackSpawnService,
             ToastMessageQueue toastMessageQueue,
             DiscoveryService discoveryService,
             FirstDiscoveryRewardService firstDiscoveryRewardService)
@@ -47,6 +49,7 @@ namespace OneMoreSpoon.Game.Systems
             this.substanceDefinitionRegistry = substanceDefinitionRegistry;
             this.operationDefinitionRegistry = operationDefinitionRegistry;
             this.outputRuleRegistry = outputRuleRegistry;
+            this.stackSpawnService = stackSpawnService;
             this.toastMessageQueue = toastMessageQueue;
             this.discoveryService = discoveryService;
             this.firstDiscoveryRewardService = firstDiscoveryRewardService;
@@ -395,8 +398,8 @@ namespace OneMoreSpoon.Game.Systems
         {
             Vector2 resultPosition = GetOutputStackPosition(outputPosition, outputIndex, 0);
             discoveryService.NotifyEncountered(rule.ResultSubstance.SubstanceId);
-            var resultStackId = world.CreateSubstanceStack(
-                rule.ResultSubstance.SubstanceId,
+            var resultStackId = stackSpawnService.CreateOrTransitionStack(
+                rule.ResultSubstance,
                 rule.ResultAmount,
                 false,
                 resultPosition);
@@ -417,8 +420,8 @@ namespace OneMoreSpoon.Game.Systems
 
                 Vector2 byproductPosition = GetOutputStackPosition(outputPosition, outputIndex, slotIndex);
                 discoveryService.NotifyEncountered(byproduct.Substance.SubstanceId);
-                var byproductStackId = world.CreateSubstanceStack(
-                    byproduct.Substance.SubstanceId,
+                var byproductStackId = stackSpawnService.CreateOrTransitionStack(
+                    byproduct.Substance,
                     byproduct.Amount,
                     false,
                     byproductPosition);
@@ -450,7 +453,9 @@ namespace OneMoreSpoon.Game.Systems
         {
             Vector2 stackPosition = GetOutputStackPosition(outputPosition, outputIndex, 0);
             discoveryService.NotifyEncountered(substanceId);
-            var stackId = world.CreateSubstanceStack(substanceId, 1, false, stackPosition);
+            var stackId = substanceDefinitionRegistry.TryGet(substanceId, out var definition)
+                ? stackSpawnService.CreateOrTransitionStack(definition, 1, false, stackPosition)
+                : world.CreateSubstanceStack(substanceId, 1, false, stackPosition);
 
             Debug.Log($"[Output] ResultCreated rule=Fallback substance={substanceId} amount=1 stack={stackId}");
             firstDiscoveryRewardService.GrantForSubstance(substanceId, stackPosition);

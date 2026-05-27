@@ -21,6 +21,7 @@ namespace OneMoreSpoon.App.Rewards
         private readonly DiscoveryService discoveryService;
         private readonly SubstanceDefinitionRegistry substanceDefinitions;
         private readonly NodeDefinitionRegistry nodeDefinitions;
+        private readonly SubstanceStackSpawnService stackSpawnService;
         private readonly NodeFactory nodeFactory;
         private readonly NodeViewFactory nodeViewFactory;
         private readonly PlayAreaBoundsSystem playAreaBounds;
@@ -32,6 +33,7 @@ namespace OneMoreSpoon.App.Rewards
             DiscoveryService discoveryService,
             SubstanceDefinitionRegistry substanceDefinitions,
             NodeDefinitionRegistry nodeDefinitions,
+            SubstanceStackSpawnService stackSpawnService,
             NodeFactory nodeFactory,
             NodeViewFactory nodeViewFactory,
             PlayAreaBoundsSystem playAreaBounds)
@@ -42,6 +44,7 @@ namespace OneMoreSpoon.App.Rewards
             this.discoveryService = discoveryService;
             this.substanceDefinitions = substanceDefinitions;
             this.nodeDefinitions = nodeDefinitions;
+            this.stackSpawnService = stackSpawnService;
             this.nodeFactory = nodeFactory;
             this.nodeViewFactory = nodeViewFactory;
             this.playAreaBounds = playAreaBounds;
@@ -132,7 +135,7 @@ namespace OneMoreSpoon.App.Rewards
 
             var position = playAreaBounds.Clamp(basePosition + SubstanceRewardOffset + SubstanceRewardSpacing * index);
             var isInfinite = SubstanceKindRules.IsInfiniteStackKind(substance.Kind);
-            var stackId = world.CreateSubstanceStack(substance.SubstanceId, reward.Amount, isInfinite, position);
+            var stackId = stackSpawnService.CreateOrTransitionStack(substance, reward.Amount, isInfinite, position);
             discoveryService.NotifyEncountered(substance.SubstanceId);
 
             Debug.Log($"[FirstDiscoveryReward] Substance granted id={substance.SubstanceId} amount={reward.Amount} stack={stackId}");
