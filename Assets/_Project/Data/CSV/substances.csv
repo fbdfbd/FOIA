@@ -44,6 +44,16 @@ trash_story_emily,에밀리의 이야기,Trash,trash_story_emily,0,0,0,0
 stance_alienation,괴리감,Stance,stance_alienation,0,0,0,0
 stance_emptiness,공허함,Stance,stance_emptiness,0,0,0,0
 stance_distortion,왜곡,Stance,stance_distortion,0,0,0,0
+stance_awkwardness,어색함,Stance,stance_awkwardness,0,0,0,0
+stance_pressure,압박감,Stance,stance_pressure,0,0,0,0
+stance_suspicion,의심,Stance,stance_suspicion,0,0,0,0
+stance_rejection,거부감,Stance,stance_rejection,0,0,0,0
+stance_uneasiness,불편함,Stance,stance_uneasiness,0,0,0,0
+stance_contamination,오염,Stance,stance_contamination,0,0,0,0
+stance_malformation,변형,Stance,stance_malformation,0,0,0,0
+stance_desecration,모독,Stance,stance_desecration,0,0,0,0
+stance_resistance,저항,Stance,stance_resistance,0,0,0,0
+stance_interference,간섭,Stance,stance_interference,0,0,0,0
 ,,,,,,,
 edgeblock_stance_friendliness,친근함,EdgeBlock_Stance,,0,edgeblock_stance_friendliness,0,0
 edgeblock_stance_musical_temptation,음악적 유혹,EdgeBlock_Stance,,0,edgeblock_stance_musical_temptation,0,0

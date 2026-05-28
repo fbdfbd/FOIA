@@ -387,7 +387,9 @@ namespace OneMoreSpoon.Game.Systems
                 out var rule))
             {
                 Debug.Log($"[Output] RuleMatched entity={flowEntityId} rule={rule.RuleId} substance={substance.SubstanceId}");
-                CreateRuleOutputStacks(rule, outputPosition.Value, outputIndex);
+
+                if (!TryCreateEdgeBlockFailureOutput(rule, history, outputPosition.Value, outputIndex))
+                    CreateRuleOutputStacks(rule, outputPosition.Value, outputIndex);
             }
             else
             {
@@ -436,6 +438,34 @@ namespace OneMoreSpoon.Game.Systems
                 firstDiscoveryRewardService.GrantForSubstance(byproduct.Substance.SubstanceId, byproductPosition);
                 slotIndex++;
             }
+        }
+
+        private bool TryCreateEdgeBlockFailureOutput(
+            SO_OutputRuleDefinition matchedRule,
+            FlowHistoryComponent history,
+            Vector2 outputPosition,
+            int outputIndex)
+        {
+            if (!EdgeBlockOutcomeRule.TryGetInvalidResult(matchedRule, history, out var resultSubstanceId))
+                return false;
+
+            if (!substanceDefinitionRegistry.TryGet(resultSubstanceId, out var resultDefinition))
+            {
+                Debug.LogError($"[Output] EdgeBlock failure substance missing id={resultSubstanceId} rule={matchedRule.RuleId}");
+                return false;
+            }
+
+            var resultPosition = GetOutputStackPosition(outputPosition, outputIndex, 0);
+            discoveryService.NotifyEncountered(resultSubstanceId);
+            var resultStackId = stackSpawnService.CreateOrTransitionStack(
+                resultDefinition,
+                1,
+                false,
+                resultPosition);
+
+            Debug.Log($"[Output] EdgeBlockFailure rule={matchedRule.RuleId} substance={resultSubstanceId} stack={resultStackId}");
+            firstDiscoveryRewardService.GrantForSubstance(resultSubstanceId, resultPosition);
+            return true;
         }
 
         private bool CanCreateByproduct(OutputByproduct byproduct)
@@ -556,6 +586,165 @@ namespace OneMoreSpoon.Game.Systems
         }
     }
 
+    public static class EdgeBlockOutcomeRule
+    {
+        private const string EdgeBlockHistoryPrefix = "edgeBlock:";
+        private const string NodeHistoryPrefix = "node:";
+
+        private const string AwkwardnessResultId = "stance_awkwardness";
+        private const string PressureResultId = "stance_pressure";
+        private const string SuspicionResultId = "stance_suspicion";
+        private const string RejectionResultId = "stance_rejection";
+        private const string UneasinessResultId = "stance_uneasiness";
+        private const string ContaminationResultId = "stance_contamination";
+        private const string MalformationResultId = "stance_malformation";
+        private const string DesecrationResultId = "stance_desecration";
+        private const string ResistanceResultId = "stance_resistance";
+        private const string InterferenceResultId = "stance_interference";
+
+        public static bool TryGetInvalidResult(
+            SO_OutputRuleDefinition matchedRule,
+            FlowHistoryComponent history,
+            out string resultSubstanceId)
+        {
+            resultSubstanceId = string.Empty;
+
+            if (matchedRule == null || history == null)
+                return false;
+
+            var allowedBlocks = CountAllowedBlocks(matchedRule.RequiredHistorySequence);
+            for (var i = 0; i < history.Entries.Count; i++)
+            {
+                var entry = history.Entries[i];
+                if (!IsEdgeBlockEntry(entry))
+                    continue;
+
+                if (TryConsumeAllowedBlock(allowedBlocks, entry))
+                    continue;
+
+                var targetNodeId = FindFollowingNodeId(history.Entries, i + 1);
+                resultSubstanceId = ResolveFailureResult(
+                    entry.Substring(EdgeBlockHistoryPrefix.Length),
+                    targetNodeId,
+                    matchedRule.RequiredSubstance?.SubstanceId);
+                return true;
+            }
+
+            return false;
+        }
+
+        private static Dictionary<string, int> CountAllowedBlocks(IReadOnlyList<string> requiredHistory)
+        {
+            var counts = new Dictionary<string, int>();
+
+            if (requiredHistory == null)
+                return counts;
+
+            foreach (var entry in requiredHistory)
+            {
+                if (!IsEdgeBlockEntry(entry))
+                    continue;
+
+                if (counts.TryGetValue(entry, out var count))
+                    counts[entry] = count + 1;
+                else
+                    counts.Add(entry, 1);
+            }
+
+            return counts;
+        }
+
+        private static bool TryConsumeAllowedBlock(Dictionary<string, int> allowedBlocks, string entry)
+        {
+            if (!allowedBlocks.TryGetValue(entry, out var count))
+                return false;
+
+            if (count <= 1)
+                allowedBlocks.Remove(entry);
+            else
+                allowedBlocks[entry] = count - 1;
+
+            return true;
+        }
+
+        private static string FindFollowingNodeId(IReadOnlyList<string> history, int startIndex)
+        {
+            for (var i = startIndex; i < history.Count; i++)
+            {
+                var entry = history[i];
+                if (entry != null && entry.StartsWith(NodeHistoryPrefix, System.StringComparison.Ordinal))
+                    return entry.Substring(NodeHistoryPrefix.Length);
+            }
+
+            return string.Empty;
+        }
+
+        private static string ResolveFailureResult(
+            string blockSubstanceId,
+            string targetNodeId,
+            string inputSubstanceId)
+        {
+            switch (targetNodeId)
+            {
+                case "node_act_talk":
+                    return ResolveTalkFailure(blockSubstanceId, inputSubstanceId);
+                case "node_place_park":
+                case "node_place_wcc":
+                    return UneasinessResultId;
+                case "node_unique_scan":
+                case "node_unique_brain":
+                    return ContaminationResultId;
+                case "node_unique_body":
+                    return MalformationResultId;
+                case "node_act_offer":
+                    return DesecrationResultId;
+                case "node_act_kickout":
+                    return ResistanceResultId;
+                case "node_base_output":
+                    return InterferenceResultId;
+                default:
+                    return InterferenceResultId;
+            }
+        }
+
+        private static string ResolveTalkFailure(string blockSubstanceId, string inputSubstanceId)
+        {
+            if (IsReplicationBlock(blockSubstanceId))
+                return SuspicionResultId;
+
+            if (IsTemptationBlock(blockSubstanceId))
+            {
+                return inputSubstanceId != null &&
+                    inputSubstanceId.StartsWith("person_friend_", System.StringComparison.Ordinal)
+                    ? RejectionResultId
+                    : PressureResultId;
+            }
+
+            return AwkwardnessResultId;
+        }
+
+        private static bool IsReplicationBlock(string blockSubstanceId)
+        {
+            return blockSubstanceId == "edgeblock_stance_narcissism" ||
+                blockSubstanceId == "edgeblock_stance_exercise_addiction" ||
+                blockSubstanceId == "edgeblock_stance_perfectionism" ||
+                blockSubstanceId == "edgeblock_stance_pregnancy";
+        }
+
+        private static bool IsTemptationBlock(string blockSubstanceId)
+        {
+            return blockSubstanceId == "edgeblock_stance_cinematic_allure" ||
+                blockSubstanceId == "edgeblock_stance_musical_temptation" ||
+                blockSubstanceId == "edgeblock_stance_artistic_temptation";
+        }
+
+        private static bool IsEdgeBlockEntry(string entry)
+        {
+            return entry != null &&
+                entry.StartsWith(EdgeBlockHistoryPrefix, System.StringComparison.Ordinal);
+        }
+    }
+
     public sealed class NodePassEffectService
     {
         private const string OfferNodeId = "node_act_offer";
@@ -630,10 +819,44 @@ namespace OneMoreSpoon.Game.Systems
             }
 
             var removedStackCount = stackSpawnService.RemovePersonStacks(substance.SubstanceId);
-            CreateOfferRuleOutputs(rule, nodeId);
+
+            if (!TryCreateEdgeBlockFailureOutput(rule, history, nodeId))
+                CreateOfferRuleOutputs(rule, nodeId);
+
             ConsumeFlow(flowEntityId);
 
             Debug.Log($"[NodePassEffect] OfferRuleApplied flow={flowEntityId} rule={rule.RuleId} offered={substance.SubstanceId} removedStacks={removedStackCount}");
+        }
+
+        private bool TryCreateEdgeBlockFailureOutput(
+            SO_OutputRuleDefinition matchedRule,
+            FlowHistoryComponent history,
+            GameEntityId nodeId)
+        {
+            if (!EdgeBlockOutcomeRule.TryGetInvalidResult(matchedRule, history, out var resultSubstanceId))
+                return false;
+
+            if (!substanceDefinitions.TryGet(resultSubstanceId, out var resultDefinition))
+            {
+                Debug.LogError($"[NodePassEffect] EdgeBlock failure substance missing id={resultSubstanceId} rule={matchedRule.RuleId}");
+                return false;
+            }
+
+            var basePosition = world.Positions.TryGetValue(nodeId, out var nodePosition)
+                ? nodePosition.Value
+                : new Vector2();
+            var resultPosition = GetOfferOutputPosition(basePosition, 0);
+
+            discoveryService.NotifyEncountered(resultSubstanceId);
+            var resultStackId = stackSpawnService.CreateOrTransitionStack(
+                resultDefinition,
+                1,
+                false,
+                resultPosition);
+
+            Debug.Log($"[NodePassEffect] EdgeBlockFailure rule={matchedRule.RuleId} substance={resultSubstanceId} stack={resultStackId}");
+            firstDiscoveryRewardService.GrantForSubstance(resultSubstanceId, resultPosition);
+            return true;
         }
 
         private void CreateOfferRuleOutputs(SO_OutputRuleDefinition rule, GameEntityId nodeId)
