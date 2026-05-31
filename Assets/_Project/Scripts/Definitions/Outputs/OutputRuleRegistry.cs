@@ -322,7 +322,8 @@ namespace OneMoreSpoon.Game.Definitions
         private static bool IsEdgeHistoryEntry(string entry)
         {
             return !string.IsNullOrWhiteSpace(entry) &&
-                entry.StartsWith("edge:", System.StringComparison.Ordinal);
+                (entry.StartsWith("edge:", System.StringComparison.Ordinal) ||
+                    entry.StartsWith("edgeBlock:", System.StringComparison.Ordinal));
         }
 
         private static void AddRequiredEdge(

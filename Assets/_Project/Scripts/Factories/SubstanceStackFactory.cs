@@ -1,6 +1,6 @@
 using OneMoreSpoon.App.Encyclopedia;
-using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
+using OneMoreSpoon.Game.Systems;
 using UnityEngine;
 using GameEntityId = OneMoreSpoon.Game.Core.EntityId;
 
@@ -8,13 +8,15 @@ namespace OneMoreSpoon.Game.Factories
 {
     public sealed class SubstanceStackFactory
     {
-        private readonly GameWorld world;
         private readonly DiscoveryService discoveryService;
+        private readonly SubstanceStackSpawnService stackSpawnService;
 
-        public SubstanceStackFactory(GameWorld world, DiscoveryService discoveryService)
+        public SubstanceStackFactory(
+            DiscoveryService discoveryService,
+            SubstanceStackSpawnService stackSpawnService)
         {
-            this.world = world;
             this.discoveryService = discoveryService;
+            this.stackSpawnService = stackSpawnService;
         }
 
         public GameEntityId CreateStack(
@@ -25,12 +27,11 @@ namespace OneMoreSpoon.Game.Factories
         {
             discoveryService.NotifyEncountered(definition.SubstanceId);
 
-            return world.CreateSubstanceStack(
-                definition.SubstanceId,
+            return stackSpawnService.CreateOrTransitionStack(
+                definition,
                 Mathf.Max(0, amount),
                 isInfinite,
-                position
-            );
+                position);
         }
     }
 }

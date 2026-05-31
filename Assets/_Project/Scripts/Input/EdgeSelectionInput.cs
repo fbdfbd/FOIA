@@ -52,12 +52,8 @@ namespace OneMoreSpoon.Input
             if (Pointer.current.press.wasPressedThisFrame)
                 TrySelectEdge();
 
-            if (Keyboard.current != null &&
-                (Keyboard.current.deleteKey.wasPressedThisFrame ||
-                 Keyboard.current.backspaceKey.wasPressedThisFrame))
-            {
-                TryDeleteSelectedEdge();
-            }
+            if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
+                TryDeleteSelectedEdgeUnderPointer();
         }
 
         private void TrySelectEdge()
@@ -90,6 +86,22 @@ namespace OneMoreSpoon.Input
             }
 
             selectionState.Clear();
+        }
+
+        private void TryDeleteSelectedEdgeUnderPointer()
+        {
+            if (IsPointerOverUI())
+                return;
+
+            if (selectionState.SelectedType != SelectionTargetType.Edge)
+                return;
+
+            var edgeView = RaycastEdgeView();
+
+            if (edgeView == null || edgeView.EntityId != selectionState.SelectedEntityId)
+                return;
+
+            TryDeleteSelectedEdge();
         }
 
         private EdgeView RaycastEdgeView()

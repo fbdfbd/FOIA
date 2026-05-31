@@ -151,7 +151,10 @@ namespace OneMoreSpoon.Game.Systems
 
             foreach (var stackId in slot.StackIds)
             {
-                if (!stackSystem.TryConsume(stackId))
+                if (!stackSystem.TryConsume(stackId, out var removed))
+                    continue;
+
+                if (removed)
                     continue;
 
                 if (stackSystem.IsEmpty(stackId))

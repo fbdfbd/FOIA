@@ -21,18 +21,41 @@ namespace OneMoreSpoon.Game.Systems
 
         public bool TryConsume(GameEntityId stackId)
         {
+            return TryConsume(stackId, out _);
+        }
+
+        public bool TryConsume(GameEntityId stackId, out bool removed)
+        {
             if (!world.SubstanceStacks.TryGetValue(stackId, out var stack))
+            {
+                removed = false;
                 return false;
+            }
 
             if (stack.IsInfinite)
+            {
+                removed = false;
                 return true;
+            }
 
             if (stack.Amount <= 0)
+            {
+                Remove(stackId);
+                removed = true;
                 return false;
+            }
 
             stack.Amount--;
             world.SubstanceStacks[stackId] = stack;
 
+            if (stack.IsEmpty)
+            {
+                Remove(stackId);
+                removed = true;
+                return true;
+            }
+
+            removed = false;
             return true;
         }
 
@@ -71,6 +94,7 @@ namespace OneMoreSpoon.Game.Systems
         private readonly GameWorld world;
         private readonly SubstanceDefinitionRegistry substanceDefinitions;
         private readonly List<GameEntityId> matchingPersonStackIds = new();
+        private readonly List<GameEntityId> matchingStackIds = new();
 
         public SubstanceStackSpawnService(
             GameWorld world,
@@ -91,6 +115,9 @@ namespace OneMoreSpoon.Game.Systems
 
             if (!IsStatefulPerson(definition.Kind) ||
                 !PersonSubstanceIdentityParser.TryParse(definition.SubstanceId, out var targetIdentity))
+                return CreateOrStackBySubstanceId(definition.SubstanceId, amount, isInfinite, position);
+
+            if (!TryFindExistingPersonStack(targetIdentity.CharacterKey, out var stackId))
             {
                 return world.CreateSubstanceStack(
                     definition.SubstanceId,
@@ -99,26 +126,104 @@ namespace OneMoreSpoon.Game.Systems
                     position);
             }
 
-            if (!TryFindExistingPersonStack(targetIdentity.CharacterKey, out var stackId))
-            {
-                return world.CreateSubstanceStack(
-                    definition.SubstanceId,
-                    Mathf.Max(0, amount),
-                    true,
-                    position);
-            }
-
             var existingStack = world.SubstanceStacks[stackId];
+            var resultIsInfinite = existingStack.IsInfinite || isInfinite;
+            var resultAmount = resultIsInfinite
+                ? Mathf.Max(existingStack.Amount, amount)
+                : existingStack.Amount + Mathf.Max(0, amount);
+
             world.SubstanceStacks[stackId] = new SubstanceStackComponent(
                 definition.SubstanceId,
-                Mathf.Max(existingStack.Amount, amount),
-                true);
+                resultAmount,
+                resultIsInfinite);
             world.Positions[stackId] = new PositionComponent(position);
 
             RemoveExtraPersonStacks(stackId);
 
             Debug.Log($"[SubstanceStack] PersonTransition character={targetIdentity.CharacterKey} state={targetIdentity.State} stack={stackId} substance={definition.SubstanceId}");
             return stackId;
+        }
+
+        private GameEntityId CreateOrStackBySubstanceId(
+            string substanceId,
+            int amount,
+            bool isInfinite,
+            Vector2 position)
+        {
+            if (!TryFindExistingStack(substanceId, out var stackId))
+            {
+                return world.CreateSubstanceStack(
+                    substanceId,
+                    Mathf.Max(0, amount),
+                    isInfinite,
+                    position);
+            }
+
+            AddToStack(stackId, substanceId, amount, isInfinite, position);
+            return stackId;
+        }
+
+        private bool TryFindExistingStack(string substanceId, out GameEntityId stackId)
+        {
+            matchingStackIds.Clear();
+
+            foreach (var pair in world.SubstanceStacks)
+            {
+                if (pair.Value.SubstanceId != substanceId)
+                    continue;
+
+                matchingStackIds.Add(pair.Key);
+            }
+
+            matchingStackIds.Sort((left, right) => left.Value.CompareTo(right.Value));
+
+            if (matchingStackIds.Count <= 0)
+            {
+                stackId = GameEntityId.Invalid;
+                return false;
+            }
+
+            stackId = matchingStackIds[0];
+            return true;
+        }
+
+        private void AddToStack(
+            GameEntityId stackId,
+            string substanceId,
+            int amount,
+            bool isInfinite,
+            Vector2 position)
+        {
+            var resultIsInfinite = isInfinite;
+            var resultAmount = Mathf.Max(0, amount);
+
+            for (var i = 0; i < matchingStackIds.Count; i++)
+            {
+                var matchingStackId = matchingStackIds[i];
+                if (!world.SubstanceStacks.TryGetValue(matchingStackId, out var stack))
+                    continue;
+
+                resultIsInfinite |= stack.IsInfinite;
+                resultAmount = resultIsInfinite
+                    ? Mathf.Max(resultAmount, stack.Amount)
+                    : resultAmount + Mathf.Max(0, stack.Amount);
+            }
+
+            world.SubstanceStacks[stackId] = new SubstanceStackComponent(
+                substanceId,
+                resultAmount,
+                resultIsInfinite);
+            world.Positions[stackId] = new PositionComponent(position);
+
+            for (var i = 0; i < matchingStackIds.Count; i++)
+            {
+                var matchingStackId = matchingStackIds[i];
+                if (matchingStackId == stackId)
+                    continue;
+
+                world.SubstanceStacks.Remove(matchingStackId);
+                world.Positions.Remove(matchingStackId);
+            }
         }
 
         public int RemovePersonStacks(string substanceId)
