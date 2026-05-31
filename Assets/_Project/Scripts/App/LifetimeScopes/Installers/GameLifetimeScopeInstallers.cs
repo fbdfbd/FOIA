@@ -175,6 +175,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             builder.Register<SubstanceDockDepthState>(Lifetime.Singleton);
             builder.Register<SubstanceDockSystem>(Lifetime.Singleton);
             builder.Register<FirstDiscoveryRewardService>(Lifetime.Singleton);
+            builder.Register<SubstanceGrantService>(Lifetime.Singleton);
         }
 
         public static void InstallGameFactories(this IContainerBuilder builder)
@@ -242,6 +243,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             builder.RegisterEntryPoint<InspectPanelSyncSystem>();
             builder.RegisterEntryPoint<MergeSlotTextSyncSystem>();
             builder.RegisterEntryPoint<EncyclopediaSyncSystem>();
+            builder.RegisterEntryPoint<SubstanceGrantButtonBindingSystem>();
         }
     }
 }

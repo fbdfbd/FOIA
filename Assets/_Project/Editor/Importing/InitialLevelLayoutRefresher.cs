@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using OneMoreSpoon.App.Config;
 using OneMoreSpoon.Game.Definitions;
 using UnityEditor;
@@ -8,29 +9,6 @@ namespace OneMoreSpoon.Editor
 {
     internal static class InitialLevelLayoutRefresher
     {
-        private static readonly string[] InitialNodeIds =
-        {
-            "node_bake",
-            "node_boil",
-            "node_coat",
-            "node_cut",
-            "node_fry",
-            "node_input",
-            "node_merge",
-            "node_mix",
-            "node_output",
-            "node_press",
-            "node_seperate",
-            "node_shape"
-        };
-
-        private static readonly string[] InitialSubstanceIds =
-        {
-            "src_chicken",
-            "src_onion",
-            "src_wheat"
-        };
-
         public static void Refresh()
         {
             ImportAssetUtility.EnsureGeneratedFolders();
@@ -114,15 +92,18 @@ namespace OneMoreSpoon.Editor
                 return;
 
             prop.ClearArray();
-            for (var i = 0; i < InitialNodeIds.Length; i++)
+            var ids = existingPositions.Keys
+                .Where(lookup.ContainsKey)
+                .OrderBy(id => id)
+                .ToArray();
+
+            for (var i = 0; i < ids.Length; i++)
             {
-                var id = InitialNodeIds[i];
+                var id = ids[i];
                 prop.InsertArrayElementAtIndex(i);
                 var element = prop.GetArrayElementAtIndex(i);
-                element.FindPropertyRelative("Definition").objectReferenceValue =
-                    lookup.TryGetValue(id, out var definition) ? definition : null;
-                element.FindPropertyRelative("Position").vector2Value =
-                    existingPositions.TryGetValue(id, out var position) ? position : Vector2.zero;
+                element.FindPropertyRelative("Definition").objectReferenceValue = lookup[id];
+                element.FindPropertyRelative("Position").vector2Value = existingPositions[id];
             }
         }
 
@@ -136,17 +117,19 @@ namespace OneMoreSpoon.Editor
                 return;
 
             prop.ClearArray();
-            for (var i = 0; i < InitialSubstanceIds.Length; i++)
+            var ids = existingStacks.Keys
+                .Where(lookup.ContainsKey)
+                .OrderBy(id => id)
+                .ToArray();
+
+            for (var i = 0; i < ids.Length; i++)
             {
-                var id = InitialSubstanceIds[i];
-                var stack = existingStacks.TryGetValue(id, out var existing)
-                    ? existing
-                    : new InitialSubstanceStackSnapshot(0, true, Vector2.zero);
+                var id = ids[i];
+                var stack = existingStacks[id];
 
                 prop.InsertArrayElementAtIndex(i);
                 var element = prop.GetArrayElementAtIndex(i);
-                element.FindPropertyRelative("SubstanceDefinition").objectReferenceValue =
-                    lookup.TryGetValue(id, out var definition) ? definition : null;
+                element.FindPropertyRelative("SubstanceDefinition").objectReferenceValue = lookup[id];
                 element.FindPropertyRelative("Amount").intValue = stack.Amount;
                 element.FindPropertyRelative("IsInfinite").boolValue = stack.IsInfinite;
                 element.FindPropertyRelative("Position").vector2Value = stack.Position;

@@ -222,7 +222,7 @@ namespace OneMoreSpoon.Input
                 return;
             }
 
-            if (!stackSystem.TryConsume(draggingView.EntityId))
+            if (!stackSystem.TryConsume(draggingView.EntityId, out var removed))
             {
                 Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} substance={stack.SubstanceId} targetNode={inputNode.EntityId} reason=ConsumeFailed");
                 stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
@@ -236,7 +236,7 @@ namespace OneMoreSpoon.Input
 
             Debug.Log($"[SubstanceDrop] Succeeded stack={draggingView.EntityId} substance={stack.SubstanceId} targetNode={inputNode.EntityId}");
 
-            if (stackSystem.IsEmpty(draggingView.EntityId))
+            if (removed || stackSystem.IsEmpty(draggingView.EntityId))
             {
                 RemoveDraggedView();
                 return;
@@ -408,6 +408,9 @@ namespace OneMoreSpoon.Input
 
         private void RemoveDraggedView()
         {
+            if (draggingView == null)
+                return;
+
             var stackId = draggingView.EntityId;
             stackSystem.Remove(stackId);
 
@@ -416,6 +419,8 @@ namespace OneMoreSpoon.Input
                 viewRegistry.Unregister(stackId);
                 Object.Destroy(view.gameObject);
             }
+
+            draggingView = null;
         }
 
         private Vector2 GetPointerWorldPosition()

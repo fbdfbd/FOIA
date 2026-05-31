@@ -12,7 +12,7 @@ namespace OneMoreSpoon.Game.Systems
 {
     public sealed class ProcessSystem
     {
-        private const float DefaultEdgeDuration = 5f;
+        private const float DefaultEdgeDuration = 0.5f;
         private const float MinEdgeDuration = 0.01f;
         private const float InputDepartureInterval = 1f;
         private static readonly Vector2 OutputStackOffset = new(0f, -1.2f);

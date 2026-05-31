@@ -5,6 +5,7 @@ namespace OneMoreSpoon.Game.Definitions
         Twin,
         Stance,
         EdgeBlock_Stance,
+        EdgeBlock_Tool,
         Person,
         Person_Friend,
         Person_Captive,
@@ -32,7 +33,8 @@ namespace OneMoreSpoon.Game.Definitions
 
         public static bool CanEquipOnEdge(SubstanceKind kind)
         {
-            return kind == SubstanceKind.EdgeBlock_Stance;
+            return kind == SubstanceKind.EdgeBlock_Stance
+                || kind == SubstanceKind.EdgeBlock_Tool;
         }
 
         public static bool IsEncyclopediaKind(SubstanceKind kind)
@@ -52,11 +54,7 @@ namespace OneMoreSpoon.Game.Definitions
 
         public static bool IsInfiniteStackKind(SubstanceKind kind)
         {
-            return kind == SubstanceKind.Person
-                || kind == SubstanceKind.Person_Friend
-                || kind == SubstanceKind.Person_Captive
-                || kind == SubstanceKind.Person_Replace
-                || kind == SubstanceKind.Person_Create;
+            return false;
         }
 
         public static bool IsStanceLike(SubstanceKind kind)
@@ -66,7 +64,8 @@ namespace OneMoreSpoon.Game.Definitions
 
         public static bool IsEdgeBlockLike(SubstanceKind kind)
         {
-            return kind == SubstanceKind.EdgeBlock_Stance;
+            return kind == SubstanceKind.EdgeBlock_Stance
+                || kind == SubstanceKind.EdgeBlock_Tool;
         }
 
         public static bool IsEtcLike(SubstanceKind kind)
@@ -87,6 +86,7 @@ namespace OneMoreSpoon.Game.Definitions
                 SubstanceKind.Person_Create => "Create",
                 SubstanceKind.Stance => "Stance",
                 SubstanceKind.EdgeBlock_Stance => "Edge Block",
+                SubstanceKind.EdgeBlock_Tool => "Tool",
                 SubstanceKind.Unique => "Unique",
                 SubstanceKind.Trash => "Trash",
                 _ => string.Empty

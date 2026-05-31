@@ -2,11 +2,8 @@
 node_base_input,입력,0,Input,,
 node_base_output,출력,1000,Output,,
 node_base_merge,합성,0,Merge,,
-node_place_park,공원,50,Place,,node_place_park
-node_place_wcc,WCC,50,Place,,node_place_wcc
-node_act_talk,대화,50,Act,,node_act_talk
-node_act_offer,공양,1,Act,,node_act_offer
+node_place_hallway,복도,10,Place,,node_place_hallway
+node_place_room,방,10,Place,,node_place_room
+node_place_hole,구덩이,10,Place,,node_place_hole
+node_act_record,기록하기,10,Act,,node_act_record
 node_unique_scan,스캔,1,Unique,,node_unique_scan
-node_unique_brain,생성1-뇌,40,Unique,,node_unique_brain
-node_unique_body,생성2-몸,40,Unique,,node_unique_body
-node_act_kickout,방출,45,Act,,node_act_kickout

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e8894f6d050e66459e251745e27a27d, type: 3}
   m_Name: SO_operationSample
   m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.Game.Definitions.SO_OperationDefinition
-  operationId: 
+  operationId: op_default
   displayName: 
   category: 0
   baseTags: []
-  duration: 0.01
+  duration: 0.1
   baseOutputIds: []
   outputTags: []

@@ -67,7 +67,7 @@ namespace OneMoreSpoon.Game.Systems
                 return false;
             }
 
-            if (!stackSystem.TryConsume(stackId))
+            if (!stackSystem.TryConsume(stackId, out var removed))
             {
                 Debug.LogWarning($"[EdgeBlockEquip] Failed edge={edgeId} stack={stackId} substance={stack.SubstanceId} reason=ConsumeFailed");
                 return false;
@@ -76,7 +76,7 @@ namespace OneMoreSpoon.Game.Systems
             slot.Add(stack.SubstanceId);
             world.EdgeBlockSlots[edgeId] = slot;
 
-            if (stackSystem.IsEmpty(stackId))
+            if (!removed && stackSystem.IsEmpty(stackId))
                 stackSystem.Remove(stackId);
 
             Debug.Log($"[EdgeBlockEquip] Succeeded edge={edgeId} stack={stackId} substance={stack.SubstanceId} count={slot.EquippedSubstanceIds.Count}");
