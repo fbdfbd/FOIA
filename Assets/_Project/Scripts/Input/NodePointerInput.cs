@@ -1,25 +1,21 @@
 using OneMoreSpoon.App.State;
 using OneMoreSpoon.Game.Systems;
-using OneMoreSpoon.View.Common;
 using OneMoreSpoon.View.Nodes;
-using OneMoreSpoon.View.Substances;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using VContainer;
 
 namespace OneMoreSpoon.Input
 {
+    [RequireComponent(typeof(PointerHitResolver))]
     public sealed class NodePointerInput : MonoBehaviour
     {
-        [SerializeField] private LayerMask nodeLayer;
-        [SerializeField] private LayerMask edgeLayer;
+        [SerializeField] private PointerHitResolver pointerHitResolver;
 
         private SelectionState selectionState;
         private NodeMoveSystem nodeMoveSystem;
         private ClusterSeparationSystem clusterSeparationSystem;
         private EdgeConnectionState edgeConnectionState;
-        private Camera mainCamera;
         private NodeView selectedView;
         private NodeView draggingView;
         private Vector2 dragStartPosition;
@@ -43,7 +39,8 @@ namespace OneMoreSpoon.Input
 
         private void Awake()
         {
-            mainCamera = Camera.main;
+            if (pointerHitResolver == null)
+                pointerHitResolver = GetComponent<PointerHitResolver>();
         }
 
         private void Update()
@@ -66,30 +63,22 @@ namespace OneMoreSpoon.Input
 
         private void BeginPointer()
         {
-            if (IsPointerOverUI())
-                return;
+            PointerHit hit = pointerHitResolver.Resolve();
 
-            if (RaycastMergeSlotHandle())
-                return;
-
-            var hitView = RaycastNodeView();
-            if (hitView == null)
+            if (hit.Type != PointerHitType.Node)
             {
-                if (RaycastSubstance())
-                    return;
-
-                if (RaycastEdge())
+                if (hit.Type != PointerHitType.None)
                     return;
 
                 ClearSelection();
                 return;
             }
 
-            Select(hitView);
-            draggingView = hitView;
+            Select(hit.NodeView);
+            draggingView = hit.NodeView;
             draggingView.SetPressed(true);
-            dragStartPosition = hitView.transform.position;
-            pointerToNodeOffset = (Vector2)hitView.transform.position - GetPointerWorldPosition();
+            dragStartPosition = hit.NodeView.transform.position;
+            pointerToNodeOffset = (Vector2)hit.NodeView.transform.position - pointerHitResolver.GetWorldPosition();
         }
 
         private void DragPointer()
@@ -97,7 +86,7 @@ namespace OneMoreSpoon.Input
             if (draggingView == null)
                 return;
 
-            Vector2 targetPosition = GetPointerWorldPosition() + pointerToNodeOffset;
+            Vector2 targetPosition = pointerHitResolver.GetWorldPosition() + pointerToNodeOffset;
             nodeMoveSystem.TryMoveNode(draggingView.EntityId, targetPosition);
         }
 
@@ -106,7 +95,7 @@ namespace OneMoreSpoon.Input
             if (draggingView == null)
                 return;
 
-            if (RaycastTrashCanView())
+            if (pointerHitResolver.IsPointerOverTrashCan())
                 nodeMoveSystem.TryMoveNode(draggingView.EntityId, dragStartPosition);
 
             ReleaseDraggingNode();
@@ -137,80 +126,6 @@ namespace OneMoreSpoon.Input
             selectedView = null;
             draggingView = null;
             selectionVisualService.Clear();
-        }
-
-        private NodeView RaycastNodeView()
-        {
-            Vector2 worldPosition = GetPointerWorldPosition();
-            var hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, nodeLayer);
-            if (hit.collider == null)
-                return null;
-
-            return hit.collider.GetComponentInParent<NodeView>();
-        }
-
-        private Vector2 GetPointerWorldPosition()
-        {
-            EnsureCamera();
-            Vector2 screenPosition = Pointer.current.position.ReadValue();
-            Vector3 worldPosition = mainCamera.ScreenToWorldPoint(screenPosition);
-            return new Vector2(worldPosition.x, worldPosition.y);
-        }
-
-        private void EnsureCamera()
-        {
-            if (mainCamera == null)
-                mainCamera = Camera.main;
-        }
-
-        private bool IsPointerOverUI()
-        {
-            return EventSystem.current != null
-                && EventSystem.current.IsPointerOverGameObject();
-        }
-
-        private bool RaycastEdge()
-        {
-            Vector2 worldPosition = GetPointerWorldPosition();
-            var hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, edgeLayer);
-            return hit.collider != null;
-        }
-
-        private bool RaycastSubstance()
-        {
-            var hits = Physics2D.RaycastAll(GetPointerWorldPosition(), Vector2.zero);
-
-            foreach (var hit in hits)
-                if (hit.collider.GetComponentInParent<SubstanceView>() != null)
-                    return true;
-
-            return false;
-        }
-
-        private bool RaycastMergeSlotHandle()
-        {
-            Vector2 worldPosition = GetPointerWorldPosition();
-            RaycastHit2D[] hits = Physics2D.RaycastAll(worldPosition, Vector2.zero);
-
-            foreach (RaycastHit2D hit in hits)
-            {
-                if (hit.collider.GetComponentInParent<MergeSlotHandle>() != null)
-                    return true;
-            }
-
-            return false;
-        }
-        private bool RaycastTrashCanView()
-        {
-            var hits = Physics2D.RaycastAll(GetPointerWorldPosition(), Vector2.zero);
-
-            foreach (var hit in hits)
-            {
-                if (hit.collider.GetComponentInParent<TrashCanView>() != null)
-                    return true;
-            }
-
-            return false;
         }
     }
 }
