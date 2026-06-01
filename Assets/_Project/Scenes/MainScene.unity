@@ -2660,6 +2660,10 @@ PrefabInstance:
       propertyPath: targetCamera
       value: 
       objectReference: {fileID: 330585545}
+    - target: {fileID: 1374258352416029539, guid: 63de2b48b58a6bb479ba14902a8c854c, type: 3}
+      propertyPath: backgroundRenderer
+      value: 
+      objectReference: {fileID: 170768189}
     - target: {fileID: 4914288118503269681, guid: 63de2b48b58a6bb479ba14902a8c854c, type: 3}
       propertyPath: previewLine
       value: 

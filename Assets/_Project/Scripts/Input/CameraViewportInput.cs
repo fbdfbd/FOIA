@@ -10,12 +10,12 @@ namespace OneMoreSpoon.Input
     {
         [SerializeField] private Camera targetCamera;
         [SerializeField] private LayerMask blockingLayer;
+        [SerializeField] private SpriteRenderer backgroundRenderer;
         [SerializeField, Min(0.1f)] private float zoomInSize = 3f;
         [SerializeField, Min(0.1f)] private float zoomOutSize = 8f;
         [SerializeField, Min(0.0001f)] private float zoomStep = 0.005f;
 
         private float targetZoomSize;
-        private bool isZoomInitialized;
         private bool isPanning;
         private bool isLeftButtonPanning;
         private bool nextPanUsesLeftButton;
@@ -23,17 +23,7 @@ namespace OneMoreSpoon.Input
         private EdgeConnectionState edgeConnectionState;
 
         [Inject]
-        public void Construct(EdgeConnectionState edgeConnectionState)
-        {
-            this.edgeConnectionState = edgeConnectionState;
-        }
-
-        private void Awake()
-        {
-            EnsureCamera();
-
-            InitializeZoomSize();
-        }
+        public void Construct(EdgeConnectionState edgeConnectionState) => this.edgeConnectionState = edgeConnectionState;
 
         private void Update()
         {
@@ -66,16 +56,12 @@ namespace OneMoreSpoon.Input
                 targetCamera.orthographicSize,
                 targetZoomSize,
                 1f - Mathf.Exp(-18f * Time.deltaTime));
+
+            ClampCameraToBackground();
         }
 
         private void HandlePan()
         {
-            if (!CanPanViewport())
-            {
-                StopPan();
-                return;
-            }
-
             if (IsPanPressedThisFrame())
                 BeginPan();
 
@@ -87,22 +73,6 @@ namespace OneMoreSpoon.Input
                 isPanning = false;
                 isLeftButtonPanning = false;
             }
-        }
-
-        private bool CanPanViewport()
-        {
-            return !IsZoomedOutLimit();
-        }
-
-        private bool IsZoomedOutLimit()
-        {
-            return targetZoomSize >= zoomOutSize;
-        }
-
-        private void StopPan()
-        {
-            isPanning = false;
-            isLeftButtonPanning = false;
         }
 
         private void BeginPan()
@@ -133,24 +103,15 @@ namespace OneMoreSpoon.Input
             return Mouse.current.leftButton.wasPressedThisFrame;
         }
 
-        private bool IsActivePanButtonPressed()
-        {
-            return isLeftButtonPanning
-                ? Mouse.current.leftButton.isPressed
-                : Mouse.current.rightButton.isPressed;
-        }
+        private bool IsActivePanButtonPressed() => isLeftButtonPanning
+            ? Mouse.current.leftButton.isPressed
+            : Mouse.current.rightButton.isPressed;
 
-        private bool IsActivePanButtonReleasedThisFrame()
-        {
-            return isLeftButtonPanning
-                ? Mouse.current.leftButton.wasReleasedThisFrame
-                : Mouse.current.rightButton.wasReleasedThisFrame;
-        }
+        private bool IsActivePanButtonReleasedThisFrame() => isLeftButtonPanning
+            ? Mouse.current.leftButton.wasReleasedThisFrame
+            : Mouse.current.rightButton.wasReleasedThisFrame;
 
-        private bool IsEdgeConnecting()
-        {
-            return edgeConnectionState != null && edgeConnectionState.IsConnecting;
-        }
+        private bool IsEdgeConnecting() => edgeConnectionState != null && edgeConnectionState.IsConnecting;
 
         private void Pan()
         {
@@ -158,12 +119,32 @@ namespace OneMoreSpoon.Input
             Vector2 delta = panAnchorWorldPosition - currentWorldPosition;
 
             targetCamera.transform.position += new Vector3(delta.x, delta.y, 0f);
+            ClampCameraToBackground();
+            panAnchorWorldPosition = GetPointerWorldPosition();
         }
+
+        private void ClampCameraToBackground()
+        {
+            if (backgroundRenderer == null)
+                return;
+
+            Bounds bounds = backgroundRenderer.bounds;
+            Vector3 position = targetCamera.transform.position;
+            float halfHeight = targetCamera.orthographicSize;
+            float halfWidth = halfHeight * targetCamera.aspect;
+
+            position.x = ClampAxis(position.x, bounds.min.x + halfWidth, bounds.max.x - halfWidth, bounds.center.x);
+            position.y = ClampAxis(position.y, bounds.min.y + halfHeight, bounds.max.y - halfHeight, bounds.center.y);
+
+            targetCamera.transform.position = position;
+        }
+
+        private float ClampAxis(float value, float min, float max, float fallback) =>
+            min > max ? fallback : Mathf.Clamp(value, min, max);
 
         private Vector2 GetPointerWorldPosition()
         {
-            Vector2 screenPosition = Mouse.current.position.ReadValue();
-            Vector3 worldPosition = targetCamera.ScreenToWorldPoint(screenPosition);
+            Vector3 worldPosition = targetCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             return new Vector2(worldPosition.x, worldPosition.y);
         }
 
@@ -172,29 +153,14 @@ namespace OneMoreSpoon.Input
             if (targetCamera == null)
                 targetCamera = Camera.main;
 
-            InitializeZoomSize();
+            if (targetCamera != null && targetZoomSize <= 0f)
+                targetZoomSize = targetCamera.orthographicSize;
         }
 
-        private void InitializeZoomSize()
-        {
-            if (isZoomInitialized || targetCamera == null)
-                return;
+        private bool RaycastBlockingObject() =>
+            Physics2D.Raycast(GetPointerWorldPosition(), Vector2.zero, Mathf.Infinity, blockingLayer).collider != null;
 
-            targetZoomSize = targetCamera.orthographicSize;
-            isZoomInitialized = true;
-        }
-
-        private bool RaycastBlockingObject()
-        {
-            Vector2 worldPosition = GetPointerWorldPosition();
-            var hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, blockingLayer);
-            return hit.collider != null;
-        }
-
-        private bool IsPointerOverUI()
-        {
-            return EventSystem.current != null
-                && EventSystem.current.IsPointerOverGameObject();
-        }
+        private bool IsPointerOverUI() =>
+            EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
     }
 }

@@ -98,6 +98,7 @@ MonoBehaviour:
   blockingLayer:
     serializedVersion: 2
     m_Bits: 896
+  backgroundRenderer: {fileID: 0}
   zoomInSize: 3
   zoomOutSize: 8
   zoomStep: 0.5
