@@ -4,8 +4,6 @@ Shader "Custom/OutlineShader_Rounded"
     {
         [PerRendererData][MainTexture] _MainTex ("Sprite Texture", 2D) = "white" {}
 
-        // MainColor 제거.
-        // 이 값은 외곽선 전용 색상이어야 함.
         [HDR] _OutlineTint ("Outline Tint HDR", Color) = (1, 1, 1, 1)
 
         _OutlineWidth("Outline Width px", Range(1, 16)) = 2
@@ -74,21 +72,14 @@ Shader "Custom/OutlineShader_Rounded"
             {
                 Varyings o;
 
-                float2 uv = TRANSFORM_TEX(v.uv, _MainTex);
-
                 float2 cornerSign = step(float2(0.5, 0.5), v.uv) * 2.0 - 1.0;
+                float2 outlineTexels = _MainTex_TexelSize.xy * _OutlineWidth;
 
-                float4 positionHCS = TransformObjectToHClip(v.positionOS.xyz);
+                float4 positionOS = v.positionOS;
+                positionOS.xy += cornerSign * outlineTexels;
 
-                // 화면 픽셀 기준으로 버텍스를 확장
-                float2 pixelToClip = 2.0 / _ScreenParams.xy;
-                positionHCS.xy += cornerSign * pixelToClip * _OutlineWidth * positionHCS.w;
-
-                // 확장된 메시 영역에 맞게 UV도 바깥으로 확장
-                uv += cornerSign * _MainTex_TexelSize.xy * _OutlineWidth;
-
-                o.positionHCS = positionHCS;
-                o.uv = uv;
+                o.positionHCS = TransformObjectToHClip(positionOS.xyz);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex) + cornerSign * outlineTexels;
                 o.color = v.color;
 
                 return o;
@@ -128,7 +119,6 @@ Shader "Custom/OutlineShader_Rounded"
                     float2 p = _MainTex_TexelSize.xy * r;
                     float2 d = p * 0.70710678;
 
-                    // 8방향 샘플링
                     maxAlpha = max(maxAlpha, AlphaAt(i.uv + float2( p.x, 0.0)));
                     maxAlpha = max(maxAlpha, AlphaAt(i.uv + float2(-p.x, 0.0)));
                     maxAlpha = max(maxAlpha, AlphaAt(i.uv + float2(0.0,  p.y)));
@@ -141,15 +131,13 @@ Shader "Custom/OutlineShader_Rounded"
                 }
 
                 half rawOutline = saturate(maxAlpha - centerAlpha);
-
                 half w = max(fwidth(rawOutline), half(0.0001)) * _EdgeSoftness;
                 half outline = smoothstep(_AlphaThreshold - w, _AlphaThreshold + w, rawOutline);
 
                 half4 spriteCol = SpriteAt(i.uv, i.color);
 
-                half4 outlineCol = _OutlineTint;
-                half3 outlineRgb = outlineCol.rgb * (_BloomIntensity * outline);
-                half outlineAlpha = outlineCol.a * outline;
+                half3 outlineRgb = _OutlineTint.rgb * (_BloomIntensity * outline);
+                half outlineAlpha = _OutlineTint.a * outline;
 
                 half3 finalRgb = lerp(spriteCol.rgb, outlineRgb, outline);
                 half finalAlpha = saturate(max(spriteCol.a, outlineAlpha));
