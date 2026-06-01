@@ -6,34 +6,34 @@ person_worker_dead_pit_return_chase,구덩이에서 복귀 중 추격당해 사�
 edgeblock_tool_camera,카메라,EdgeBlock_Tool,,0,edgeblock_tool_camera,0,0
 edgeblock_tool_flashlight,손전등,EdgeBlock_Tool,,0,edgeblock_tool_flashlight,0,0
 edgeblock_tool_ultrasonic_sensor,환경음분석기,EdgeBlock_Tool,,0,edgeblock_tool_ultrasonic_sensor,0,0
-evidence_noisy_observation_file,잡음만 남은 관측 파일,Stance,evidence_noisy_observation_file,0,,0,0
+evidence_noisy_observation_file,잡음만 남은 관측 파일,Unique,evidence_noisy_observation_file,0,,0,0
 evidence_hallway_chase_death_diagnosis,복도 내 추격 사망 진단서,Stance,evidence_hallway_chase_death_diagnosis,0,,0,0
 evidence_footsteps_beyond_wall,벽 너머에서 들린 발소리 기록,Stance,evidence_footsteps_beyond_wall,0,,0,0
-evidence_escaped_by_sound,발소리를 피해 도망친 기록,Stance,evidence_escaped_by_sound,0,,0,0
-evidence_hidden_room_refuge_record,숨겨진방 피난 기록,Stance,evidence_hidden_room_refuge_record,0,,0,0
-evidence_entity_stopped_at_door,문 앞에서 멈춘 엔티티에 대한 기록,Stance,evidence_entity_stopped_at_door,0,,0,0
-evidence_footsteps_waiting_outside,문밖에서 기다리고 있던 발소리 기록,Stance,evidence_footsteps_waiting_outside,0,,0,0
+evidence_escaped_by_sound,발소리를 피해 도망친 기록,Unique,evidence_escaped_by_sound,0,,0,0
+evidence_hidden_room_refuge_record,숨겨진방 피난 기록,Unique,evidence_hidden_room_refuge_record,0,,0,0
+evidence_entity_stopped_at_door,문 앞에서 멈춘 엔티티에 대한 기록,Unique,evidence_entity_stopped_at_door,0,,0,0
+evidence_footsteps_waiting_outside,문밖에서 기다리고 있던 발소리 기록,Unique,evidence_footsteps_waiting_outside,0,,0,0
 evidence_final_handwritten_shape,형체를 보았다는 마지막 자필 기록,Stance,evidence_final_handwritten_shape,0,,0,0
 evidence_visual_contact_death_diagnosis,시각 접촉 직후 사망진단서,Stance,evidence_visual_contact_death_diagnosis,0,,0,0
 evidence_pit_return_chase_death_diagnosis,구덩이 복귀 중 추격 사망 진단서,Stance,evidence_pit_return_chase_death_diagnosis,0,,0,0
-evidence_pit_return_chase_report,복귀 중 추격 사망 보고,Stance,evidence_pit_return_chase_report,0,,0,0
-evidence_shaken_entity_photo,심하게 흔들린 엔티티 사진,Stance,evidence_shaken_entity_photo,0,,0,0
-evidence_hidden_room_note,방에 대한 자필 기록,Stance,evidence_hidden_room_note,0,,0,0
-evidence_black_afterimage_photo,검은 잔상만 남은 사진,Stance,evidence_black_afterimage_photo,0,,0,0
-evidence_return_timing_audio,복귀 타이밍을 잡은 환경음 기록,Stance,evidence_return_timing_audio,0,,0,0
+evidence_pit_return_chase_report,복귀 중 추격 사망 보고,Unique,evidence_pit_return_chase_report,0,,0,0
+evidence_shaken_entity_photo,심하게 흔들린 엔티티 사진,Unique,evidence_shaken_entity_photo,0,,0,0
+evidence_hidden_room_note,방에 대한 자필 기록,Unique,evidence_hidden_room_note,0,,0,0
+evidence_black_afterimage_photo,검은 잔상만 남은 사진,Unique,evidence_black_afterimage_photo,0,,0,0
+evidence_return_timing_audio,복귀 타이밍을 잡은 환경음 기록,Unique,evidence_return_timing_audio,0,,0,0
 evidence_hidden_room_pit_photo_wall,숨겨진방 벽에 붙은 구덩이 구역 사진,Stance,evidence_hidden_room_pit_photo_wall,0,,0,0
-evidence_lighting_cycle_record,복도 조명이 꺼지는 주기에 대한 기록,Stance,evidence_lighting_cycle_record,0,,0,0
-evidence_hidden_room_pit_photo_inside,숨겨진방 내부의 구덩이 구역 사진,Stance,evidence_hidden_room_pit_photo_inside,0,,0,0
+evidence_lighting_cycle_record,복도 조명이 꺼지는 주기에 대한 기록,Unique,evidence_lighting_cycle_record,0,,0,0
+evidence_hidden_room_pit_photo_inside,숨겨진방 내부의 구덩이 구역 사진,Unique,evidence_hidden_room_pit_photo_inside,0,,0,0
 evidence_pit_missing_report,구덩이 구역 실종 보고,Stance,evidence_pit_missing_report,0,,0,0
-evidence_empty_pit_light_record,빛에 드러난 빈 구덩이 기록,Stance,evidence_empty_pit_light_record,0,,0,0
-evidence_meaningless_pit_observation,의미없는 구덩이 관측 데이터,Stance,evidence_meaningless_pit_observation,0,,0,0
-evidence_pit_grid_handwritten,구덩이의 그리드 구조에 대한 자필 기록,Stance,evidence_pit_grid_handwritten,0,,0,0
-evidence_chase_sound_cut_at_pit,구덩이 앞에서 끊긴 추격음,Stance,evidence_chase_sound_cut_at_pit,0,,0,0
-evidence_clear_pit_grid_photo,선명하게 촬영된 구덩이 그리드,Stance,evidence_clear_pit_grid_photo,0,,0,0
-evidence_pit_photo_without_entity,엔티티가 없는 구덩이 구역 사진,Stance,evidence_pit_photo_without_entity,0,,0,0
-evidence_lured_entity_handwritten,엔티티 유인에 성공한 자필 기록,Stance,evidence_lured_entity_handwritten,0,,0,0
-evidence_clear_entity_photo_pit,구덩이에 빠진 엔티티의 선명한 사진,Stance,evidence_clear_entity_photo_pit,0,,0,0
-evidence_recovered_sanity_hidden_room,숨겨진방에서 회복된 정신력 기록,Stance,evidence_recovered_sanity_hidden_room,0,,0,0
-evidence_basement_entrance_revealed,공포가 가라앉자 드러난 지하실 입구,Stance,evidence_basement_entrance_revealed,0,,0,0
-evidence_abnormal_sound_fell_into_pit,구덩이 아래로 떨어진 비정상 음향,Stance,evidence_abnormal_sound_fell_into_pit,0,,0,0
-evidence_exhausted_pit_survival_report,탈진 상태로 끝난 구덩이 생존 보고,Stance,evidence_exhausted_pit_survival_report,0,,0,0
+evidence_empty_pit_light_record,빛에 드러난 빈 구덩이 기록,Unique,evidence_empty_pit_light_record,0,,0,0
+evidence_meaningless_pit_observation,의미없는 구덩이 관측 데이터,Unique,evidence_meaningless_pit_observation,0,,0,0
+evidence_pit_grid_handwritten,구덩이의 그리드 구조에 대한 자필 기록,Unique,evidence_pit_grid_handwritten,0,,0,0
+evidence_chase_sound_cut_at_pit,구덩이 앞에서 끊긴 추격음,Unique,evidence_chase_sound_cut_at_pit,0,,0,0
+evidence_clear_pit_grid_photo,선명하게 촬영된 구덩이 그리드,Unique,evidence_clear_pit_grid_photo,0,,0,0
+evidence_pit_photo_without_entity,엔티티가 없는 구덩이 구역 사진,Unique,evidence_pit_photo_without_entity,0,,0,0
+evidence_lured_entity_handwritten,엔티티 유인에 성공한 자필 기록,Unique,evidence_lured_entity_handwritten,0,,0,0
+evidence_clear_entity_photo_pit,구덩이에 빠진 엔티티의 선명한 사진,Unique,evidence_clear_entity_photo_pit,0,,0,0
+evidence_recovered_sanity_hidden_room,숨겨진방에서 회복된 정신력 기록,Unique,evidence_recovered_sanity_hidden_room,0,,0,0
+evidence_basement_entrance_revealed,공포가 가라앉자 드러난 지하실 입구,Unique,evidence_basement_entrance_revealed,0,,0,0
+evidence_abnormal_sound_fell_into_pit,구덩이 아래로 떨어진 비정상 음향,Unique,evidence_abnormal_sound_fell_into_pit,0,,0,0
+evidence_exhausted_pit_survival_report,탈진 상태로 끝난 구덩이 생존 보고,Unique,evidence_exhausted_pit_survival_report,0,,0,0
