@@ -341,10 +341,10 @@ namespace OneMoreSpoon.Game.Systems
 
     public sealed class SubstanceDockLayoutSettings
     {
-        public float HorizontalGap { get; } = 0.25f;
-        public float VerticalGap { get; } = 0.3f;
-        public Vector2 Padding { get; } = new(0.55f, 0.55f);
-        public Vector2 MinOverflowPitch { get; } = new(0.65f, 0.55f);
+        public float HorizontalSpacing { get; } = 1.05f;
+        public float VerticalSpacing { get; } = 1.05f;
+        public float HorizontalPadding { get; } = 0.55f;
+        public float VerticalPadding { get; } = 0.55f;
         public float DockedStackZStep { get; } = -0.01f;
     }
 
@@ -367,52 +367,108 @@ namespace OneMoreSpoon.Game.Systems
         }
     }
 
-    public sealed class SubstanceDockSystem
+    public sealed class SubstanceDockAreaRegistry
     {
-        private readonly GameWorld world;
-        private readonly SubstanceStackSystem stackSystem;
-        private readonly PlayAreaBoundsSystem playAreaBounds;
-        private readonly SubstanceDefinitionRegistry definitionRegistry;
-        private readonly SubstanceDockLayoutSettings settings;
-        private readonly SubstanceDockDepthState depthState;
-        private readonly ISubstanceCardMetricsProvider cardMetrics;
-        private readonly Dictionary<GameEntityId, SubstanceDockKind> dockedStacks = new();
-        private readonly Dictionary<SubstanceDockKind, List<GameEntityId>> dockOrderByKind = new();
-        private readonly HashSet<GameEntityId> knownStacks = new();
-        private readonly HashSet<GameEntityId> draggingStacks = new();
+        private readonly Dictionary<SubstanceDockKind, SubstanceDockAreaView> viewsByKind = new();
         private readonly List<SubstanceDockArea> areaBuffer = new();
-        private readonly List<GameEntityId> stackBuffer = new();
-        private readonly List<GameEntityId> staleBuffer = new();
-        private IReadOnlyList<SubstanceDockArea> cachedAreas;
 
-        public SubstanceDockSystem(
-            GameWorld world,
-            SubstanceStackSystem stackSystem,
-            PlayAreaBoundsSystem playAreaBounds,
-            SubstanceDefinitionRegistry definitionRegistry,
-            SubstanceDockLayoutSettings settings,
-            SubstanceDockDepthState depthState,
-            ISubstanceCardMetricsProvider cardMetrics)
+        public SubstanceDockAreaRegistry(
+            SubstanceDockAreaView dishDockArea,
+            SubstanceDockAreaView edgeBlockDockArea,
+            SubstanceDockAreaView traitShardDockArea)
         {
-            this.world = world;
-            this.stackSystem = stackSystem;
-            this.playAreaBounds = playAreaBounds;
-            this.definitionRegistry = definitionRegistry;
-            this.settings = settings;
-            this.depthState = depthState;
-            this.cardMetrics = cardMetrics;
+            Register(SubstanceDockKind.Dish, dishDockArea);
+            Register(SubstanceDockKind.EdgeBlock, edgeBlockDockArea);
+            Register(SubstanceDockKind.TraitShard, traitShardDockArea);
         }
 
         public IReadOnlyList<SubstanceDockArea> Areas
         {
             get
             {
-                if (cachedAreas == null)
-                    cachedAreas = FindSceneAreas();
+                areaBuffer.Clear();
 
-                return cachedAreas;
+                AddArea(SubstanceDockKind.Dish);
+                AddArea(SubstanceDockKind.EdgeBlock);
+                AddArea(SubstanceDockKind.TraitShard);
+
+                return areaBuffer;
             }
         }
+
+        public bool TryGetArea(SubstanceDockKind dockKind, out SubstanceDockArea dockArea)
+        {
+            if (!viewsByKind.TryGetValue(dockKind, out var view) ||
+                view == null ||
+                !view.isActiveAndEnabled)
+            {
+                dockArea = default;
+                return false;
+            }
+
+            dockArea = view.ToArea();
+            return true;
+        }
+
+        private void Register(SubstanceDockKind expectedDockKind, SubstanceDockAreaView view)
+        {
+            if (view == null)
+            {
+                Debug.LogWarning($"[SubstanceDock] Area reference missing kind={expectedDockKind}");
+                return;
+            }
+
+            if (view.DockKind != expectedDockKind)
+            {
+                Debug.LogWarning($"[SubstanceDock] Area reference kind mismatch expected={expectedDockKind} actual={view.DockKind}");
+                return;
+            }
+
+            viewsByKind[expectedDockKind] = view;
+        }
+
+        private void AddArea(SubstanceDockKind dockKind)
+        {
+            if (TryGetArea(dockKind, out var area))
+                areaBuffer.Add(area);
+        }
+    }
+
+    public sealed class SubstanceDockSystem
+    {
+        private readonly GameWorld world;
+        private readonly SubstanceStackSystem stackSystem;
+        private readonly SubstanceDefinitionRegistry definitionRegistry;
+        private readonly SubstanceDockLayoutSettings settings;
+        private readonly SubstanceDockDepthState depthState;
+        private readonly ISubstanceCardMetricsProvider cardMetrics;
+        private readonly SubstanceDockAreaRegistry areaRegistry;
+        private readonly Dictionary<GameEntityId, SubstanceDockKind> dockedStacks = new();
+        private readonly Dictionary<SubstanceDockKind, List<GameEntityId>> dockOrderByKind = new();
+        private readonly HashSet<GameEntityId> knownStacks = new();
+        private readonly HashSet<GameEntityId> draggingStacks = new();
+        private readonly List<GameEntityId> stackBuffer = new();
+        private readonly List<GameEntityId> staleBuffer = new();
+
+        public SubstanceDockSystem(
+            GameWorld world,
+            SubstanceStackSystem stackSystem,
+            SubstanceDefinitionRegistry definitionRegistry,
+            SubstanceDockLayoutSettings settings,
+            SubstanceDockDepthState depthState,
+            ISubstanceCardMetricsProvider cardMetrics,
+            SubstanceDockAreaRegistry areaRegistry)
+        {
+            this.world = world;
+            this.stackSystem = stackSystem;
+            this.definitionRegistry = definitionRegistry;
+            this.settings = settings;
+            this.depthState = depthState;
+            this.cardMetrics = cardMetrics;
+            this.areaRegistry = areaRegistry;
+        }
+
+        public IReadOnlyList<SubstanceDockArea> Areas => areaRegistry.Areas;
 
         public void SyncNewEligibleStacks()
         {
@@ -538,7 +594,7 @@ namespace OneMoreSpoon.Game.Systems
             if (stackBuffer.Count <= 0)
                 return;
 
-            if (!TryGetArea(dockKind, out SubstanceDockArea area))
+            if (!areaRegistry.TryGetArea(dockKind, out SubstanceDockArea area))
             {
                 Debug.LogWarning($"[SubstanceDock] Area not found kind={dockKind}");
                 return;
@@ -551,7 +607,7 @@ namespace OneMoreSpoon.Game.Systems
                 if (draggingStacks.Contains(stackId))
                     continue;
 
-                stackSystem.TryMove(stackId, GetSlotPosition(area.Bounds, i, stackBuffer.Count));
+                stackSystem.TryMove(stackId, GetSlotPosition(area.Bounds, i));
                 depthState.SetDepth(stackId, settings.DockedStackZStep * i);
             }
         }
@@ -574,79 +630,17 @@ namespace OneMoreSpoon.Game.Systems
             }
         }
 
-        private Vector2 GetSlotPosition(Bounds bounds, int index, int count)
+        private Vector2 GetSlotPosition(Bounds bounds, int index)
         {
-            Vector2 cardSize = cardMetrics.CardSize;
-            Vector2 defaultPitch = new(
-                cardSize.x + settings.HorizontalGap,
-                cardSize.y + settings.VerticalGap);
-
-            Vector2 usableSize = new(
-                Mathf.Max(cardSize.x, bounds.size.x - settings.Padding.x * 2f),
-                Mathf.Max(cardSize.y, bounds.size.y - settings.Padding.y * 2f));
-
-            int columns = Mathf.Max(1, Mathf.FloorToInt((usableSize.x + settings.HorizontalGap) / defaultPitch.x));
-            int rows = Mathf.Max(1, Mathf.CeilToInt(count / (float)columns));
-
-            float horizontalPitch = columns <= 1
-                ? 0f
-                : GetCompressedPitch(usableSize.x, cardSize.x, columns, defaultPitch.x, settings.MinOverflowPitch.x);
-
-            float verticalPitch = rows <= 1
-                ? 0f
-                : GetCompressedPitch(usableSize.y, cardSize.y, rows, defaultPitch.y, settings.MinOverflowPitch.y);
+            float usableWidth = Mathf.Max(0.1f, bounds.size.x - settings.HorizontalPadding * 2f);
+            int columns = Mathf.Max(1, Mathf.FloorToInt(usableWidth / settings.HorizontalSpacing) + 1);
 
             int column = index % columns;
             int row = index / columns;
 
             return new Vector2(
-                bounds.min.x + settings.Padding.x + cardSize.x * 0.5f + horizontalPitch * column,
-                bounds.max.y - settings.Padding.y - cardSize.y * 0.5f - verticalPitch * row);
-        }
-
-        private static float GetCompressedPitch(
-            float usableLength,
-            float itemLength,
-            int itemCount,
-            float defaultPitch,
-            float minPitch)
-        {
-            if (itemCount <= 1)
-                return 0f;
-
-            float fittingPitch = (usableLength - itemLength) / (itemCount - 1);
-            return Mathf.Clamp(fittingPitch, minPitch, defaultPitch);
-        }
-
-        private bool TryGetArea(SubstanceDockKind dockKind, out SubstanceDockArea dockArea)
-        {
-            foreach (var area in Areas)
-            {
-                if (area.Kind == dockKind)
-                {
-                    dockArea = area;
-                    return true;
-                }
-            }
-
-            dockArea = default;
-            return false;
-        }
-
-        private IReadOnlyList<SubstanceDockArea> FindSceneAreas()
-        {
-            areaBuffer.Clear();
-
-            foreach (var view in Object.FindObjectsByType<SubstanceDockAreaView>(FindObjectsSortMode.None))
-            {
-                if (view == null || !view.isActiveAndEnabled)
-                    continue;
-
-                areaBuffer.Add(view.ToArea());
-            }
-
-            areaBuffer.Sort((a, b) => a.Kind.CompareTo(b.Kind));
-            return areaBuffer.ToArray();
+                bounds.min.x + settings.HorizontalPadding + settings.HorizontalSpacing * column,
+                bounds.max.y - settings.VerticalPadding - settings.VerticalSpacing * row);
         }
 
         private bool TryGetDockKind(string substanceId, out SubstanceDockKind dockKind)

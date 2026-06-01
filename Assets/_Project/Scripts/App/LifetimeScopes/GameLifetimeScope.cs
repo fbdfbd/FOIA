@@ -35,6 +35,11 @@ namespace OneMoreSpoon.App.LifetimeScopes
         [SerializeField] private InspectPanelView inspectPanelViewPrefab;
         [SerializeField] private EncyclopediaView encyclopediaViewPrefab;
 
+        [Header("Substance Docks")]
+        [SerializeField] private SubstanceDockAreaView dishDockArea;
+        [SerializeField] private SubstanceDockAreaView edgeBlockDockArea;
+        [SerializeField] private SubstanceDockAreaView traitShardDockArea;
+
         [Header("Tutorial")]
         [SerializeField] private bool enableTutorial;
         [SerializeField] private TutorialDialogView tutorialDialogView;
@@ -51,7 +56,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
 
             builder.InstallGameConfig(refs);
             builder.InstallGameCore();
-            builder.InstallGameSystems();
+            builder.InstallGameSystems(refs);
             builder.InstallGameFactories();
             builder.InstallInspect();
             builder.InstallEncyclopedia();
@@ -79,6 +84,9 @@ namespace OneMoreSpoon.App.LifetimeScopes
                 flowViewPrefab,
                 inspectPanelViewPrefab,
                 encyclopediaViewPrefab,
+                dishDockArea,
+                edgeBlockDockArea,
+                traitShardDockArea,
                 mainGamePanelRenderer,
                 nodePlacementPadding);
         }

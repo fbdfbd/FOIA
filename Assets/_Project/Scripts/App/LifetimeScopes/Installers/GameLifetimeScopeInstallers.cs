@@ -46,6 +46,9 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             FlowView flowViewPrefab,
             InspectPanelView inspectPanelViewPrefab,
             EncyclopediaView encyclopediaViewPrefab,
+            SubstanceDockAreaView dishDockArea,
+            SubstanceDockAreaView edgeBlockDockArea,
+            SubstanceDockAreaView traitShardDockArea,
             SpriteRenderer mainGamePanelRenderer,
             float nodePlacementPadding)
         {
@@ -62,6 +65,9 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             FlowViewPrefab = flowViewPrefab;
             InspectPanelViewPrefab = inspectPanelViewPrefab;
             EncyclopediaViewPrefab = encyclopediaViewPrefab;
+            DishDockArea = dishDockArea;
+            EdgeBlockDockArea = edgeBlockDockArea;
+            TraitShardDockArea = traitShardDockArea;
             MainGamePanelRenderer = mainGamePanelRenderer;
             NodePlacementPadding = nodePlacementPadding;
         }
@@ -79,6 +85,9 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
         public FlowView FlowViewPrefab { get; }
         public InspectPanelView InspectPanelViewPrefab { get; }
         public EncyclopediaView EncyclopediaViewPrefab { get; }
+        public SubstanceDockAreaView DishDockArea { get; }
+        public SubstanceDockAreaView EdgeBlockDockArea { get; }
+        public SubstanceDockAreaView TraitShardDockArea { get; }
         public SpriteRenderer MainGamePanelRenderer { get; }
         public float NodePlacementPadding { get; }
     }
@@ -158,7 +167,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             builder.Register<ToastMessageQueue>(Lifetime.Singleton);
         }
 
-        public static void InstallGameSystems(this IContainerBuilder builder)
+        public static void InstallGameSystems(this IContainerBuilder builder, GameLifetimeScopeRefs refs)
         {
             builder.Register<PlacementRuleSystem>(Lifetime.Singleton);
             builder.Register<NodeMoveSystem>(Lifetime.Singleton);
@@ -174,6 +183,10 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             builder.Register<SubstanceDockLayoutSettings>(Lifetime.Singleton);
             builder.Register<SubstanceCardMetricsProvider>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SubstanceDockDepthState>(Lifetime.Singleton);
+            builder.RegisterInstance(new SubstanceDockAreaRegistry(
+                refs.DishDockArea,
+                refs.EdgeBlockDockArea,
+                refs.TraitShardDockArea));
             builder.Register<SubstanceDockSystem>(Lifetime.Singleton);
             builder.Register<FirstDiscoveryRewardService>(Lifetime.Singleton);
             builder.Register<SubstanceGrantService>(Lifetime.Singleton);
