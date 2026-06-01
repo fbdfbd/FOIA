@@ -1970,7 +1970,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  definitionCatalog: {fileID: 11400000, guid: 3703759b3c01df54e84040e04c54500d, type: 2}
+  definitionCatalog: {fileID: 11400000, guid: 3aefb27041c3e9c48a05d105a9462436, type: 2}
   initialLevelLayout: {fileID: 11400000, guid: efa33f5912c09024a9e8dfd50c25fd43, type: 2}
   viewRegistry: {fileID: 490406068}
   inputNodeViewPrefab: {fileID: 158862403785399452, guid: 7b756fef13a6ebe449d822578c270186, type: 3}
