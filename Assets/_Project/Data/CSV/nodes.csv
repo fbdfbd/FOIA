@@ -7,4 +7,4 @@ node_place_room,숨겨진방,Assets/_Project/Arts/Nodes/Sprite_Node_Room.png,10,
 node_place_hole,구덩이,Assets/_Project/Arts/Nodes/Sprite_Node_Hole.png,10,Place,,node_place_hole
 node_place_basement,지하실,,20,Place,,node_place_basement
 node_act_record,기록,,10,Act,,node_act_record
-node_unique_scan,스캔,Assets/_Project/Arts/Nodes/Sprite_Node_Scan.png,1,Unique,,node_unique_scan
+node_unique_scan,스캔,Assets/_Project/Arts/Nodes/Sprite_Node_Scan,1,Unique,,node_unique_scan
