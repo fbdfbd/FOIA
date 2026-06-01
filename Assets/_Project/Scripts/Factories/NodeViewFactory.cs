@@ -52,14 +52,14 @@ namespace OneMoreSpoon.View.Factories
             NodeView view = Object.Instantiate(prefab, position.Value, Quaternion.identity);
 
             view.Bind(entityId, world);
-            UpdateLabel(entityId, view);
+            UpdateVisuals(entityId, view);
 
             viewRegistry.Register(entityId, view);
 
             return view;
         }
 
-        private void UpdateLabel(GameEntityId entityId, NodeView view)
+        private void UpdateVisuals(GameEntityId entityId, NodeView view)
         {
             if (!world.Nodes.TryGetValue(entityId, out var node))
             {
@@ -75,6 +75,7 @@ namespace OneMoreSpoon.View.Factories
             }
 
             view.SetLabel(definition.DisplayName);
+            view.SetImage(definition.Image);
         }
         private NodeView GetPrefab(NodeCategory category)
         {

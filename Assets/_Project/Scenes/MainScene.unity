@@ -3096,7 +3096,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2940623091060929926, guid: c2ab735c623997949829843b70677abc, type: 3}
       propertyPath: m_text
-      value: "\uD2B9\uBCC4\uD55C \uAC83"
+      value: "\uC18C\uC7A5\uC6A9\n\uD0D0\uC0AC\uAE30\uB85D"
       objectReference: {fileID: 0}
     - target: {fileID: 3233564860967844469, guid: c2ab735c623997949829843b70677abc, type: 3}
       propertyPath: m_Name
@@ -3117,6 +3117,10 @@ PrefabInstance:
     - target: {fileID: 4542895580612941473, guid: c2ab735c623997949829843b70677abc, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4682126035459481980, guid: c2ab735c623997949829843b70677abc, type: 3}
+      propertyPath: m_text
+      value: "\uD0D0\uC0AC\uAE30\uB85D"
       objectReference: {fileID: 0}
     - target: {fileID: 4883461067600111726, guid: c2ab735c623997949829843b70677abc, type: 3}
       propertyPath: m_text

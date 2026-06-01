@@ -2,6 +2,7 @@ using DG.Tweening;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.Game.Systems;
+using OneMoreSpoon.Presenter;
 using OneMoreSpoon.View.Common;
 using TMPro;
 using UnityEngine;
@@ -12,6 +13,7 @@ namespace OneMoreSpoon.View.Substances
     public sealed class SubstanceView : EntityView
     {
         [SerializeField] private SpriteRenderer backgroundRenderer;
+        [SerializeField] private SpriteRenderer imageRenderer;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text amountText;
         [SerializeField] private TMP_Text titleText;
@@ -21,6 +23,7 @@ namespace OneMoreSpoon.View.Substances
 
         private SubstanceDefinitionRegistry definitionRegistry;
         private SubstanceDockDepthState dockDepthState;
+        private SubstanceTitleProvider titleProvider;
         private bool isPressed;
         private bool hasTargetPosition;
         private Vector3 lastTargetPosition;
@@ -28,22 +31,35 @@ namespace OneMoreSpoon.View.Substances
 
         public void Initialize(
             SubstanceDefinitionRegistry definitionRegistry,
-            SubstanceDockDepthState dockDepthState)
+            SubstanceDockDepthState dockDepthState,
+            SubstanceTitleProvider titleProvider)
         {
             this.definitionRegistry = definitionRegistry;
             this.dockDepthState = dockDepthState;
+            this.titleProvider = titleProvider;
         }
 
         public void SetVisuals(
             SpriteRenderer backgroundRenderer,
+            SpriteRenderer imageRenderer,
             TMP_Text nameText,
             TMP_Text amountText,
             TMP_Text titleText)
         {
             this.backgroundRenderer = backgroundRenderer;
+            this.imageRenderer = imageRenderer;
             this.nameText = nameText;
             this.amountText = amountText;
             this.titleText = titleText;
+        }
+
+        public void SetImage(Sprite image)
+        {
+            if (imageRenderer == null)
+                return;
+
+            imageRenderer.sprite = image;
+            imageRenderer.gameObject.SetActive(image != null);
         }
 
         private void Awake()
@@ -126,7 +142,7 @@ namespace OneMoreSpoon.View.Substances
                 amountText.text = stack.IsInfinite ? "INF" : $"x{stack.Amount}";
 
             if (titleText != null)
-                titleText.text = SubstanceKindRules.GetTitle(definition.Kind);
+                titleText.text = titleProvider?.GetTitle(definition.Kind) ?? string.Empty;
         }
     }
 }

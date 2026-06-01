@@ -11,6 +11,7 @@ namespace OneMoreSpoon.Game.Definitions
         [Header("Identity")]
         [SerializeField] private string definitionId;
         [SerializeField] private string displayName;
+        [SerializeField] private Sprite image;
 
         [Header("Classification")]
         [SerializeField] private int processLayer;
@@ -22,6 +23,7 @@ namespace OneMoreSpoon.Game.Definitions
 
         public string DefinitionId => definitionId;
         public string DisplayName => displayName;
+        public Sprite Image => image;
         public int ProcessLayer => processLayer;
         public NodeCategory Category => category;
         public IReadOnlyList<string> BaseTags => baseTags;

@@ -180,6 +180,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
 
         public static void InstallGameFactories(this IContainerBuilder builder)
         {
+            builder.Register<SubstanceTitleProvider>(Lifetime.Singleton);
             builder.Register<NodeFactory>(Lifetime.Singleton);
             builder.Register<EdgeFactory>(Lifetime.Singleton);
             builder.Register<SubstanceStackFactory>(Lifetime.Singleton);

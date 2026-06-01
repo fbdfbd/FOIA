@@ -9,6 +9,7 @@ namespace OneMoreSpoon.View.Nodes
     {
         [SerializeField] private TMP_Text label;
         [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private SpriteRenderer imageRenderer;
         [SerializeField] private Color normalColor = Color.white;
         [SerializeField] private Color selectedColor = Color.yellow;
         [SerializeField] private float normalZ = 0f;
@@ -91,6 +92,15 @@ namespace OneMoreSpoon.View.Nodes
             if (label == null)
                 return;
             label.text = text;
+        }
+
+        public void SetImage(Sprite image)
+        {
+            if (imageRenderer == null)
+                return;
+
+            imageRenderer.sprite = image;
+            imageRenderer.gameObject.SetActive(image != null);
         }
     }
 }
