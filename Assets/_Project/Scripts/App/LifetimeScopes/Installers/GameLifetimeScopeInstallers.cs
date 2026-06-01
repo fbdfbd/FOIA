@@ -172,6 +172,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             builder.Register<EdgeBlockEquipSystem>(Lifetime.Singleton);
             builder.Register<ClusterSeparationSystem>(Lifetime.Singleton);
             builder.Register<SubstanceDockLayoutSettings>(Lifetime.Singleton);
+            builder.Register<SubstanceCardMetricsProvider>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SubstanceDockDepthState>(Lifetime.Singleton);
             builder.Register<SubstanceDockSystem>(Lifetime.Singleton);
             builder.Register<FirstDiscoveryRewardService>(Lifetime.Singleton);

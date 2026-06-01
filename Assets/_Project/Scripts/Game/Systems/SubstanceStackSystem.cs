@@ -341,10 +341,10 @@ namespace OneMoreSpoon.Game.Systems
 
     public sealed class SubstanceDockLayoutSettings
     {
-        public float HorizontalSpacing { get; } = 1.05f;
-        public float VerticalSpacing { get; } = 1.05f;
-        public float HorizontalPadding { get; } = 0.55f;
-        public float VerticalPadding { get; } = 0.55f;
+        public float HorizontalGap { get; } = 0.25f;
+        public float VerticalGap { get; } = 0.3f;
+        public Vector2 Padding { get; } = new(0.55f, 0.55f);
+        public Vector2 MinOverflowPitch { get; } = new(0.65f, 0.55f);
         public float DockedStackZStep { get; } = -0.01f;
     }
 
@@ -375,7 +375,9 @@ namespace OneMoreSpoon.Game.Systems
         private readonly SubstanceDefinitionRegistry definitionRegistry;
         private readonly SubstanceDockLayoutSettings settings;
         private readonly SubstanceDockDepthState depthState;
+        private readonly ISubstanceCardMetricsProvider cardMetrics;
         private readonly Dictionary<GameEntityId, SubstanceDockKind> dockedStacks = new();
+        private readonly Dictionary<SubstanceDockKind, List<GameEntityId>> dockOrderByKind = new();
         private readonly HashSet<GameEntityId> knownStacks = new();
         private readonly HashSet<GameEntityId> draggingStacks = new();
         private readonly List<SubstanceDockArea> areaBuffer = new();
@@ -389,7 +391,8 @@ namespace OneMoreSpoon.Game.Systems
             PlayAreaBoundsSystem playAreaBounds,
             SubstanceDefinitionRegistry definitionRegistry,
             SubstanceDockLayoutSettings settings,
-            SubstanceDockDepthState depthState)
+            SubstanceDockDepthState depthState,
+            ISubstanceCardMetricsProvider cardMetrics)
         {
             this.world = world;
             this.stackSystem = stackSystem;
@@ -397,6 +400,7 @@ namespace OneMoreSpoon.Game.Systems
             this.definitionRegistry = definitionRegistry;
             this.settings = settings;
             this.depthState = depthState;
+            this.cardMetrics = cardMetrics;
         }
 
         public IReadOnlyList<SubstanceDockArea> Areas
@@ -441,6 +445,7 @@ namespace OneMoreSpoon.Game.Systems
                 return;
 
             dockedStacks.Remove(stackId);
+            RemoveFromDockOrder(stackId, dockKind);
             depthState.ClearDepth(stackId);
             Rearrange(dockKind);
         }
@@ -476,6 +481,7 @@ namespace OneMoreSpoon.Game.Systems
             if (dockedStacks.TryGetValue(stackId, out SubstanceDockKind dockKind))
             {
                 dockedStacks.Remove(stackId);
+                RemoveFromDockOrder(stackId, dockKind);
                 Rearrange(dockKind);
             }
 
@@ -504,7 +510,19 @@ namespace OneMoreSpoon.Game.Systems
 
         private void DockInternal(GameEntityId stackId, SubstanceDockKind dockKind)
         {
+            if (dockedStacks.TryGetValue(stackId, out SubstanceDockKind previousDockKind))
+            {
+                if (previousDockKind == dockKind)
+                {
+                    EnsureDockOrderContains(stackId, dockKind);
+                    return;
+                }
+
+                RemoveFromDockOrder(stackId, previousDockKind);
+            }
+
             dockedStacks[stackId] = dockKind;
+            GetDockOrder(dockKind).Add(stackId);
         }
 
         private void RearrangeAll()
@@ -542,36 +560,62 @@ namespace OneMoreSpoon.Game.Systems
         {
             stackBuffer.Clear();
 
-            foreach (var pair in dockedStacks)
-            {
-                if (pair.Value == dockKind && world.SubstanceStacks.ContainsKey(pair.Key))
-                    stackBuffer.Add(pair.Key);
-            }
+            if (!dockOrderByKind.TryGetValue(dockKind, out var dockOrder))
+                return;
 
-            stackBuffer.Sort((a, b) => a.Value.CompareTo(b.Value));
+            foreach (var stackId in dockOrder)
+            {
+                if (dockedStacks.TryGetValue(stackId, out SubstanceDockKind currentDockKind) &&
+                    currentDockKind == dockKind &&
+                    world.SubstanceStacks.ContainsKey(stackId))
+                {
+                    stackBuffer.Add(stackId);
+                }
+            }
         }
 
         private Vector2 GetSlotPosition(Bounds bounds, int index, int count)
         {
-            float usableWidth = Mathf.Max(0.1f, bounds.size.x - settings.HorizontalPadding * 2f);
-            int columns = Mathf.Max(1, Mathf.FloorToInt(usableWidth / settings.HorizontalSpacing) + 1);
+            Vector2 cardSize = cardMetrics.CardSize;
+            Vector2 defaultPitch = new(
+                cardSize.x + settings.HorizontalGap,
+                cardSize.y + settings.VerticalGap);
+
+            Vector2 usableSize = new(
+                Mathf.Max(cardSize.x, bounds.size.x - settings.Padding.x * 2f),
+                Mathf.Max(cardSize.y, bounds.size.y - settings.Padding.y * 2f));
+
+            int columns = Mathf.Max(1, Mathf.FloorToInt((usableSize.x + settings.HorizontalGap) / defaultPitch.x));
             int rows = Mathf.Max(1, Mathf.CeilToInt(count / (float)columns));
 
-            float horizontalSpacing = columns <= 1
+            float horizontalPitch = columns <= 1
                 ? 0f
-                : settings.HorizontalSpacing;
+                : GetCompressedPitch(usableSize.x, cardSize.x, columns, defaultPitch.x, settings.MinOverflowPitch.x);
 
-            float usableHeight = Mathf.Max(0.1f, bounds.size.y - settings.VerticalPadding * 2f);
-            float verticalSpacing = rows <= 1
+            float verticalPitch = rows <= 1
                 ? 0f
-                : settings.VerticalSpacing;
+                : GetCompressedPitch(usableSize.y, cardSize.y, rows, defaultPitch.y, settings.MinOverflowPitch.y);
 
             int column = index % columns;
             int row = index / columns;
 
             return new Vector2(
-                bounds.min.x + settings.HorizontalPadding + horizontalSpacing * column,
-                bounds.max.y - settings.VerticalPadding - verticalSpacing * row);
+                bounds.min.x + settings.Padding.x + cardSize.x * 0.5f + horizontalPitch * column,
+                bounds.max.y - settings.Padding.y - cardSize.y * 0.5f - verticalPitch * row);
+        }
+
+        private static float GetCompressedPitch(
+            float usableLength,
+            float itemLength,
+            int itemCount,
+            float defaultPitch,
+            float minPitch)
+        {
+            if (itemCount <= 1)
+                return 0f;
+
+            float fittingPitch = (usableLength - itemLength) / (itemCount - 1);
+            return Mathf.Clamp(fittingPitch, minPitch, defaultPitch);
         }
 
         private bool TryGetArea(SubstanceDockKind dockKind, out SubstanceDockArea dockArea)
@@ -648,9 +692,40 @@ namespace OneMoreSpoon.Game.Systems
             {
                 knownStacks.Remove(stackId);
                 draggingStacks.Remove(stackId);
-                dockedStacks.Remove(stackId);
+
+                if (dockedStacks.TryGetValue(stackId, out SubstanceDockKind dockKind))
+                {
+                    dockedStacks.Remove(stackId);
+                    RemoveFromDockOrder(stackId, dockKind);
+                }
+
                 depthState.ClearDepth(stackId);
             }
+        }
+
+        private List<GameEntityId> GetDockOrder(SubstanceDockKind dockKind)
+        {
+            if (!dockOrderByKind.TryGetValue(dockKind, out var dockOrder))
+            {
+                dockOrder = new List<GameEntityId>();
+                dockOrderByKind[dockKind] = dockOrder;
+            }
+
+            return dockOrder;
+        }
+
+        private void EnsureDockOrderContains(GameEntityId stackId, SubstanceDockKind dockKind)
+        {
+            var dockOrder = GetDockOrder(dockKind);
+
+            if (!dockOrder.Contains(stackId))
+                dockOrder.Add(stackId);
+        }
+
+        private void RemoveFromDockOrder(GameEntityId stackId, SubstanceDockKind dockKind)
+        {
+            if (dockOrderByKind.TryGetValue(dockKind, out var dockOrder))
+                dockOrder.Remove(stackId);
         }
     }
 }
