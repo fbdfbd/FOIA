@@ -47,6 +47,9 @@ TagManager:
   - name: EntityInfo
     uniqueID: 4104989503
     locked: 0
+  - name: FlowEntity
+    uniqueID: 2404170549
+    locked: 0
   - name: ActiveBackground
     uniqueID: 1994881931
     locked: 0
