@@ -1071,7 +1071,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -1761640029
   m_SortingOrder: 500
   m_TargetDisplay: 0
 --- !u!224 &596595669
@@ -1980,6 +1980,7 @@ MonoBehaviour:
   edgeViewPrefab: {fileID: -6018216240545183760, guid: 069d7de062072d04c86646930a30027f, type: 3}
   edgeBlockIndicatorViewPrefab: {fileID: 3068559565703066108, guid: 27d526127a68bd849904daec49c6cc51, type: 3}
   substanceViewPrefab: {fileID: 43564751759636787, guid: 74bbab41e5ab9564aae4525ffe56d6de, type: 3}
+  substanceOutlineConfig: {fileID: 11400000, guid: 1b812c37c4fc4d68bb6e6cf9d602a102, type: 2}
   flowViewPrefab: {fileID: 8734692758741452506, guid: 2c2bfdf25dd2a0e44bc9365324243193, type: 3}
   inspectPanelViewPrefab: {fileID: 614641285}
   encyclopediaViewPrefab: {fileID: 896160203}
@@ -2399,7 +2400,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -1761640029
   m_SortingOrder: 500
   m_TargetDisplay: 0
 --- !u!224 &1736635144

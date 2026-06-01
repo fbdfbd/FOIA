@@ -43,6 +43,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             EdgeView edgeViewPrefab,
             EdgeBlockIndicatorView edgeBlockIndicatorViewPrefab,
             SubstanceView substanceViewPrefab,
+            SO_SubstanceOutlineConfig substanceOutlineConfig,
             FlowView flowViewPrefab,
             InspectPanelView inspectPanelViewPrefab,
             EncyclopediaView encyclopediaViewPrefab,
@@ -63,6 +64,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             EdgeViewPrefab = edgeViewPrefab;
             EdgeBlockIndicatorViewPrefab = edgeBlockIndicatorViewPrefab;
             SubstanceViewPrefab = substanceViewPrefab;
+            SubstanceOutlineConfig = substanceOutlineConfig;
             FlowViewPrefab = flowViewPrefab;
             InspectPanelViewPrefab = inspectPanelViewPrefab;
             EncyclopediaViewPrefab = encyclopediaViewPrefab;
@@ -84,6 +86,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
         public EdgeView EdgeViewPrefab { get; }
         public EdgeBlockIndicatorView EdgeBlockIndicatorViewPrefab { get; }
         public SubstanceView SubstanceViewPrefab { get; }
+        public SO_SubstanceOutlineConfig SubstanceOutlineConfig { get; }
         public FlowView FlowViewPrefab { get; }
         public InspectPanelView InspectPanelViewPrefab { get; }
         public EncyclopediaView EncyclopediaViewPrefab { get; }
@@ -152,6 +155,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
                 refs.OutputNodeViewPrefab,
                 refs.InteractNodeViewPrefab,
                 refs.MergeNodeViewPrefab));
+            builder.RegisterInstance(new SubstanceOutlineColorProvider(refs.SubstanceOutlineConfig));
         }
 
         public static void InstallTutorial(this IContainerBuilder builder, TutorialDialogView dialogView, TutorialGoalView goalView)

@@ -15,6 +15,7 @@ namespace OneMoreSpoon.View.Substances
         [SerializeField] private SpriteRenderer backgroundRenderer;
         [SerializeField] private SpriteRenderer imageRenderer;
         [SerializeField] private SelectableOutlineVisual selectionVisual;
+        [SerializeField] private SortingLayerStateVisual sortingLayerVisual;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text amountText;
         [SerializeField] private TMP_Text titleText;
@@ -59,6 +60,10 @@ namespace OneMoreSpoon.View.Substances
 
             if (selectionVisual == null)
                 selectionVisual = GetComponent<SelectableOutlineVisual>();
+
+            if (sortingLayerVisual == null)
+                sortingLayerVisual = GetComponent<SortingLayerStateVisual>()
+                    ?? gameObject.AddComponent<SortingLayerStateVisual>();
         }
 
         private void LateUpdate()
@@ -118,11 +123,17 @@ namespace OneMoreSpoon.View.Substances
         public void SetPressed(bool pressed)
         {
             isPressed = pressed;
+            sortingLayerVisual?.SetActiveLayer(pressed);
         }
 
         public void SetSelected(bool selected)
         {
             selectionVisual?.SetSelected(selected);
+        }
+
+        public void SetOutlineColors(SubstanceOutlineColors colors)
+        {
+            selectionVisual?.SetColors(colors.Normal, colors.Selected);
         }
 
         public void SetImage(Sprite image)
