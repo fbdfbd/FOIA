@@ -10,10 +10,11 @@ using UnityEngine;
 namespace OneMoreSpoon.View.Substances
 {
     [RequireComponent(typeof(BoxCollider2D))]
-    public sealed class SubstanceView : EntityView
+    public sealed class SubstanceView : EntityView, ISelectableView
     {
         [SerializeField] private SpriteRenderer backgroundRenderer;
         [SerializeField] private SpriteRenderer imageRenderer;
+        [SerializeField] private SelectableOutlineVisual selectionVisual;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text amountText;
         [SerializeField] private TMP_Text titleText;
@@ -55,6 +56,9 @@ namespace OneMoreSpoon.View.Substances
         {
             if (backgroundRenderer == null)
                 backgroundRenderer = GetComponent<SpriteRenderer>();
+
+            if (selectionVisual == null)
+                selectionVisual = GetComponent<SelectableOutlineVisual>();
         }
 
         private void LateUpdate()
@@ -114,6 +118,11 @@ namespace OneMoreSpoon.View.Substances
         public void SetPressed(bool pressed)
         {
             isPressed = pressed;
+        }
+
+        public void SetSelected(bool selected)
+        {
+            selectionVisual?.SetSelected(selected);
         }
 
         public void SetImage(Sprite image)

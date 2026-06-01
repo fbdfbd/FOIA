@@ -24,7 +24,7 @@ Shader "Custom/OutlineShader_Edged_2Pass"
         Pass
         {
             Name "Outline"
-            Tags { "LightMode"="UniversalForward" }
+            Tags { "LightMode"="SRPDefaultUnlit" }
 
             Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off

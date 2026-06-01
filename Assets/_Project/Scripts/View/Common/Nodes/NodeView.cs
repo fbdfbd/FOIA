@@ -10,8 +10,7 @@ namespace OneMoreSpoon.View.Nodes
         [SerializeField] private TMP_Text label;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private SpriteRenderer imageRenderer;
-        [SerializeField] private Color normalColor = Color.white;
-        [SerializeField] private Color selectedColor = Color.yellow;
+        [SerializeField] private SelectableOutlineVisual selectionVisual;
         [SerializeField] private float normalZ = 0f;
         [SerializeField] private float pressedZOffset = -0.5f;
         [SerializeField] private float moveTweenDuration = 0.14f;
@@ -25,6 +24,9 @@ namespace OneMoreSpoon.View.Nodes
         {
             if (spriteRenderer == null)
                 spriteRenderer = GetComponent<SpriteRenderer>();
+
+            if (selectionVisual == null)
+                selectionVisual = GetComponent<SelectableOutlineVisual>();
 
             if (label == null)
                 label = GetComponentInChildren<TMP_Text>();
@@ -76,10 +78,7 @@ namespace OneMoreSpoon.View.Nodes
 
         public void SetSelected(bool selected)
         {
-            if (spriteRenderer == null)
-                return;
-
-            spriteRenderer.color = selected ? selectedColor : normalColor;
+            selectionVisual?.SetSelected(selected);
         }
 
         public void SetPressed(bool pressed)
