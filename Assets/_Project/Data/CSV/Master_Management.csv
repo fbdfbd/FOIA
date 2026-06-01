@@ -1,0 +1,39 @@
+﻿substanceId,displayName
+person_worker,직원
+person_worker_dead_hallway_chase,사망한 직원
+person_worker_dead_visual_contact,사망한 직원
+person_worker_dead_pit_return_chase,사망한 직원
+edgeblock_tool_camera,카메라
+edgeblock_tool_flashlight,손전등
+edgeblock_tool_ultrasonic_sensor,환경음 기록 보고서
+evidence_noisy_observation_file,잡음 가득한 기록
+evidence_hallway_chase_death_diagnosis,사망 진단서
+evidence_footsteps_beyond_wall,환경음 기록 보고서
+evidence_escaped_by_sound,환경음 기록 보고서
+evidence_hidden_room_refuge_record,환경음 기록 보고서
+evidence_entity_stopped_at_door,환경음 기록 보고서
+evidence_footsteps_waiting_outside,환경음 기록 보고서
+evidence_final_handwritten_shape,휘갈겨쓴 메모
+evidence_visual_contact_death_diagnosis,사망 진단서
+evidence_pit_return_chase_death_diagnosis,사망 진단서
+evidence_pit_return_chase_report,사망 진단서
+evidence_shaken_entity_photo,사진 기록 보고서
+evidence_hidden_room_note,휘갈겨쓴 메모
+evidence_black_afterimage_photo,사진 기록 보고서
+evidence_return_timing_audio,환경음 기록 보고서
+evidence_hidden_room_pit_photo_wall,사진 기록 보고서
+evidence_lighting_cycle_record,기록 보고서
+evidence_hidden_room_pit_photo_inside,사진 기록 보고서
+evidence_pit_missing_report,실종 보고서
+evidence_empty_pit_light_record,구덩이 구역 조사 보고서
+evidence_meaningless_pit_observation,대충 쓴 관측 보고서
+evidence_pit_grid_handwritten,휘갈겨쓴 메모
+evidence_chase_sound_cut_at_pit,환경음 기록 보고서
+evidence_clear_pit_grid_photo,사진 기록 보고서
+evidence_pit_photo_without_entity,사진 기록 보고서
+evidence_lured_entity_handwritten,휘갈겨쓴 메모
+evidence_clear_entity_photo_pit,사진 기록 보고서
+evidence_recovered_sanity_hidden_room,기록 보고서
+evidence_basement_entrance_revealed,지하실 입구
+evidence_abnormal_sound_fell_into_pit,기록 보고서
+evidence_exhausted_pit_survival_report,기록 보고서
