@@ -8,7 +8,7 @@ namespace OneMoreSpoon.Game.Systems
 {
     public sealed class ClusterSeparationSystem
     {
-        private const float MinDistance = 1.15f;
+        private const float MinDistance = 1.8f;
         private const float PushStrength = 0.5f;
         private const float MaxStepPerIteration = 0.25f;
         private const int Iterations = 6;
