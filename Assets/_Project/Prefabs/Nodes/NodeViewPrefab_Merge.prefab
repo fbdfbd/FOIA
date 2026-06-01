@@ -32,11 +32,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 729041746793954164}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.3944}
-  m_SizeDelta: {x: 0, y: -0.7888}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &7741179260087842603
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -69,8 +69,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
-  m_sharedMaterial: {fileID: 9113515966723835499, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
+  m_sharedMaterial: {fileID: 697555715455890385, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -94,12 +94,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.3
+  m_fontSize: 0.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0.001
-  m_fontSizeMax: 9
+  m_fontSizeMax: 0.9
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -178,7 +178,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0.0026, y: 0.008}
-  m_SizeDelta: {x: 1.5859, y: 1.0814}
+  m_SizeDelta: {x: 6, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &6765409434180216879
 Canvas:
@@ -253,9 +253,9 @@ GameObject:
   m_Component:
   - component: {fileID: 56512729896504340}
   - component: {fileID: 1415745482836765970}
-  - component: {fileID: 4784911258466102084}
   - component: {fileID: 2040270858981613804}
   - component: {fileID: 7160359210418930384}
+  - component: {fileID: 5770086272290451919}
   m_Layer: 7
   m_Name: NodeViewPrefab_Merge
   m_TagString: Untagged
@@ -273,7 +273,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.59, y: 2.42, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 729041746793954164}
@@ -305,7 +305,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: 0a98d770bf4b43c42b6b64488788350d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -328,7 +328,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: caf4c59779c111948a2241bda470103d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 920e1e6b58efc6a4893cdd3d18003c8c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -338,7 +338,41 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!61 &4784911258466102084
+--- !u!114 &2040270858981613804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3647041610524488011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b8e468722aef7b42845eae58d57a344, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.View.Nodes.NodeView
+  label: {fileID: 5410833523634405033}
+  spriteRenderer: {fileID: 1415745482836765970}
+  imageRenderer: {fileID: 0}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  normalZ: 0
+  pressedZOffset: -0.5
+  moveTweenDuration: 0.14
+--- !u!114 &7160359210418930384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3647041610524488011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c586841a0f2b4ac46b3bda0e29bb59da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.View.Nodes.MergeNodeSlotView
+  leftSub: {fileID: 1435021960077135084}
+  rightSub: {fileID: 929284873966931766}
+--- !u!61 &5770086272290451919
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -376,47 +410,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.63, y: 1.1425}
+    oldSize: {x: 6, y: 4.35}
     newSize: {x: 3.33, y: 4.56}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 6, y: 4.35}
   m_EdgeRadius: 0
---- !u!114 &2040270858981613804
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3647041610524488011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b8e468722aef7b42845eae58d57a344, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.View.Nodes.NodeView
-  label: {fileID: 5410833523634405033}
-  spriteRenderer: {fileID: 1415745482836765970}
-  normalColor: {r: 1, g: 1, b: 1, a: 1}
-  selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  normalZ: 0
-  pressedZOffset: -0.5
-  moveTweenDuration: 0.14
---- !u!114 &7160359210418930384
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3647041610524488011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c586841a0f2b4ac46b3bda0e29bb59da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.View.Nodes.MergeNodeSlotView
-  leftSub: {fileID: 1435021960077135084}
-  rightSub: {fileID: 929284873966931766}
 --- !u!1 &4559866156413831674
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,10 +452,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 729041746793954164}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.41689998, y: -0.14630002}
-  m_SizeDelta: {x: -0.8339, y: -0.2926}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -1.2915, y: -0.42683}
+  m_SizeDelta: {x: 2.583, y: 2.8536}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6583571030417803504
 CanvasRenderer:
@@ -488,8 +489,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
-  m_sharedMaterial: {fileID: 9113515966723835499, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
+  m_sharedMaterial: {fileID: 697555715455890385, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -592,7 +593,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.00221771, y: 0.00887084}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -602,7 +603,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.63186395, y: 0.6895242}
+  m_Size: {x: 2.5, y: 2.8}
   m_EdgeRadius: 0
 --- !u!114 &3536746474387335583
 MonoBehaviour:
@@ -649,10 +650,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 729041746793954164}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.3992, y: -0.14630002}
-  m_SizeDelta: {x: -0.7984, y: -0.2926}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 1.32, y: -0.42683}
+  m_SizeDelta: {x: 2.583, y: 2.8536}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4953976919685824186
 CanvasRenderer:
@@ -686,8 +687,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
-  m_sharedMaterial: {fileID: 9113515966723835499, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
+  m_sharedMaterial: {fileID: 697555715455890385, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

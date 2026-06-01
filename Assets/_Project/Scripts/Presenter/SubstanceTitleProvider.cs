@@ -11,7 +11,7 @@ namespace OneMoreSpoon.Presenter
                 SubstanceKind.Twin => "Twin",
                 SubstanceKind.Person => "직원",
                 SubstanceKind.Person_Friend => "Friend",
-                SubstanceKind.Person_Captive => "Captive",
+                SubstanceKind.Person_Captive => "직원시체",
                 SubstanceKind.Person_Replace => "Replace",
                 SubstanceKind.Person_Create => "Create",
                 SubstanceKind.Stance => "탐사기록",

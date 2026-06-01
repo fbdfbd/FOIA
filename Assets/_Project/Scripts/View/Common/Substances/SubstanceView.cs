@@ -41,25 +41,14 @@ namespace OneMoreSpoon.View.Substances
 
         public void SetVisuals(
             SpriteRenderer backgroundRenderer,
-            SpriteRenderer imageRenderer,
             TMP_Text nameText,
             TMP_Text amountText,
             TMP_Text titleText)
         {
             this.backgroundRenderer = backgroundRenderer;
-            this.imageRenderer = imageRenderer;
             this.nameText = nameText;
             this.amountText = amountText;
             this.titleText = titleText;
-        }
-
-        public void SetImage(Sprite image)
-        {
-            if (imageRenderer == null)
-                return;
-
-            imageRenderer.sprite = image;
-            imageRenderer.gameObject.SetActive(image != null);
         }
 
         private void Awake()
@@ -125,6 +114,15 @@ namespace OneMoreSpoon.View.Substances
         public void SetPressed(bool pressed)
         {
             isPressed = pressed;
+        }
+
+        public void SetImage(Sprite image)
+        {
+            if (imageRenderer == null)
+                return;
+
+            imageRenderer.sprite = image;
+            imageRenderer.gameObject.SetActive(image != null);
         }
 
         private void UpdateText()
