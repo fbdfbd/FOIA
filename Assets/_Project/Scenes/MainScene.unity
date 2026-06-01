@@ -1970,7 +1970,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  definitionCatalog: {fileID: 11400000, guid: 3703759b3c01df54e84040e04c54500d, type: 2}
+  definitionCatalog: {fileID: 11400000, guid: c8eba1ed06155164b89c067238a7eddf, type: 2}
   initialLevelLayout: {fileID: 11400000, guid: efa33f5912c09024a9e8dfd50c25fd43, type: 2}
   viewRegistry: {fileID: 490406068}
   inputNodeViewPrefab: {fileID: 158862403785399452, guid: 7b756fef13a6ebe449d822578c270186, type: 3}
@@ -2680,7 +2680,7 @@ PrefabInstance:
     - target: {fileID: 4914288118503269681, guid: 63de2b48b58a6bb479ba14902a8c854c, type: 3}
       propertyPath: defaultOperationDefinition
       value: 
-      objectReference: {fileID: 11400000, guid: b6397f6584d9343488557afc1b74d8dd, type: 2}
+      objectReference: {fileID: 11400000, guid: 85fa71558a1bffb488150749f1837eb4, type: 2}
     - target: {fileID: 7215761920554021057, guid: 63de2b48b58a6bb479ba14902a8c854c, type: 3}
       propertyPath: m_Name
       value: Input

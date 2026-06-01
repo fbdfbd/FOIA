@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7170bc57f18c747aa22d1af44d762a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.View.Edges.EdgeView
-  forwardColor: {r: 1, g: 0.945501, b: 0.3160377, a: 1}
+  forwardColor: {r: 0, g: 0, b: 0, a: 1}
   reverseColor: {r: 1, g: 0, b: 0, a: 1}
   normalWidth: 0.08
   selectedWidth: 0.4
