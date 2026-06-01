@@ -20,6 +20,7 @@ namespace OneMoreSpoon.Game.Definitions
         public static bool CanSpawnFlow(SubstanceKind kind)
         {
             return kind != SubstanceKind.Stance
+                && kind != SubstanceKind.EdgeBlock_Stance
                 && kind != SubstanceKind.Person_Replace
                 && kind != SubstanceKind.Unique
                 && kind != SubstanceKind.Trash;

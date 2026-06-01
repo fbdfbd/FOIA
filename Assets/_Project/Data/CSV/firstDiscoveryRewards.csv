@@ -1,3 +1,5 @@
 ﻿triggerType,triggerId,rewardType,rewardId,amount,rewardGroup,requiredUndiscoveredSubstanceIds
-OutputRule,worker_dead_scan,Node,node_act_record,1,,
-OutputRule,worker_camera_hallway_alive,Node,node_place_room,1,,
+OutputRule,worker_dead_hallway_chase_scan,Node,node_act_record,1,unlock_record,
+OutputRule,worker_record_audio_hallway_alive,Node,node_place_room,1,unlock_hidden_room,
+OutputRule,worker_record_hallway_camera_hidden_alive,Node,node_place_hole,1,unlock_pit,
+OutputRule,worker_final_basement_success,Node,node_place_basement,1,unlock_basement,

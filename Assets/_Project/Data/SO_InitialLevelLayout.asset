@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: SO_InitialLevelLayout
   m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.App.Config.SO_InitialLevelLayout
   initialNodes:
-  - Definition: {fileID: 11400000, guid: f8214825ec07d4b488595e5236cdaeed, type: 2}
+  - Definition: {fileID: 11400000, guid: 44b1e11933186ac48a4085ee6e1332a8, type: 2}
     Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: e3015b3d0a710e04fb28e8da0df907bc, type: 2}
+  - Definition: {fileID: 11400000, guid: 284f1f8517c60d24eb63924aae0406a5, type: 2}
     Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: 16e5daeeb1884db4ba87f8b227106654, type: 2}
+  - Definition: {fileID: 11400000, guid: 51a50d80acec92b4a872372b36561f9c, type: 2}
     Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: cd84937e654abc14c835a8b100988719, type: 2}
+  - Definition: {fileID: 11400000, guid: 8ea539576f93a434fabaa2c6d607fa22, type: 2}
     Position: {x: 0, y: 0}
-  - Definition: {fileID: 11400000, guid: f05f9928ee54bc341b22b4e9df7f21fa, type: 2}
+  - Definition: {fileID: 11400000, guid: a171a0eb3dcd09c448d6000eb4a722e4, type: 2}
     Position: {x: 0, y: 0}
   initialSubstanceStacks:
-  - SubstanceDefinition: {fileID: 11400000, guid: 9f757281f80fcc4428b0e4d68beb1328, type: 2}
+  - SubstanceDefinition: {fileID: 11400000, guid: 3edbedac61717914fb0866cfc86db7e6, type: 2}
     Amount: 1
-    IsInfinite: 0
+    IsInfinite: 1
     Position: {x: 0, y: 0}
