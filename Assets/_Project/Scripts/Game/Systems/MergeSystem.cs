@@ -167,11 +167,9 @@ namespace OneMoreSpoon.Game.Systems
             }
 
             slot.StackIds.Clear();
-            slot.StackIds.AddRange(remainingStackBuffer);
             slot.MarkResolved();
 
-            for (int i = 0; i < slot.StackIds.Count; i++)
-                MoveStackToSlotPosition(mergeNodeId, slot.StackIds[i], i);
+            EjectRemainingStacks(mergeNodeId);
 
             Vector2 resultPosition = GetMergeNodePosition(mergeNodeId) + ResultOffset;
             discoveryService.NotifyEncountered(recipe.ResultSubstance.SubstanceId);
@@ -231,6 +229,18 @@ namespace OneMoreSpoon.Game.Systems
 
             slot.Clear();
 
+            for (int i = 0; i < remainingStackBuffer.Count; i++)
+            {
+                Vector2 position = GetMergeNodePosition(mergeNodeId)
+                    + EjectOffset
+                    + StackSpacing * i;
+
+                stackSystem.TryMove(remainingStackBuffer[i], position);
+            }
+        }
+
+        private void EjectRemainingStacks(GameEntityId mergeNodeId)
+        {
             for (int i = 0; i < remainingStackBuffer.Count; i++)
             {
                 Vector2 position = GetMergeNodePosition(mergeNodeId)
