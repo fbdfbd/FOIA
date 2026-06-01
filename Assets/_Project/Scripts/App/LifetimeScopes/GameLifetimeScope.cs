@@ -2,6 +2,7 @@ using OneMoreSpoon.App.LifetimeScopes.Installers;
 using OneMoreSpoon.App.Config;
 using OneMoreSpoon.App.Tutorial;
 using OneMoreSpoon.Game.Definitions;
+using OneMoreSpoon.Game.Systems;
 using OneMoreSpoon.View.Common;
 using OneMoreSpoon.View.Edges;
 using OneMoreSpoon.View.Flows;
@@ -39,6 +40,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
         [SerializeField] private SubstanceDockAreaView dishDockArea;
         [SerializeField] private SubstanceDockAreaView edgeBlockDockArea;
         [SerializeField] private SubstanceDockAreaView traitShardDockArea;
+        [SerializeField] private SubstanceDockLayoutSettings substanceDockLayoutSettings = new();
 
         [Header("Tutorial")]
         [SerializeField] private bool enableTutorial;
@@ -87,6 +89,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
                 dishDockArea,
                 edgeBlockDockArea,
                 traitShardDockArea,
+                substanceDockLayoutSettings,
                 mainGamePanelRenderer,
                 nodePlacementPadding);
         }

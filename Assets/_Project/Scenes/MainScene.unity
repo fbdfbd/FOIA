@@ -1978,6 +1978,12 @@ MonoBehaviour:
   dishDockArea: {fileID: 1727972810}
   edgeBlockDockArea: {fileID: 484441949}
   traitShardDockArea: {fileID: 1382562406}
+  substanceDockLayoutSettings:
+    horizontalSpacing: 1.05
+    verticalSpacing: 1.05
+    horizontalPadding: 0.55
+    verticalPadding: 0.55
+    dockedStackZStep: -0.01
   enableTutorial: 0
   tutorialDialogView: {fileID: 0}
   tutorialGoalView: {fileID: 0}

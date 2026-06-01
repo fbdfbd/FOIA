@@ -49,6 +49,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             SubstanceDockAreaView dishDockArea,
             SubstanceDockAreaView edgeBlockDockArea,
             SubstanceDockAreaView traitShardDockArea,
+            SubstanceDockLayoutSettings substanceDockLayoutSettings,
             SpriteRenderer mainGamePanelRenderer,
             float nodePlacementPadding)
         {
@@ -68,6 +69,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             DishDockArea = dishDockArea;
             EdgeBlockDockArea = edgeBlockDockArea;
             TraitShardDockArea = traitShardDockArea;
+            SubstanceDockLayoutSettings = substanceDockLayoutSettings;
             MainGamePanelRenderer = mainGamePanelRenderer;
             NodePlacementPadding = nodePlacementPadding;
         }
@@ -88,6 +90,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
         public SubstanceDockAreaView DishDockArea { get; }
         public SubstanceDockAreaView EdgeBlockDockArea { get; }
         public SubstanceDockAreaView TraitShardDockArea { get; }
+        public SubstanceDockLayoutSettings SubstanceDockLayoutSettings { get; }
         public SpriteRenderer MainGamePanelRenderer { get; }
         public float NodePlacementPadding { get; }
     }
@@ -180,7 +183,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             builder.Register<EdgeBlockReturnSystem>(Lifetime.Singleton);
             builder.Register<EdgeBlockEquipSystem>(Lifetime.Singleton);
             builder.Register<ClusterSeparationSystem>(Lifetime.Singleton);
-            builder.Register<SubstanceDockLayoutSettings>(Lifetime.Singleton);
+            builder.RegisterInstance(refs.SubstanceDockLayoutSettings ?? new SubstanceDockLayoutSettings());
             builder.Register<SubstanceCardMetricsProvider>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SubstanceDockDepthState>(Lifetime.Singleton);
             builder.RegisterInstance(new SubstanceDockAreaRegistry(

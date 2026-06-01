@@ -21,9 +21,6 @@ Shader "Custom/OutlineShader_Edged_2Pass"
             "CanUseSpriteAtlas"="True"
         }
 
-        // =========================
-        // PASS 1: OUTLINE
-        // =========================
         Pass
         {
             Name "Outline"
@@ -71,47 +68,61 @@ Shader "Custom/OutlineShader_Edged_2Pass"
             {
                 Varyings o;
 
-                float2 uv = TRANSFORM_TEX(v.uv, _MainTex);
-
-                // 사각형 기준으로 바깥 방향 결정
                 float2 cornerSign = step(float2(0.5, 0.5), v.uv) * 2.0 - 1.0;
+                float2 outlineTexels = _MainTex_TexelSize.xy * _OutlineWidth;
 
-                float4 positionHCS = TransformObjectToHClip(v.positionOS.xyz);
+                float4 positionOS = v.positionOS;
+                positionOS.xy += cornerSign * outlineTexels;
 
-                // 화면 픽셀 기준 확장
-                float2 pixelToClip = 2.0 / _ScreenParams.xy;
-                positionHCS.xy += cornerSign * pixelToClip * _OutlineWidth * positionHCS.w;
-
-                // UV는 반대로 살짝 밀어서 확대된 실루엣이 원본 알파를 유지하게 함
-                uv -= cornerSign * _MainTex_TexelSize.xy * _OutlineWidth;
-
-                o.positionHCS = positionHCS;
-                o.uv = uv;
+                o.positionHCS = TransformObjectToHClip(positionOS.xyz);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex) + cornerSign * outlineTexels;
 
                 return o;
             }
 
+            half AlphaAt(float2 uv)
+            {
+                if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
+                    return half(0.0);
+
+                return SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv).a;
+            }
+
             half4 frag(Varyings i) : SV_Target
             {
-                if (i.uv.x < 0.0 || i.uv.x > 1.0 || i.uv.y < 0.0 || i.uv.y > 1.0)
-                    return half4(0, 0, 0, 0);
+                const int MAX_RADIUS = 32;
 
-                half alpha = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv).a;
+                int radius = (int)clamp(_OutlineWidth + 0.5, 1.0, (float)MAX_RADIUS);
 
-                // hard cut. 깔끔한 픽셀/각진 느낌.
-                half mask = step(_AlphaThreshold, alpha);
+                half centerAlpha = AlphaAt(i.uv);
+                half maxAlpha = half(0.0);
 
+                [loop]
+                for (int y = -MAX_RADIUS; y <= MAX_RADIUS; y++)
+                {
+                    if (abs(y) > radius)
+                        continue;
+
+                    [loop]
+                    for (int x = -MAX_RADIUS; x <= MAX_RADIUS; x++)
+                    {
+                        if (abs(x) > radius)
+                            continue;
+
+                        float2 offset = float2(x, y) * _MainTex_TexelSize.xy;
+                        maxAlpha = max(maxAlpha, AlphaAt(i.uv + offset));
+                    }
+                }
+
+                half outline = step(_AlphaThreshold, saturate(maxAlpha - centerAlpha));
                 half3 rgb = _OutlineTint.rgb * _BloomIntensity;
 
-                return half4(rgb, _OutlineTint.a * mask);
+                return half4(rgb, _OutlineTint.a * outline);
             }
 
             ENDHLSL
         }
 
-        // =========================
-        // PASS 2: ORIGINAL SPRITE
-        // =========================
         Pass
         {
             Name "Sprite"
@@ -164,9 +175,7 @@ Shader "Custom/OutlineShader_Edged_2Pass"
                 if (i.uv.x < 0.0 || i.uv.x > 1.0 || i.uv.y < 0.0 || i.uv.y > 1.0)
                     return half4(0, 0, 0, 0);
 
-                half4 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv) * i.color;
-
-                return col;
+                return SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv) * i.color;
             }
 
             ENDHLSL

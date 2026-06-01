@@ -339,13 +339,20 @@ namespace OneMoreSpoon.Game.Systems
         }
     }
 
+    [System.Serializable]
     public sealed class SubstanceDockLayoutSettings
     {
-        public float HorizontalSpacing { get; } = 1.05f;
-        public float VerticalSpacing { get; } = 1.05f;
-        public float HorizontalPadding { get; } = 0.55f;
-        public float VerticalPadding { get; } = 0.55f;
-        public float DockedStackZStep { get; } = -0.01f;
+        [SerializeField] private float horizontalSpacing = 1.05f;
+        [SerializeField] private float verticalSpacing = 1.05f;
+        [SerializeField] private float horizontalPadding = 0.55f;
+        [SerializeField] private float verticalPadding = 0.55f;
+        [SerializeField] private float dockedStackZStep = -0.01f;
+
+        public float HorizontalSpacing => horizontalSpacing;
+        public float VerticalSpacing => verticalSpacing;
+        public float HorizontalPadding => horizontalPadding;
+        public float VerticalPadding => verticalPadding;
+        public float DockedStackZStep => dockedStackZStep;
     }
 
     public readonly struct SubstanceDockArea
@@ -441,7 +448,6 @@ namespace OneMoreSpoon.Game.Systems
         private readonly SubstanceDefinitionRegistry definitionRegistry;
         private readonly SubstanceDockLayoutSettings settings;
         private readonly SubstanceDockDepthState depthState;
-        private readonly ISubstanceCardMetricsProvider cardMetrics;
         private readonly SubstanceDockAreaRegistry areaRegistry;
         private readonly Dictionary<GameEntityId, SubstanceDockKind> dockedStacks = new();
         private readonly Dictionary<SubstanceDockKind, List<GameEntityId>> dockOrderByKind = new();
@@ -456,7 +462,6 @@ namespace OneMoreSpoon.Game.Systems
             SubstanceDefinitionRegistry definitionRegistry,
             SubstanceDockLayoutSettings settings,
             SubstanceDockDepthState depthState,
-            ISubstanceCardMetricsProvider cardMetrics,
             SubstanceDockAreaRegistry areaRegistry)
         {
             this.world = world;
@@ -464,7 +469,6 @@ namespace OneMoreSpoon.Game.Systems
             this.definitionRegistry = definitionRegistry;
             this.settings = settings;
             this.depthState = depthState;
-            this.cardMetrics = cardMetrics;
             this.areaRegistry = areaRegistry;
         }
 

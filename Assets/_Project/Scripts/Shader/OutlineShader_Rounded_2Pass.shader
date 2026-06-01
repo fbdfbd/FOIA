@@ -23,9 +23,6 @@ Shader "Custom/OutlineShader_Rounded_TwoPass"
             "CanUseSpriteAtlas"="True"
         }
 
-        // =========================================================
-        // PASS 1: ROUNDED OUTLINE ONLY
-        // =========================================================
         Pass
         {
             Name "RoundedOutline"
@@ -74,21 +71,14 @@ Shader "Custom/OutlineShader_Rounded_TwoPass"
             {
                 Varyings o;
 
-                float2 uv = TRANSFORM_TEX(v.uv, _MainTex);
-
                 float2 cornerSign = step(float2(0.5, 0.5), v.uv) * 2.0 - 1.0;
+                float2 outlineTexels = _MainTex_TexelSize.xy * _OutlineWidth;
 
-                float4 positionHCS = TransformObjectToHClip(v.positionOS.xyz);
+                float4 positionOS = v.positionOS;
+                positionOS.xy += cornerSign * outlineTexels;
 
-                // 화면 픽셀 기준으로 외곽선 영역 확보
-                float2 pixelToClip = 2.0 / _ScreenParams.xy;
-                positionHCS.xy += cornerSign * pixelToClip * _OutlineWidth * positionHCS.w;
-
-                // 확장된 메시 영역에 맞춰 UV도 바깥으로 확장
-                uv += cornerSign * _MainTex_TexelSize.xy * _OutlineWidth;
-
-                o.positionHCS = positionHCS;
-                o.uv = uv;
+                o.positionHCS = TransformObjectToHClip(positionOS.xyz);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex) + cornerSign * outlineTexels;
 
                 return o;
             }
@@ -110,8 +100,6 @@ Shader "Custom/OutlineShader_Rounded_TwoPass"
                 half centerAlpha = AlphaAt(i.uv);
                 half maxAlpha = half(0.0);
 
-                // Rounded outline용 8방향 샘플링.
-                // 기존 라운디드 느낌 유지.
                 [loop]
                 for (int r = 1; r <= MAX_RADIUS; r++)
                 {
@@ -132,10 +120,7 @@ Shader "Custom/OutlineShader_Rounded_TwoPass"
                     maxAlpha = max(maxAlpha, AlphaAt(i.uv + float2(-d.x, -d.y)));
                 }
 
-                // 원본 영역은 제외하고, 바깥 외곽선만 출력.
-                // 이렇게 해야 Pass 순서가 바뀌어도 몸체 위에 외곽선 색이 덮이지 않음.
                 half rawOutline = saturate(maxAlpha - centerAlpha);
-
                 half w = max(fwidth(rawOutline), half(0.0001)) * _EdgeSoftness;
                 half outline = smoothstep(_AlphaThreshold - w, _AlphaThreshold + w, rawOutline);
 
@@ -148,9 +133,6 @@ Shader "Custom/OutlineShader_Rounded_TwoPass"
             ENDHLSL
         }
 
-        // =========================================================
-        // PASS 2: ORIGINAL SPRITE
-        // =========================================================
         Pass
         {
             Name "Sprite"
@@ -203,9 +185,7 @@ Shader "Custom/OutlineShader_Rounded_TwoPass"
                 if (i.uv.x < 0.0 || i.uv.x > 1.0 || i.uv.y < 0.0 || i.uv.y > 1.0)
                     return half4(0, 0, 0, 0);
 
-                half4 spriteCol = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv) * i.color;
-
-                return spriteCol;
+                return SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv) * i.color;
             }
 
             ENDHLSL
