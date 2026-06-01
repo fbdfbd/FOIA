@@ -5,7 +5,7 @@ person_worker_dead_visual_contact,사망한 직원,Assets/_Project/Arts/Substanc
 person_worker_dead_pit_return_chase,사망한 직원,Assets/_Project/Arts/Substances/Sprite_Person_Worker_Dead.png,Person_Captive,person_worker_dead_pit_return_chase,0,,0,0
 edgeblock_tool_camera,카메라,Assets/_Project/Arts/Substances/Sprite_Tool_Camera.png,EdgeBlock_Tool,,0,edgeblock_tool_camera,0,0
 edgeblock_tool_flashlight,손전등,Assets/_Project/Arts/Substances/Sprite_Tool_Flashlight.png,EdgeBlock_Tool,,0,edgeblock_tool_flashlight,0,0
-edgeblock_tool_ultrasonic_sensor,환경음 기록 보고서,Assets/_Project/Arts/Substances/Sprite_Tool_ESD.png,EdgeBlock_Tool,,0,edgeblock_tool_ultrasonic_sensor,0,0
+edgeblock_tool_ultrasonic_sensor,환경음 해독기,Assets/_Project/Arts/Substances/Sprite_Tool_ESD.png,EdgeBlock_Tool,,0,edgeblock_tool_ultrasonic_sensor,0,0
 evidence_noisy_observation_file,잡음 가득한 기록,Assets/_Project/Arts/Substances/Exploration Datas/VoiceRecordData.png,Unique,evidence_noisy_observation_file,0,,0,0
 evidence_hallway_chase_death_diagnosis,사망 진단서,Assets/_Project/Arts/Substances/DeathCertificate.png,Stance,evidence_hallway_chase_death_diagnosis,0,,0,0
 evidence_footsteps_beyond_wall,환경음 기록 보고서,Assets/_Project/Arts/Substances/Exploration Datas/EnvironmentData.png,Stance,evidence_footsteps_beyond_wall,0,,0,0
