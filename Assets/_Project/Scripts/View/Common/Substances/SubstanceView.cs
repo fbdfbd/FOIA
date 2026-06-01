@@ -125,6 +125,11 @@ namespace OneMoreSpoon.View.Substances
             selectionVisual?.SetSelected(selected);
         }
 
+        public void SetOutlineColors(SubstanceOutlineColors colors)
+        {
+            selectionVisual?.SetColors(colors.Normal, colors.Selected);
+        }
+
         public void SetImage(Sprite image)
         {
             if (imageRenderer == null)

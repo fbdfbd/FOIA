@@ -32,6 +32,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
         [SerializeField] private EdgeView edgeViewPrefab;
         [SerializeField] private EdgeBlockIndicatorView edgeBlockIndicatorViewPrefab;
         [SerializeField] private SubstanceView substanceViewPrefab;
+        [SerializeField] private SO_SubstanceOutlineConfig substanceOutlineConfig;
         [SerializeField] private FlowView flowViewPrefab;
         [SerializeField] private InspectPanelView inspectPanelViewPrefab;
         [SerializeField] private EncyclopediaView encyclopediaViewPrefab;
@@ -83,6 +84,7 @@ namespace OneMoreSpoon.App.LifetimeScopes
                 edgeViewPrefab,
                 edgeBlockIndicatorViewPrefab,
                 substanceViewPrefab,
+                substanceOutlineConfig,
                 flowViewPrefab,
                 inspectPanelViewPrefab,
                 encyclopediaViewPrefab,
