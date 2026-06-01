@@ -44,7 +44,7 @@ MonoBehaviour:
     selectedOutlineColor: {r: 0.72, g: 0.7, b: 1, a: 1}
   - kind: 9
     normalOutlineColor: {r: 0.92, g: 0.24, b: 0.62, a: 1}
-    selectedOutlineColor: {r: 1, g: 0.58, b: 0.82, a: 1}
+    selectedOutlineColor: {r: 1, g: 0.4764151, b: 0.7749075, a: 1}
   - kind: 10
     normalOutlineColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
     selectedOutlineColor: {r: 0.72, g: 0.72, b: 0.72, a: 1}

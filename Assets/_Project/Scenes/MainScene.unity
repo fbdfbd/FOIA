@@ -2680,7 +2680,7 @@ PrefabInstance:
     - target: {fileID: 4914288118503269681, guid: 63de2b48b58a6bb479ba14902a8c854c, type: 3}
       propertyPath: defaultOperationDefinition
       value: 
-      objectReference: {fileID: 11400000, guid: 0be6783f9b2faab49b9a349bbeefdcda, type: 2}
+      objectReference: {fileID: 11400000, guid: 85fa71558a1bffb488150749f1837eb4, type: 2}
     - target: {fileID: 7215761920554021057, guid: 63de2b48b58a6bb479ba14902a8c854c, type: 3}
       propertyPath: m_Name
       value: Input
