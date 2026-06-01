@@ -74,24 +74,5 @@ namespace OneMoreSpoon.Game.Definitions
             return kind == SubstanceKind.Unique
                 || kind == SubstanceKind.Trash;
         }
-
-        public static string GetTitle(SubstanceKind kind)
-        {
-            return kind switch
-            {
-                SubstanceKind.Twin => "Twin",
-                SubstanceKind.Person => "Person",
-                SubstanceKind.Person_Friend => "Friend",
-                SubstanceKind.Person_Captive => "Captive",
-                SubstanceKind.Person_Replace => "Replace",
-                SubstanceKind.Person_Create => "Create",
-                SubstanceKind.Stance => "Stance",
-                SubstanceKind.EdgeBlock_Stance => "Edge Block",
-                SubstanceKind.EdgeBlock_Tool => "Tool",
-                SubstanceKind.Unique => "Unique",
-                SubstanceKind.Trash => "Trash",
-                _ => string.Empty
-            };
-        }
     }
 }

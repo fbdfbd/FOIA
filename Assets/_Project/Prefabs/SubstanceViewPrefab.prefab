@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 870529502421440680}
@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 15d9eda2502c19c4ab533c7644e64bfc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3715b0aa115ab5648b8d196fbf767608, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -132,13 +132,13 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.8325, y: 1.14}
+    oldSize: {x: 3.6, y: 4.35}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3.6, y: 4.3}
   m_EdgeRadius: 0
 --- !u!114 &43564751759636787
 MonoBehaviour:
@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.View.Substances.SubstanceView
   backgroundRenderer: {fileID: 2413675865854139266}
+  imageRenderer: {fileID: 0}
   nameText: {fileID: 3794580189428127565}
   amountText: {fileID: 5552901298704227577}
   titleText: {fileID: 5515401744615181504}
@@ -193,8 +194,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0.00909999, y: 0}
-  m_SizeDelta: {x: -0.0838, y: 0.2114}
+  m_AnchoredPosition: {x: 0.00910008, y: 0}
+  m_SizeDelta: {x: -0.0838, y: 0.414}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &4317594690220034231
 CanvasRenderer:
@@ -226,8 +227,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uAC1C\uC218"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
-  m_sharedMaterial: {fileID: 9113515966723835499, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
+  m_sharedMaterial: {fileID: 697555715455890385, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -251,7 +252,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.2
+  m_fontSize: 0.3
   m_fontSizeBase: 0.25
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -330,8 +331,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0218}
-  m_SizeDelta: {x: 0, y: 0.2888}
+  m_AnchoredPosition: {x: 0, y: -0.021800041}
+  m_SizeDelta: {x: 0, y: 1}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2164322098712693979
 CanvasRenderer:
@@ -363,8 +364,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uBD80\uC0B0\uBB3C"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
-  m_sharedMaterial: {fileID: 9113515966723835499, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
+  m_sharedMaterial: {fileID: 697555715455890385, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -388,7 +389,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.25
+  m_fontSize: 0.8
   m_fontSizeBase: 0.4
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -471,8 +472,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.0015, y: 0.0075}
-  m_SizeDelta: {x: 0.7729, y: 1.124}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 3.6, y: 4.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2285669040907046874
 Canvas:
@@ -569,11 +570,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 870529502421440680}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.31060004}
-  m_SizeDelta: {x: -0.2, y: 0.7021}
-  m_Pivot: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0.70210004}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4769452203235801883
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -604,8 +605,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uD669\uAE08 \uD06C\uB7EC\uC2A4\uD2B8 \uBE75"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
-  m_sharedMaterial: {fileID: 9113515966723835499, guid: 0b3e607a9b9901a43919347fb4e8b425, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
+  m_sharedMaterial: {fileID: 697555715455890385, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -629,7 +630,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.2
+  m_fontSize: 0.3
   m_fontSizeBase: 0.2
   m_fontWeight: 400
   m_enableAutoSizing: 1

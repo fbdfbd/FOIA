@@ -39,6 +39,7 @@ namespace OneMoreSpoon.App.State
             ClearVisualOnly();
 
             selectionState.SelectSubstance(substanceView.EntityId);
+            substanceView.SetSelected(true);
         }
 
         public void Clear()

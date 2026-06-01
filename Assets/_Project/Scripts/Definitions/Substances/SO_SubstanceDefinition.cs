@@ -11,6 +11,7 @@ namespace OneMoreSpoon.Game.Definitions
         [Header("Identity")]
         [SerializeField] private string substanceId;
         [SerializeField] private string displayName;
+        [SerializeField] private Sprite image;
 
         [Header("Classification")]
         [SerializeField] private SubstanceKind kind;
@@ -26,6 +27,7 @@ namespace OneMoreSpoon.Game.Definitions
 
         public string SubstanceId => substanceId;
         public string DisplayName => displayName;
+        public Sprite Image => image;
         public SubstanceKind Kind => kind;
         public IReadOnlyList<string> BaseTags => baseTags;
         public int BaseValue => baseValue;

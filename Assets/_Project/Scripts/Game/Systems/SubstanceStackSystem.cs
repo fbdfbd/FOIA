@@ -339,13 +339,20 @@ namespace OneMoreSpoon.Game.Systems
         }
     }
 
+    [System.Serializable]
     public sealed class SubstanceDockLayoutSettings
     {
-        public float HorizontalSpacing { get; } = 1.05f;
-        public float VerticalSpacing { get; } = 1.05f;
-        public float HorizontalPadding { get; } = 0.55f;
-        public float VerticalPadding { get; } = 0.55f;
-        public float DockedStackZStep { get; } = -0.01f;
+        [SerializeField] private float horizontalSpacing = 1.05f;
+        [SerializeField] private float verticalSpacing = 1.05f;
+        [SerializeField] private float horizontalPadding = 0.55f;
+        [SerializeField] private float verticalPadding = 0.55f;
+        [SerializeField] private float dockedStackZStep = -0.01f;
+
+        public float HorizontalSpacing => horizontalSpacing;
+        public float VerticalSpacing => verticalSpacing;
+        public float HorizontalPadding => horizontalPadding;
+        public float VerticalPadding => verticalPadding;
+        public float DockedStackZStep => dockedStackZStep;
     }
 
     public readonly struct SubstanceDockArea
@@ -367,48 +374,105 @@ namespace OneMoreSpoon.Game.Systems
         }
     }
 
-    public sealed class SubstanceDockSystem
+    public sealed class SubstanceDockAreaRegistry
     {
-        private readonly GameWorld world;
-        private readonly SubstanceStackSystem stackSystem;
-        private readonly PlayAreaBoundsSystem playAreaBounds;
-        private readonly SubstanceDefinitionRegistry definitionRegistry;
-        private readonly SubstanceDockLayoutSettings settings;
-        private readonly SubstanceDockDepthState depthState;
-        private readonly Dictionary<GameEntityId, SubstanceDockKind> dockedStacks = new();
-        private readonly HashSet<GameEntityId> knownStacks = new();
-        private readonly HashSet<GameEntityId> draggingStacks = new();
+        private readonly Dictionary<SubstanceDockKind, SubstanceDockAreaView> viewsByKind = new();
         private readonly List<SubstanceDockArea> areaBuffer = new();
-        private readonly List<GameEntityId> stackBuffer = new();
-        private readonly List<GameEntityId> staleBuffer = new();
-        private IReadOnlyList<SubstanceDockArea> cachedAreas;
 
-        public SubstanceDockSystem(
-            GameWorld world,
-            SubstanceStackSystem stackSystem,
-            PlayAreaBoundsSystem playAreaBounds,
-            SubstanceDefinitionRegistry definitionRegistry,
-            SubstanceDockLayoutSettings settings,
-            SubstanceDockDepthState depthState)
+        public SubstanceDockAreaRegistry(
+            SubstanceDockAreaView dishDockArea,
+            SubstanceDockAreaView edgeBlockDockArea,
+            SubstanceDockAreaView traitShardDockArea)
         {
-            this.world = world;
-            this.stackSystem = stackSystem;
-            this.playAreaBounds = playAreaBounds;
-            this.definitionRegistry = definitionRegistry;
-            this.settings = settings;
-            this.depthState = depthState;
+            Register(SubstanceDockKind.Dish, dishDockArea);
+            Register(SubstanceDockKind.EdgeBlock, edgeBlockDockArea);
+            Register(SubstanceDockKind.TraitShard, traitShardDockArea);
         }
 
         public IReadOnlyList<SubstanceDockArea> Areas
         {
             get
             {
-                if (cachedAreas == null)
-                    cachedAreas = FindSceneAreas();
+                areaBuffer.Clear();
 
-                return cachedAreas;
+                AddArea(SubstanceDockKind.Dish);
+                AddArea(SubstanceDockKind.EdgeBlock);
+                AddArea(SubstanceDockKind.TraitShard);
+
+                return areaBuffer;
             }
         }
+
+        public bool TryGetArea(SubstanceDockKind dockKind, out SubstanceDockArea dockArea)
+        {
+            if (!viewsByKind.TryGetValue(dockKind, out var view) ||
+                view == null ||
+                !view.isActiveAndEnabled)
+            {
+                dockArea = default;
+                return false;
+            }
+
+            dockArea = view.ToArea();
+            return true;
+        }
+
+        private void Register(SubstanceDockKind expectedDockKind, SubstanceDockAreaView view)
+        {
+            if (view == null)
+            {
+                Debug.LogWarning($"[SubstanceDock] Area reference missing kind={expectedDockKind}");
+                return;
+            }
+
+            if (view.DockKind != expectedDockKind)
+            {
+                Debug.LogWarning($"[SubstanceDock] Area reference kind mismatch expected={expectedDockKind} actual={view.DockKind}");
+                return;
+            }
+
+            viewsByKind[expectedDockKind] = view;
+        }
+
+        private void AddArea(SubstanceDockKind dockKind)
+        {
+            if (TryGetArea(dockKind, out var area))
+                areaBuffer.Add(area);
+        }
+    }
+
+    public sealed class SubstanceDockSystem
+    {
+        private readonly GameWorld world;
+        private readonly SubstanceStackSystem stackSystem;
+        private readonly SubstanceDefinitionRegistry definitionRegistry;
+        private readonly SubstanceDockLayoutSettings settings;
+        private readonly SubstanceDockDepthState depthState;
+        private readonly SubstanceDockAreaRegistry areaRegistry;
+        private readonly Dictionary<GameEntityId, SubstanceDockKind> dockedStacks = new();
+        private readonly Dictionary<SubstanceDockKind, List<GameEntityId>> dockOrderByKind = new();
+        private readonly HashSet<GameEntityId> knownStacks = new();
+        private readonly HashSet<GameEntityId> draggingStacks = new();
+        private readonly List<GameEntityId> stackBuffer = new();
+        private readonly List<GameEntityId> staleBuffer = new();
+
+        public SubstanceDockSystem(
+            GameWorld world,
+            SubstanceStackSystem stackSystem,
+            SubstanceDefinitionRegistry definitionRegistry,
+            SubstanceDockLayoutSettings settings,
+            SubstanceDockDepthState depthState,
+            SubstanceDockAreaRegistry areaRegistry)
+        {
+            this.world = world;
+            this.stackSystem = stackSystem;
+            this.definitionRegistry = definitionRegistry;
+            this.settings = settings;
+            this.depthState = depthState;
+            this.areaRegistry = areaRegistry;
+        }
+
+        public IReadOnlyList<SubstanceDockArea> Areas => areaRegistry.Areas;
 
         public void SyncNewEligibleStacks()
         {
@@ -441,6 +505,7 @@ namespace OneMoreSpoon.Game.Systems
                 return;
 
             dockedStacks.Remove(stackId);
+            RemoveFromDockOrder(stackId, dockKind);
             depthState.ClearDepth(stackId);
             Rearrange(dockKind);
         }
@@ -476,6 +541,7 @@ namespace OneMoreSpoon.Game.Systems
             if (dockedStacks.TryGetValue(stackId, out SubstanceDockKind dockKind))
             {
                 dockedStacks.Remove(stackId);
+                RemoveFromDockOrder(stackId, dockKind);
                 Rearrange(dockKind);
             }
 
@@ -504,7 +570,19 @@ namespace OneMoreSpoon.Game.Systems
 
         private void DockInternal(GameEntityId stackId, SubstanceDockKind dockKind)
         {
+            if (dockedStacks.TryGetValue(stackId, out SubstanceDockKind previousDockKind))
+            {
+                if (previousDockKind == dockKind)
+                {
+                    EnsureDockOrderContains(stackId, dockKind);
+                    return;
+                }
+
+                RemoveFromDockOrder(stackId, previousDockKind);
+            }
+
             dockedStacks[stackId] = dockKind;
+            GetDockOrder(dockKind).Add(stackId);
         }
 
         private void RearrangeAll()
@@ -520,7 +598,7 @@ namespace OneMoreSpoon.Game.Systems
             if (stackBuffer.Count <= 0)
                 return;
 
-            if (!TryGetArea(dockKind, out SubstanceDockArea area))
+            if (!areaRegistry.TryGetArea(dockKind, out SubstanceDockArea area))
             {
                 Debug.LogWarning($"[SubstanceDock] Area not found kind={dockKind}");
                 return;
@@ -533,7 +611,7 @@ namespace OneMoreSpoon.Game.Systems
                 if (draggingStacks.Contains(stackId))
                     continue;
 
-                stackSystem.TryMove(stackId, GetSlotPosition(area.Bounds, i, stackBuffer.Count));
+                stackSystem.TryMove(stackId, GetSlotPosition(area.Bounds, i));
                 depthState.SetDepth(stackId, settings.DockedStackZStep * i);
             }
         }
@@ -542,67 +620,31 @@ namespace OneMoreSpoon.Game.Systems
         {
             stackBuffer.Clear();
 
-            foreach (var pair in dockedStacks)
-            {
-                if (pair.Value == dockKind && world.SubstanceStacks.ContainsKey(pair.Key))
-                    stackBuffer.Add(pair.Key);
-            }
+            if (!dockOrderByKind.TryGetValue(dockKind, out var dockOrder))
+                return;
 
-            stackBuffer.Sort((a, b) => a.Value.CompareTo(b.Value));
+            foreach (var stackId in dockOrder)
+            {
+                if (dockedStacks.TryGetValue(stackId, out SubstanceDockKind currentDockKind) &&
+                    currentDockKind == dockKind &&
+                    world.SubstanceStacks.ContainsKey(stackId))
+                {
+                    stackBuffer.Add(stackId);
+                }
+            }
         }
 
-        private Vector2 GetSlotPosition(Bounds bounds, int index, int count)
+        private Vector2 GetSlotPosition(Bounds bounds, int index)
         {
             float usableWidth = Mathf.Max(0.1f, bounds.size.x - settings.HorizontalPadding * 2f);
             int columns = Mathf.Max(1, Mathf.FloorToInt(usableWidth / settings.HorizontalSpacing) + 1);
-            int rows = Mathf.Max(1, Mathf.CeilToInt(count / (float)columns));
-
-            float horizontalSpacing = columns <= 1
-                ? 0f
-                : settings.HorizontalSpacing;
-
-            float usableHeight = Mathf.Max(0.1f, bounds.size.y - settings.VerticalPadding * 2f);
-            float verticalSpacing = rows <= 1
-                ? 0f
-                : settings.VerticalSpacing;
 
             int column = index % columns;
             int row = index / columns;
 
             return new Vector2(
-                bounds.min.x + settings.HorizontalPadding + horizontalSpacing * column,
-                bounds.max.y - settings.VerticalPadding - verticalSpacing * row);
-        }
-
-        private bool TryGetArea(SubstanceDockKind dockKind, out SubstanceDockArea dockArea)
-        {
-            foreach (var area in Areas)
-            {
-                if (area.Kind == dockKind)
-                {
-                    dockArea = area;
-                    return true;
-                }
-            }
-
-            dockArea = default;
-            return false;
-        }
-
-        private IReadOnlyList<SubstanceDockArea> FindSceneAreas()
-        {
-            areaBuffer.Clear();
-
-            foreach (var view in Object.FindObjectsByType<SubstanceDockAreaView>(FindObjectsSortMode.None))
-            {
-                if (view == null || !view.isActiveAndEnabled)
-                    continue;
-
-                areaBuffer.Add(view.ToArea());
-            }
-
-            areaBuffer.Sort((a, b) => a.Kind.CompareTo(b.Kind));
-            return areaBuffer.ToArray();
+                bounds.min.x + settings.HorizontalPadding + settings.HorizontalSpacing * column,
+                bounds.max.y - settings.VerticalPadding - settings.VerticalSpacing * row);
         }
 
         private bool TryGetDockKind(string substanceId, out SubstanceDockKind dockKind)
@@ -648,9 +690,40 @@ namespace OneMoreSpoon.Game.Systems
             {
                 knownStacks.Remove(stackId);
                 draggingStacks.Remove(stackId);
-                dockedStacks.Remove(stackId);
+
+                if (dockedStacks.TryGetValue(stackId, out SubstanceDockKind dockKind))
+                {
+                    dockedStacks.Remove(stackId);
+                    RemoveFromDockOrder(stackId, dockKind);
+                }
+
                 depthState.ClearDepth(stackId);
             }
+        }
+
+        private List<GameEntityId> GetDockOrder(SubstanceDockKind dockKind)
+        {
+            if (!dockOrderByKind.TryGetValue(dockKind, out var dockOrder))
+            {
+                dockOrder = new List<GameEntityId>();
+                dockOrderByKind[dockKind] = dockOrder;
+            }
+
+            return dockOrder;
+        }
+
+        private void EnsureDockOrderContains(GameEntityId stackId, SubstanceDockKind dockKind)
+        {
+            var dockOrder = GetDockOrder(dockKind);
+
+            if (!dockOrder.Contains(stackId))
+                dockOrder.Add(stackId);
+        }
+
+        private void RemoveFromDockOrder(GameEntityId stackId, SubstanceDockKind dockKind)
+        {
+            if (dockOrderByKind.TryGetValue(dockKind, out var dockOrder))
+                dockOrder.Remove(stackId);
         }
     }
 }

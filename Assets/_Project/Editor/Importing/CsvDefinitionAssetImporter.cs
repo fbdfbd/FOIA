@@ -40,6 +40,7 @@ namespace OneMoreSpoon.Editor
                 var so = new SerializedObject(asset);
                 so.FindProperty("substanceId").stringValue = id;
                 so.FindProperty("displayName").stringValue = CsvReader.Get(row, "displayName");
+                SetSpriteRef(so, "image", CsvReader.Get(row, "imagePath"));
                 ImportAssetUtility.SetEnum(so, "kind", CsvReader.Get(row, "kind"), SubstanceKind.Trash);
                 ImportAssetUtility.SetStringList(so, "baseTags", CsvReader.Get(row, "baseTags"));
                 so.FindProperty("baseValue").intValue = ImportAssetUtility.ParseInt(CsvReader.Get(row, "baseValue"));
@@ -78,6 +79,7 @@ namespace OneMoreSpoon.Editor
                 var so = new SerializedObject(asset);
                 so.FindProperty("definitionId").stringValue = id;
                 so.FindProperty("displayName").stringValue = CsvReader.Get(row, "displayName");
+                SetSpriteRef(so, "image", CsvReader.Get(row, "imagePath"));
                 so.FindProperty("processLayer").intValue =
                     ImportAssetUtility.ParseInt(CsvReader.Get(row, "processLayer"));
                 ImportAssetUtility.SetEnum(so, "category", CsvReader.Get(row, "category"), NodeCategory.Input);
@@ -357,6 +359,25 @@ namespace OneMoreSpoon.Editor
                 return;
 
             prop.objectReferenceValue = lookup.TryGetValue(substanceId, out var substance) ? substance : null;
+        }
+
+        private static void SetSpriteRef(SerializedObject so, string propName, string assetPath)
+        {
+            var prop = so.FindProperty(propName);
+            if (prop == null)
+                return;
+
+            if (string.IsNullOrWhiteSpace(assetPath))
+            {
+                prop.objectReferenceValue = null;
+                return;
+            }
+
+            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
+            if (sprite == null)
+                Debug.LogWarning($"[CsvImporter] Sprite not found: {assetPath}");
+
+            prop.objectReferenceValue = sprite;
         }
 
         private readonly struct ByproductImportData
