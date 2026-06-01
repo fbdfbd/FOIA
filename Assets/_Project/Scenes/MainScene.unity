@@ -852,12 +852,12 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 3.6, y: 4.35}
-    newSize: {x: 8, y: 2.5}
+    newSize: {x: 8, y: 3}
     adaptiveTilingThreshold: 0.5
     drawMode: 1
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 8, y: 2.5}
+  m_Size: {x: 8, y: 3}
   m_EdgeRadius: 0
 --- !u!212 &484441948
 SpriteRenderer:
@@ -913,7 +913,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 8, y: 2.5}
+  m_Size: {x: 8, y: 3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -942,7 +942,7 @@ Transform:
   m_GameObject: {fileID: 484441946}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.84, y: 1.81, z: 0}
+  m_LocalPosition: {x: 5.84, y: 1.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1970,7 +1970,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  definitionCatalog: {fileID: 11400000, guid: c8eba1ed06155164b89c067238a7eddf, type: 2}
+  definitionCatalog: {fileID: 11400000, guid: 3703759b3c01df54e84040e04c54500d, type: 2}
   initialLevelLayout: {fileID: 11400000, guid: efa33f5912c09024a9e8dfd50c25fd43, type: 2}
   viewRegistry: {fileID: 490406068}
   inputNodeViewPrefab: {fileID: 158862403785399452, guid: 7b756fef13a6ebe449d822578c270186, type: 3}
@@ -1988,8 +1988,8 @@ MonoBehaviour:
   edgeBlockDockArea: {fileID: 484441949}
   traitShardDockArea: {fileID: 1382562406}
   substanceDockLayoutSettings:
-    horizontalSpacing: 1.05
-    verticalSpacing: 1.05
+    horizontalSpacing: 1.2
+    verticalSpacing: 1.1
     horizontalPadding: 0.55
     verticalPadding: 0.55
     dockedStackZStep: -0.01
@@ -2071,12 +2071,12 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 3.6, y: 4.35}
-    newSize: {x: 8, y: 2.5}
+    newSize: {x: 8, y: 3}
     adaptiveTilingThreshold: 0.5
     drawMode: 1
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 8, y: 2.5}
+  m_Size: {x: 8, y: 3}
   m_EdgeRadius: 0
 --- !u!212 &1382562405
 SpriteRenderer:
@@ -2132,7 +2132,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 8, y: 2.5}
+  m_Size: {x: 8, y: 3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2210,7 +2210,7 @@ Transform:
   m_GameObject: {fileID: 1727972809}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.84, y: -0.84000003, z: 0}
+  m_LocalPosition: {x: 5.84, y: -2.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2255,12 +2255,12 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 3.6, y: 4.35}
-    newSize: {x: 8, y: 2.5}
+    newSize: {x: 8, y: 3}
     adaptiveTilingThreshold: 0.5
     drawMode: 1
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 8, y: 2.5}
+  m_Size: {x: 8, y: 3}
   m_EdgeRadius: 0
 --- !u!212 &1727972813
 SpriteRenderer:
@@ -2316,7 +2316,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 8, y: 2.5}
+  m_Size: {x: 8, y: 3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2680,7 +2680,7 @@ PrefabInstance:
     - target: {fileID: 4914288118503269681, guid: 63de2b48b58a6bb479ba14902a8c854c, type: 3}
       propertyPath: defaultOperationDefinition
       value: 
-      objectReference: {fileID: 11400000, guid: 85fa71558a1bffb488150749f1837eb4, type: 2}
+      objectReference: {fileID: 11400000, guid: b6397f6584d9343488557afc1b74d8dd, type: 2}
     - target: {fileID: 7215761920554021057, guid: 63de2b48b58a6bb479ba14902a8c854c, type: 3}
       propertyPath: m_Name
       value: Input
