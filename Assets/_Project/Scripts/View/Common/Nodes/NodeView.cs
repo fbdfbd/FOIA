@@ -11,6 +11,7 @@ namespace OneMoreSpoon.View.Nodes
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private SpriteRenderer imageRenderer;
         [SerializeField] private SelectableOutlineVisual selectionVisual;
+        [SerializeField] private SortingLayerStateVisual sortingLayerVisual;
         [SerializeField] private float normalZ = 0f;
         [SerializeField] private float pressedZOffset = -0.5f;
         [SerializeField] private float moveTweenDuration = 0.14f;
@@ -27,6 +28,10 @@ namespace OneMoreSpoon.View.Nodes
 
             if (selectionVisual == null)
                 selectionVisual = GetComponent<SelectableOutlineVisual>();
+
+            if (sortingLayerVisual == null)
+                sortingLayerVisual = GetComponent<SortingLayerStateVisual>()
+                    ?? gameObject.AddComponent<SortingLayerStateVisual>();
 
             if (label == null)
                 label = GetComponentInChildren<TMP_Text>();
@@ -84,6 +89,7 @@ namespace OneMoreSpoon.View.Nodes
         public void SetPressed(bool pressed)
         {
             isPressed = pressed;
+            sortingLayerVisual?.SetActiveLayer(pressed);
         }
 
         public void SetLabel(string text)
