@@ -11,11 +11,16 @@ namespace OneMoreSpoon.Game.Systems
     public sealed class SubstanceStackSystem
     {
         private readonly GameWorld world;
+        private readonly GameWorldChanges changes;
         private readonly PlayAreaBoundsSystem playAreaBounds;
 
-        public SubstanceStackSystem(GameWorld world, PlayAreaBoundsSystem playAreaBounds)
+        public SubstanceStackSystem(
+            GameWorld world,
+            GameWorldChanges changes,
+            PlayAreaBoundsSystem playAreaBounds)
         {
             this.world = world;
+            this.changes = changes;
             this.playAreaBounds = playAreaBounds;
         }
 
@@ -47,6 +52,7 @@ namespace OneMoreSpoon.Game.Systems
 
             stack.Amount--;
             world.SubstanceStacks[stackId] = stack;
+            changes.MarkSubstanceStackChanged(stackId);
 
             if (stack.IsEmpty)
             {
@@ -76,6 +82,8 @@ namespace OneMoreSpoon.Game.Systems
         {
             world.SubstanceStacks.Remove(stackId);
             world.Positions.Remove(stackId);
+            changes.MarkSubstanceStackChanged(stackId);
+            changes.MarkPositionChanged(stackId);
         }
 
         public bool TryMove(GameEntityId stackId, Vector2 position)
@@ -85,6 +93,7 @@ namespace OneMoreSpoon.Game.Systems
 
             Vector2 clampedPosition = playAreaBounds.Clamp(position);
             world.Positions[stackId] = new PositionComponent(clampedPosition);
+            changes.MarkPositionChanged(stackId);
             return true;
         }
 
@@ -94,6 +103,7 @@ namespace OneMoreSpoon.Game.Systems
                 return false;
 
             world.Positions[stackId] = new PositionComponent(position);
+            changes.MarkPositionChanged(stackId);
             return true;
         }
     }
@@ -101,15 +111,18 @@ namespace OneMoreSpoon.Game.Systems
     public sealed class SubstanceStackSpawnService
     {
         private readonly GameWorld world;
+        private readonly GameWorldChanges changes;
         private readonly SubstanceDefinitionRegistry substanceDefinitions;
         private readonly List<GameEntityId> matchingPersonStackIds = new();
         private readonly List<GameEntityId> matchingStackIds = new();
 
         public SubstanceStackSpawnService(
             GameWorld world,
+            GameWorldChanges changes,
             SubstanceDefinitionRegistry substanceDefinitions)
         {
             this.world = world;
+            this.changes = changes;
             this.substanceDefinitions = substanceDefinitions;
         }
 
@@ -128,11 +141,14 @@ namespace OneMoreSpoon.Game.Systems
 
             if (!TryFindExistingPersonStack(targetIdentity.CharacterKey, out var stackId))
             {
-                return world.CreateSubstanceStack(
+                var newStackId = world.CreateSubstanceStack(
                     definition.SubstanceId,
                     Mathf.Max(0, amount),
                     isInfinite,
                     position);
+
+                MarkStackCreatedOrChanged(newStackId);
+                return newStackId;
             }
 
             var existingStack = world.SubstanceStacks[stackId];
@@ -146,6 +162,7 @@ namespace OneMoreSpoon.Game.Systems
                 resultAmount,
                 resultIsInfinite);
             world.Positions[stackId] = new PositionComponent(position);
+            MarkStackCreatedOrChanged(stackId);
 
             RemoveExtraPersonStacks(stackId);
 
@@ -161,11 +178,14 @@ namespace OneMoreSpoon.Game.Systems
         {
             if (!TryFindExistingStack(substanceId, out var stackId))
             {
-                return world.CreateSubstanceStack(
+                var newStackId = world.CreateSubstanceStack(
                     substanceId,
                     Mathf.Max(0, amount),
                     isInfinite,
                     position);
+
+                MarkStackCreatedOrChanged(newStackId);
+                return newStackId;
             }
 
             AddToStack(stackId, substanceId, amount, isInfinite, position);
@@ -223,6 +243,7 @@ namespace OneMoreSpoon.Game.Systems
                 resultAmount,
                 resultIsInfinite);
             world.Positions[stackId] = new PositionComponent(position);
+            MarkStackCreatedOrChanged(stackId);
 
             for (var i = 0; i < matchingStackIds.Count; i++)
             {
@@ -232,6 +253,8 @@ namespace OneMoreSpoon.Game.Systems
 
                 world.SubstanceStacks.Remove(matchingStackId);
                 world.Positions.Remove(matchingStackId);
+                changes.MarkSubstanceStackChanged(matchingStackId);
+                changes.MarkPositionChanged(matchingStackId);
             }
         }
 
@@ -255,6 +278,8 @@ namespace OneMoreSpoon.Game.Systems
                 var stackId = matchingPersonStackIds[i];
                 world.SubstanceStacks.Remove(stackId);
                 world.Positions.Remove(stackId);
+                changes.MarkSubstanceStackChanged(stackId);
+                changes.MarkPositionChanged(stackId);
             }
 
             return matchingPersonStackIds.Count;
@@ -296,7 +321,15 @@ namespace OneMoreSpoon.Game.Systems
 
                 world.SubstanceStacks.Remove(stackId);
                 world.Positions.Remove(stackId);
+                changes.MarkSubstanceStackChanged(stackId);
+                changes.MarkPositionChanged(stackId);
             }
+        }
+
+        private void MarkStackCreatedOrChanged(GameEntityId stackId)
+        {
+            changes.MarkSubstanceStackChanged(stackId);
+            changes.MarkPositionChanged(stackId);
         }
 
         private bool IsSameCharacter(string substanceId, string characterKey)

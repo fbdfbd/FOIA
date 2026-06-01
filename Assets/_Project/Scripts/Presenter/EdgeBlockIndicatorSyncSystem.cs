@@ -11,21 +11,26 @@ namespace OneMoreSpoon.Presenter
     public sealed class EdgeBlockIndicatorSyncSystem : ITickable
     {
         private readonly GameWorld world;
+        private readonly GameWorldChanges changes;
         private readonly EdgeBlockIndicatorViewFactory indicatorViewFactory;
         private readonly Dictionary<GameEntityId, EdgeBlockIndicatorView> indicatorViews = new();
         private readonly List<GameEntityId> removeBuffer = new();
+        private readonly HashSet<GameEntityId> indicatorsToRender = new();
 
         public EdgeBlockIndicatorSyncSystem(
             GameWorld world,
+            GameWorldChanges changes,
             EdgeBlockIndicatorViewFactory indicatorViewFactory)
         {
             this.world = world;
+            this.changes = changes;
             this.indicatorViewFactory = indicatorViewFactory;
         }
 
         public void Tick()
         {
             CreateMissingViews();
+            RenderChangedViews();
             RemoveStaleViews();
         }
 
@@ -61,6 +66,55 @@ namespace OneMoreSpoon.Presenter
 
             foreach (var edgeId in removeBuffer)
                 RemoveView(edgeId);
+        }
+
+        private void RenderChangedViews()
+        {
+            indicatorsToRender.Clear();
+
+            foreach (var edgeId in changes.EdgeBlockChanged)
+                indicatorsToRender.Add(edgeId);
+
+            foreach (var edgeId in changes.EdgeChanged)
+                indicatorsToRender.Add(edgeId);
+
+            foreach (var movedEntityId in changes.PositionChanged)
+                AddIndicatorsConnectedTo(movedEntityId);
+
+            foreach (var edgeId in indicatorsToRender)
+                RenderIndicator(edgeId);
+        }
+
+        private void AddIndicatorsConnectedTo(GameEntityId entityId)
+        {
+            if (!world.Nodes.ContainsKey(entityId))
+                return;
+
+            foreach (var pair in indicatorViews)
+            {
+                if (!world.Edges.TryGetValue(pair.Key, out var edge))
+                    continue;
+
+                if (edge.FromNodeId == entityId || edge.ToNodeId == entityId)
+                    indicatorsToRender.Add(pair.Key);
+            }
+        }
+
+        private void RenderIndicator(GameEntityId edgeId)
+        {
+            if (!indicatorViews.TryGetValue(edgeId, out var view) || view == null)
+                return;
+
+            if (!world.Edges.TryGetValue(edgeId, out var edge))
+                return;
+
+            if (!world.Positions.TryGetValue(edge.FromNodeId, out var fromPosition))
+                return;
+
+            if (!world.Positions.TryGetValue(edge.ToNodeId, out var toPosition))
+                return;
+
+            view.RenderIndicator(edge, fromPosition.Value, toPosition.Value);
         }
 
         private bool ShouldKeep(GameEntityId edgeId, EdgeBlockIndicatorView view)

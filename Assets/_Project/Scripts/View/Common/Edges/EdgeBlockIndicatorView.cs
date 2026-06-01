@@ -1,7 +1,9 @@
 using OneMoreSpoon.Game.Core;
+using OneMoreSpoon.Game.Components;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.View.Common;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 
@@ -15,6 +17,9 @@ namespace OneMoreSpoon.View.Edges
         [SerializeField] private bool rotateWithEdge;
 
         private SubstanceDefinitionRegistry definitionRegistry;
+        private readonly List<string> lastSubstanceIds = new();
+        private readonly StringBuilder labelBuilder = new();
+        private string lastLabelText = string.Empty;
 
         public void Initialize(SubstanceDefinitionRegistry definitionRegistry)
         {
@@ -32,21 +37,9 @@ namespace OneMoreSpoon.View.Edges
                 labelText = GetComponentInChildren<TMP_Text>();
         }
 
-        private void LateUpdate()
+        public void RenderIndicator(EdgeComponent edge, Vector2 fromPosition, Vector2 toPosition)
         {
-            if (World == null)
-                return;
-
-            if (!World.Edges.TryGetValue(EntityId, out var edge))
-                return;
-
-            if (!World.Positions.TryGetValue(edge.FromNodeId, out var fromPosition))
-                return;
-
-            if (!World.Positions.TryGetValue(edge.ToNodeId, out var toPosition))
-                return;
-
-            UpdateTransform(fromPosition.Value, toPosition.Value);
+            UpdateTransform(fromPosition, toPosition);
             UpdateLabel();
         }
 
@@ -82,25 +75,61 @@ namespace OneMoreSpoon.View.Edges
 
             if (!World.EdgeBlockSlots.TryGetValue(EntityId, out var slot) || !slot.HasBlock)
             {
-                labelText.text = string.Empty;
+                SetLabelIfChanged(string.Empty);
+                lastSubstanceIds.Clear();
                 return;
             }
 
-            var displayNames = new List<string>();
+            if (!HasSlotChanged(slot.EquippedSubstanceIds))
+                return;
 
+            labelBuilder.Clear();
             foreach (var substanceId in slot.EquippedSubstanceIds)
             {
+                if (labelBuilder.Length > 0)
+                    labelBuilder.Append('\n');
+
                 if (definitionRegistry != null &&
                     definitionRegistry.TryGet(substanceId, out var definition))
                 {
-                    displayNames.Add(definition.DisplayName);
+                    labelBuilder.Append(definition.DisplayName);
                     continue;
                 }
 
-                displayNames.Add(substanceId);
+                labelBuilder.Append(substanceId);
             }
 
-            labelText.text = string.Join("\n", displayNames);
+            RememberSlot(slot.EquippedSubstanceIds);
+            SetLabelIfChanged(labelBuilder.ToString());
+        }
+
+        private bool HasSlotChanged(IReadOnlyList<string> substanceIds)
+        {
+            if (lastSubstanceIds.Count != substanceIds.Count)
+                return true;
+
+            for (int i = 0; i < substanceIds.Count; i++)
+                if (lastSubstanceIds[i] != substanceIds[i])
+                    return true;
+
+            return false;
+        }
+
+        private void RememberSlot(IReadOnlyList<string> substanceIds)
+        {
+            lastSubstanceIds.Clear();
+
+            for (int i = 0; i < substanceIds.Count; i++)
+                lastSubstanceIds.Add(substanceIds[i]);
+        }
+
+        private void SetLabelIfChanged(string text)
+        {
+            if (lastLabelText == text)
+                return;
+
+            lastLabelText = text;
+            labelText.text = text;
         }
     }
 }

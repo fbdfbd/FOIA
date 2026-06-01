@@ -2,6 +2,7 @@ using OneMoreSpoon.Game.Components;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.View.Common;
 using OneMoreSpoon.View.Factories;
+using OneMoreSpoon.View.Flows;
 using System.Collections.Generic;
 using UnityEngine;
 using VContainer.Unity;
@@ -29,6 +30,7 @@ namespace OneMoreSpoon.Presenter
         public void Tick()
         {
             CreateMissingViews();
+            RenderActiveViews();
             RemoveStaleViews();
         }
 
@@ -67,6 +69,21 @@ namespace OneMoreSpoon.Presenter
 
             viewRegistry.Unregister(flowEntityId);
             Object.Destroy(view.gameObject);
+        }
+
+        private void RenderActiveViews()
+        {
+            foreach (var pair in world.Flows)
+            {
+                if (pair.Value.State == FlowState.Consumed)
+                    continue;
+
+                if (!viewRegistry.TryGetView(pair.Key, out EntityView entityView))
+                    continue;
+
+                if (entityView is FlowView flowView)
+                    flowView.RenderFlow(pair.Value);
+            }
         }
     }
 }

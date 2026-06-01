@@ -8,11 +8,27 @@ namespace OneMoreSpoon.View.Nodes
         [SerializeField] private TMP_Text leftSub;
         [SerializeField] private TMP_Text rightSub;
 
+        private string leftText = string.Empty;
+        private string rightText = string.Empty;
+
         public void SetSlotText(int index, string text)
         {
-            TMP_Text target = index == 0 ? leftSub : rightSub;
+            if (index == 0)
+            {
+                SetTextIfChanged(leftSub, ref leftText, text);
+                return;
+            }
 
-            if (target != null) target.text = text;
+            SetTextIfChanged(rightSub, ref rightText, text);
+        }
+
+        private static void SetTextIfChanged(TMP_Text target, ref string currentText, string nextText)
+        {
+            if (target == null || currentText == nextText)
+                return;
+
+            currentText = nextText;
+            target.text = nextText;
         }
     }
 }

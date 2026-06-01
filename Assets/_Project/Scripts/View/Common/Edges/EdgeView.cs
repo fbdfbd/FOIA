@@ -1,4 +1,5 @@
 using OneMoreSpoon.View.Common;
+using OneMoreSpoon.Game.Components;
 using UnityEngine;
 
 namespace OneMoreSpoon.View.Edges
@@ -23,6 +24,12 @@ namespace OneMoreSpoon.View.Edges
         private LineRenderer lineRenderer;
         private EdgeCollider2D edgeCollider;
         private bool isSelected;
+        private readonly Vector2[] colliderPoints = new Vector2[2];
+        private bool hasRenderedEdge;
+        private Vector3 lastFromPosition;
+        private Vector3 lastToPosition;
+        private OneMoreSpoon.Game.Core.EntityId lastFromNodeId;
+        private OneMoreSpoon.Game.Core.EntityId lastToNodeId;
 
         private void Awake()
         {
@@ -33,32 +40,41 @@ namespace OneMoreSpoon.View.Edges
             lineRenderer.useWorldSpace = true;
 
             edgeCollider.edgeRadius = colliderRadius;
+            UpdateWidth();
         }
 
-        private void LateUpdate()
+        public void RenderLine(EdgeComponent edge, Vector3 from, Vector3 to)
         {
-            if (World == null)
-                return;
+            bool edgeMoved =
+                !hasRenderedEdge ||
+                lastFromPosition != from ||
+                lastToPosition != to;
 
-            if (!World.Edges.TryGetValue(EntityId, out var edge))
-                return;
+            if (edgeMoved)
+            {
+                lineRenderer.SetPosition(0, from);
+                lineRenderer.SetPosition(1, to);
 
-            if (!World.Positions.TryGetValue(edge.FromNodeId, out var fromPosition))
-                return;
+                UpdateCollider(from, to);
+                UpdateArrow(from, to);
 
-            if (!World.Positions.TryGetValue(edge.ToNodeId, out var toPosition))
-                return;
+                lastFromPosition = from;
+                lastToPosition = to;
+            }
 
-            Vector3 from = fromPosition.Value;
-            Vector3 to = toPosition.Value;
+            bool routeChanged =
+                !hasRenderedEdge ||
+                lastFromNodeId != edge.FromNodeId ||
+                lastToNodeId != edge.ToNodeId;
 
-            lineRenderer.SetPosition(0, from);
-            lineRenderer.SetPosition(1, to);
+            if (routeChanged)
+            {
+                UpdateColor(edge.FromNodeId, edge.ToNodeId);
+                lastFromNodeId = edge.FromNodeId;
+                lastToNodeId = edge.ToNodeId;
+            }
 
-            UpdateCollider(from, to);
-            UpdateArrow(from, to);
-            UpdateColor(edge.FromNodeId, edge.ToNodeId);
-            UpdateWidth();
+            hasRenderedEdge = true;
         }
 
         public void SetSelected(bool selected)
@@ -109,11 +125,9 @@ namespace OneMoreSpoon.View.Edges
             var fromLocal = transform.InverseTransformPoint(from);
             var toLocal = transform.InverseTransformPoint(to);
 
-            edgeCollider.points = new[]
-            {
-                new Vector2(fromLocal.x, fromLocal.y),
-                new Vector2(toLocal.x, toLocal.y)
-            };
+            colliderPoints[0] = new Vector2(fromLocal.x, fromLocal.y);
+            colliderPoints[1] = new Vector2(toLocal.x, toLocal.y);
+            edgeCollider.points = colliderPoints;
         }
 
         private void UpdateArrow(Vector3 from, Vector3 to)

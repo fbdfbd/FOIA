@@ -30,6 +30,15 @@ namespace OneMoreSpoon.View.Substances
         private bool hasTargetPosition;
         private Vector3 lastTargetPosition;
         private Tween moveTween;
+        private string lastSubstanceId;
+        private int lastAmount;
+        private bool lastIsInfinite;
+        private string lastNameText;
+        private string lastAmountText;
+        private string lastTitleText;
+        private bool hasTextState;
+        private Sprite currentImage;
+        private bool hasImageState;
 
         public void Initialize(
             SubstanceDefinitionRegistry definitionRegistry,
@@ -66,28 +75,9 @@ namespace OneMoreSpoon.View.Substances
                     ?? gameObject.AddComponent<SortingLayerStateVisual>();
         }
 
-        private void LateUpdate()
+        public void RenderPosition(Vector3 targetPosition, bool animate)
         {
-            if (World == null)
-                return;
-
-            if (World.Positions.TryGetValue(EntityId, out var position))
-            {
-                float z = normalZ + (dockDepthState?.GetDepth(EntityId) ?? 0f);
-
-                if (isPressed)
-                    z += pressedZOffset;
-
-                Vector3 targetPosition = new(position.Value.x, position.Value.y, z);
-                SyncPosition(targetPosition);
-            }
-
-            UpdateText();
-        }
-
-        private void SyncPosition(Vector3 targetPosition)
-        {
-            if (isPressed)
+            if (!animate || isPressed)
             {
                 moveTween?.Kill();
                 moveTween = null;
@@ -115,6 +105,16 @@ namespace OneMoreSpoon.View.Substances
                 .SetEase(Ease.OutQuad);
         }
 
+        public Vector3 GetRenderPosition(Vector2 worldPosition)
+        {
+            float z = normalZ + (dockDepthState?.GetDepth(EntityId) ?? 0f);
+
+            if (isPressed)
+                z += pressedZOffset;
+
+            return new Vector3(worldPosition.x, worldPosition.y, z);
+        }
+
         private void OnDestroy()
         {
             moveTween?.Kill();
@@ -124,6 +124,9 @@ namespace OneMoreSpoon.View.Substances
         {
             isPressed = pressed;
             sortingLayerVisual?.SetActiveLayer(pressed);
+
+            if (World != null && World.Positions.TryGetValue(EntityId, out var position))
+                RenderPosition(GetRenderPosition(position.Value), false);
         }
 
         public void SetSelected(bool selected)
@@ -141,11 +144,16 @@ namespace OneMoreSpoon.View.Substances
             if (imageRenderer == null)
                 return;
 
+            if (hasImageState && currentImage == image)
+                return;
+
+            currentImage = image;
+            hasImageState = true;
             imageRenderer.sprite = image;
             imageRenderer.gameObject.SetActive(image != null);
         }
 
-        private void UpdateText()
+        public void RefreshTextFromWorld()
         {
             if (!World.SubstanceStacks.TryGetValue(EntityId, out var stack))
                 return;
@@ -153,14 +161,36 @@ namespace OneMoreSpoon.View.Substances
             if (definitionRegistry == null || !definitionRegistry.TryGet(stack.SubstanceId, out SO_SubstanceDefinition definition))
                 return;
 
-            if (nameText != null)
-                nameText.text = definition.DisplayName;
+            bool stackTextChanged =
+                !hasTextState ||
+                lastSubstanceId != stack.SubstanceId ||
+                lastAmount != stack.Amount ||
+                lastIsInfinite != stack.IsInfinite;
 
-            if (amountText != null)
-                amountText.text = stack.IsInfinite ? "INF" : $"x{stack.Amount}";
+            if (!stackTextChanged)
+                return;
 
-            if (titleText != null)
-                titleText.text = titleProvider?.GetTitle(definition.Kind) ?? string.Empty;
+            string nextNameText = definition.DisplayName;
+            string nextAmountText = stack.IsInfinite ? "INF" : $"x{stack.Amount}";
+            string nextTitleText = titleProvider?.GetTitle(definition.Kind) ?? string.Empty;
+
+            SetTextIfChanged(nameText, ref lastNameText, nextNameText);
+            SetTextIfChanged(amountText, ref lastAmountText, nextAmountText);
+            SetTextIfChanged(titleText, ref lastTitleText, nextTitleText);
+
+            lastSubstanceId = stack.SubstanceId;
+            lastAmount = stack.Amount;
+            lastIsInfinite = stack.IsInfinite;
+            hasTextState = true;
+        }
+
+        private static void SetTextIfChanged(TMP_Text target, ref string currentText, string nextText)
+        {
+            if (target == null || currentText == nextText)
+                return;
+
+            currentText = nextText;
+            target.text = nextText;
         }
     }
 }

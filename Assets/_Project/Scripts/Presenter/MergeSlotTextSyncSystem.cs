@@ -90,6 +90,9 @@ namespace OneMoreSpoon.Presenter
 
         private void HideStack(GameEntityId stackId)
         {
+            if (hiddenStacks.Contains(stackId))
+                return;
+
             if (!viewRegistry.TryGetView(stackId, out EntityView view))
                 return;
 
@@ -99,8 +102,14 @@ namespace OneMoreSpoon.Presenter
 
         private void ShowStack(GameEntityId stackId)
         {
-            if (!viewRegistry.TryGetView(stackId, out EntityView view))
+            if (!hiddenStacks.Contains(stackId))
                 return;
+
+            if (!viewRegistry.TryGetView(stackId, out EntityView view))
+            {
+                hiddenStacks.Remove(stackId);
+                return;
+            }
 
             SetVisible(view.gameObject, true);
             hiddenStacks.Remove(stackId);

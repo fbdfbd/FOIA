@@ -20,6 +20,9 @@ namespace OneMoreSpoon.View.Nodes
         private bool hasTargetPosition;
         private Vector3 lastTargetPosition;
         private Tween moveTween;
+        private string currentLabelText;
+        private Sprite currentImage;
+        private bool hasImageState;
 
         private void Awake()
         {
@@ -37,18 +40,9 @@ namespace OneMoreSpoon.View.Nodes
                 label = GetComponentInChildren<TMP_Text>();
         }
 
-        private void LateUpdate()
+        public void RenderPosition(Vector3 targetPosition, bool animate)
         {
-            if (World == null)
-                return;
-
-            if (!World.Positions.TryGetValue(EntityId, out var position))
-                return;
-
-            float z = isPressed ? normalZ + pressedZOffset : normalZ;
-            Vector3 targetPosition = new(position.Value.x, position.Value.y, z);
-
-            if (isPressed)
+            if (!animate || isPressed)
             {
                 moveTween?.Kill();
                 moveTween = null;
@@ -76,6 +70,12 @@ namespace OneMoreSpoon.View.Nodes
                 .SetEase(Ease.OutQuad);
         }
 
+        public Vector3 GetRenderPosition(Vector2 worldPosition)
+        {
+            float z = isPressed ? normalZ + pressedZOffset : normalZ;
+            return new Vector3(worldPosition.x, worldPosition.y, z);
+        }
+
         private void OnDestroy()
         {
             moveTween?.Kill();
@@ -90,12 +90,17 @@ namespace OneMoreSpoon.View.Nodes
         {
             isPressed = pressed;
             sortingLayerVisual?.SetActiveLayer(pressed);
+
+            if (World != null && World.Positions.TryGetValue(EntityId, out var position))
+                RenderPosition(GetRenderPosition(position.Value), false);
         }
 
         public void SetLabel(string text)
         {
-            if (label == null)
+            if (label == null || currentLabelText == text)
                 return;
+
+            currentLabelText = text;
             label.text = text;
         }
 
@@ -104,6 +109,11 @@ namespace OneMoreSpoon.View.Nodes
             if (imageRenderer == null)
                 return;
 
+            if (hasImageState && currentImage == image)
+                return;
+
+            currentImage = image;
+            hasImageState = true;
             imageRenderer.sprite = image;
             imageRenderer.gameObject.SetActive(image != null);
         }

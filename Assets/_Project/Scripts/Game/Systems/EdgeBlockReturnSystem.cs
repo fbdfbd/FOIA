@@ -7,10 +7,14 @@ namespace OneMoreSpoon.Game.Systems
     public sealed class EdgeBlockReturnSystem
     {
         private readonly GameWorld world;
+        private readonly GameWorldChanges changes;
 
-        public EdgeBlockReturnSystem(GameWorld world)
+        public EdgeBlockReturnSystem(
+            GameWorld world,
+            GameWorldChanges changes)
         {
             this.world = world;
+            this.changes = changes;
         }
 
         public bool TryReturn(GameEntityId edgeId)
@@ -25,11 +29,16 @@ namespace OneMoreSpoon.Game.Systems
                 return false;
 
             foreach (var substanceId in slot.EquippedSubstanceIds)
-                world.CreateSubstanceStack(substanceId, 1, false, position);
+            {
+                var stackId = world.CreateSubstanceStack(substanceId, 1, false, position);
+                changes.MarkSubstanceStackChanged(stackId);
+                changes.MarkPositionChanged(stackId);
+            }
 
             var returnedCount = slot.EquippedSubstanceIds.Count;
             slot.Clear();
             world.EdgeBlockSlots[edgeId] = slot;
+            changes.MarkEdgeBlockChanged(edgeId);
 
             Debug.Log($"[EdgeBlockReturn] Returned edge={edgeId} count={returnedCount}");
             return true;

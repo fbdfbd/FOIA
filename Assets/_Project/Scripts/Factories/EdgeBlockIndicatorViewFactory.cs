@@ -48,6 +48,12 @@ namespace OneMoreSpoon.View.Factories
             view.Bind(edgeId, world);
             view.Initialize(definitionRegistry);
 
+            if (world.Positions.TryGetValue(edge.FromNodeId, out var startPosition) &&
+                world.Positions.TryGetValue(edge.ToNodeId, out var endPosition))
+            {
+                view.RenderIndicator(edge, startPosition.Value, endPosition.Value);
+            }
+
             return view;
         }
     }

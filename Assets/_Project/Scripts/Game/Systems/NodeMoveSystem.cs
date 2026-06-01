@@ -8,13 +8,16 @@ namespace OneMoreSpoon.Game.Systems
     public sealed class NodeMoveSystem
     {
         private readonly GameWorld world;
+        private readonly GameWorldChanges changes;
         private readonly PlacementRuleSystem placementRuleSystem;
 
         public NodeMoveSystem(
             GameWorld world,
+            GameWorldChanges changes,
             PlacementRuleSystem placementRuleSystem)
         {
             this.world = world;
+            this.changes = changes;
             this.placementRuleSystem = placementRuleSystem;
         }
 
@@ -25,6 +28,7 @@ namespace OneMoreSpoon.Game.Systems
 
             Vector2 clampedPosition = placementRuleSystem.ClampNodePosition(targetPosition);
             world.Positions[nodeId] = new PositionComponent(clampedPosition);
+            changes.MarkPositionChanged(nodeId);
             return true;
         }
     }

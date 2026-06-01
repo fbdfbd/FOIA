@@ -38,6 +38,9 @@ namespace OneMoreSpoon.View.Factories
 
             view.Bind(flowEntityId, world);
             view.Initialize(definitionRegistry);
+            if (world.Flows.TryGetValue(flowEntityId, out var flow))
+                view.RenderFlow(flow);
+
             viewRegistry.Register(flowEntityId, view);
 
             Debug.Log($"[FlowView] Created entity={flowEntityId}");

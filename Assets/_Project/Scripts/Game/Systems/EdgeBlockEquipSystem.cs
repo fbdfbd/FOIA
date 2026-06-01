@@ -9,16 +9,19 @@ namespace OneMoreSpoon.Game.Systems
     public sealed class EdgeBlockEquipSystem
     {
         private readonly GameWorld world;
+        private readonly GameWorldChanges changes;
         private readonly SubstanceStackSystem stackSystem;
         private readonly SubstanceDefinitionRegistry definitionRegistry;
 
         public EdgeBlockEquipSystem(
             GameWorld world,
+            GameWorldChanges changes,
             SubstanceStackSystem stackSystem,
             EdgeBlockReturnSystem edgeBlockReturnSystem,
             SubstanceDefinitionRegistry definitionRegistry)
         {
             this.world = world;
+            this.changes = changes;
             this.stackSystem = stackSystem;
             this.definitionRegistry = definitionRegistry;
         }
@@ -75,6 +78,7 @@ namespace OneMoreSpoon.Game.Systems
 
             slot.Add(stack.SubstanceId);
             world.EdgeBlockSlots[edgeId] = slot;
+            changes.MarkEdgeBlockChanged(edgeId);
 
             if (!removed && stackSystem.IsEmpty(stackId))
                 stackSystem.Remove(stackId);

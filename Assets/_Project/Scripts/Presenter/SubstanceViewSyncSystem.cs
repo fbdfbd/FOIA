@@ -2,6 +2,7 @@ using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Systems;
 using OneMoreSpoon.View.Common;
 using OneMoreSpoon.View.Factories;
+using OneMoreSpoon.View.Substances;
 using System.Collections.Generic;
 using UnityEngine;
 using VContainer.Unity;
@@ -12,6 +13,7 @@ namespace OneMoreSpoon.Presenter
     public sealed class SubstanceViewSyncSystem : ITickable
     {
         private readonly GameWorld world;
+        private readonly GameWorldChanges changes;
         private readonly SubstanceDockSystem dockSystem;
         private readonly SubstanceViewFactory substanceViewFactory;
         private readonly ViewRegistry viewRegistry;
@@ -20,11 +22,13 @@ namespace OneMoreSpoon.Presenter
 
         public SubstanceViewSyncSystem(
             GameWorld world,
+            GameWorldChanges changes,
             SubstanceDockSystem dockSystem,
             SubstanceViewFactory substanceViewFactory,
             ViewRegistry viewRegistry)
         {
             this.world = world;
+            this.changes = changes;
             this.dockSystem = dockSystem;
             this.substanceViewFactory = substanceViewFactory;
             this.viewRegistry = viewRegistry;
@@ -34,6 +38,7 @@ namespace OneMoreSpoon.Presenter
         {
             dockSystem.SyncNewEligibleStacks();
             CreateMissingViews();
+            RenderChangedViews();
             RemoveStaleViews();
         }
 
@@ -72,6 +77,39 @@ namespace OneMoreSpoon.Presenter
 
             viewRegistry.Unregister(stackId);
             Object.Destroy(view.gameObject);
+        }
+
+        private void RenderChangedViews()
+        {
+            foreach (var stackId in changes.PositionChanged)
+                RenderStackPosition(stackId);
+
+            foreach (var stackId in changes.SubstanceStackChanged)
+                RenderStackText(stackId);
+        }
+
+        private void RenderStackPosition(GameEntityId stackId)
+        {
+            if (!world.SubstanceStacks.ContainsKey(stackId))
+                return;
+
+            if (!world.Positions.TryGetValue(stackId, out var position))
+                return;
+
+            if (!viewRegistry.TryGetView(stackId, out EntityView entityView))
+                return;
+
+            if (entityView is SubstanceView substanceView)
+                substanceView.RenderPosition(substanceView.GetRenderPosition(position.Value), true);
+        }
+
+        private void RenderStackText(GameEntityId stackId)
+        {
+            if (!viewRegistry.TryGetView(stackId, out EntityView entityView))
+                return;
+
+            if (entityView is SubstanceView substanceView)
+                substanceView.RefreshTextFromWorld();
         }
     }
 }

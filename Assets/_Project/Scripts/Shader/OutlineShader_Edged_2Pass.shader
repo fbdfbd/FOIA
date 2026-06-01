@@ -80,41 +80,12 @@ Shader "Custom/OutlineShader_Edged_2Pass"
                 return o;
             }
 
-            half AlphaAt(float2 uv)
-            {
-                if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
-                    return half(0.0);
-
-                return SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv).a;
-            }
-
             half4 frag(Varyings i) : SV_Target
             {
-                const int MAX_RADIUS = 32;
+                if (i.uv.x >= 0.0 && i.uv.x <= 1.0 && i.uv.y >= 0.0 && i.uv.y <= 1.0)
+                    return half4(0, 0, 0, 0);
 
-                int radius = (int)clamp(_OutlineWidth + 0.5, 1.0, (float)MAX_RADIUS);
-
-                half centerAlpha = AlphaAt(i.uv);
-                half maxAlpha = half(0.0);
-
-                [loop]
-                for (int y = -MAX_RADIUS; y <= MAX_RADIUS; y++)
-                {
-                    if (abs(y) > radius)
-                        continue;
-
-                    [loop]
-                    for (int x = -MAX_RADIUS; x <= MAX_RADIUS; x++)
-                    {
-                        if (abs(x) > radius)
-                            continue;
-
-                        float2 offset = float2(x, y) * _MainTex_TexelSize.xy;
-                        maxAlpha = max(maxAlpha, AlphaAt(i.uv + offset));
-                    }
-                }
-
-                half outline = step(_AlphaThreshold, saturate(maxAlpha - centerAlpha));
+                half outline = half(1.0);
                 half3 rgb = _OutlineTint.rgb * _BloomIntensity;
 
                 return half4(rgb, _OutlineTint.a * outline);

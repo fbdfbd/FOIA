@@ -27,6 +27,13 @@ namespace OneMoreSpoon.View.Factories
             var view = Object.Instantiate(prefab, Vector3.zero, Quaternion.identity);
 
             view.Bind(edgeId, world);
+            if (world.Edges.TryGetValue(edgeId, out var edge) &&
+                world.Positions.TryGetValue(edge.FromNodeId, out var fromPosition) &&
+                world.Positions.TryGetValue(edge.ToNodeId, out var toPosition))
+            {
+                view.RenderLine(edge, fromPosition.Value, toPosition.Value);
+            }
+
             viewRegistry.Register(edgeId, view);
 
             return view;

@@ -168,6 +168,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
         public static void InstallGameCore(this IContainerBuilder builder)
         {
             builder.Register<GameWorld>(Lifetime.Singleton);
+            builder.Register<GameWorldChanges>(Lifetime.Singleton);
             builder.Register<SelectionState>(Lifetime.Singleton);
             builder.Register<EdgeConnectionState>(Lifetime.Singleton);
             builder.Register<FirstDiscoveryRewardState>(Lifetime.Singleton);
@@ -259,6 +260,8 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             builder.RegisterEntryPoint<GameBootstrap>();
             builder.RegisterEntryPoint<SubstanceInventoryBootstrap>();
             builder.RegisterEntryPoint<GameLoopRunner>();
+            builder.RegisterEntryPoint<NodeViewSyncSystem>();
+            builder.RegisterEntryPoint<EdgeViewSyncSystem>();
             builder.RegisterEntryPoint<FlowViewSyncSystem>();
             builder.RegisterEntryPoint<SubstanceViewSyncSystem>();
             builder.RegisterEntryPoint<EdgeBlockIndicatorSyncSystem>();
@@ -266,6 +269,7 @@ namespace OneMoreSpoon.App.LifetimeScopes.Installers
             builder.RegisterEntryPoint<MergeSlotTextSyncSystem>();
             builder.RegisterEntryPoint<EncyclopediaSyncSystem>();
             builder.RegisterEntryPoint<SubstanceGrantButtonBindingSystem>();
+            builder.RegisterEntryPoint<GameWorldChangeClearSystem>();
         }
     }
 }

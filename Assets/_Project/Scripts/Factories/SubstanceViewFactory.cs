@@ -50,6 +50,8 @@ namespace OneMoreSpoon.View.Factories
             view.Bind(stackId, world);
             view.Initialize(definitionRegistry, dockDepthState, titleProvider);
             UpdateVisuals(stackId, view);
+            view.RenderPosition(view.GetRenderPosition(position.Value), false);
+            view.RefreshTextFromWorld();
             viewRegistry.Register(stackId, view);
 
             return view;

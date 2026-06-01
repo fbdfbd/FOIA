@@ -9,10 +9,14 @@ namespace OneMoreSpoon.Game.Factories
     public sealed class EdgeFactory
     {
         private readonly GameWorld world;
+        private readonly GameWorldChanges changes;
 
-        public EdgeFactory(GameWorld world)
+        public EdgeFactory(
+            GameWorld world,
+            GameWorldChanges changes)
         {
             this.world = world;
+            this.changes = changes;
         }
 
         public bool TryCreateEdge(
@@ -64,6 +68,7 @@ namespace OneMoreSpoon.Game.Factories
                 toNodeId,
                 operationDefinition.OperationId
             );
+            changes.MarkEdgeChanged(edgeId);
 
             Debug.Log(
                 $"Created edge: {fromNodeId} -> {toNodeId}, Operation: {operationDefinition.DisplayName}"

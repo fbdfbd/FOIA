@@ -52,6 +52,7 @@ namespace OneMoreSpoon.View.Factories
             NodeView view = Object.Instantiate(prefab, position.Value, Quaternion.identity);
 
             view.Bind(entityId, world);
+            view.RenderPosition(view.GetRenderPosition(position.Value), false);
             UpdateVisuals(entityId, view);
 
             viewRegistry.Register(entityId, view);
