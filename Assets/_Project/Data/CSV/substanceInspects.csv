@@ -1,39 +1,39 @@
-﻿substanceId,displayName,description
-person_worker,직원,회사에서 백룸 탐사를 위해 보낸 직원이다. 아직 살아 있고 직접 길 위로 보낼 수 있다.
-person_worker_dead_hallway_chase,사망한 직원,복도에서 추격당해 사망한 직원의 시체다. 외상과 위치를 보면 엔티티에게 쫓기다 따라잡힌 것으로 보인다.
-person_worker_dead_visual_contact,사망한 직원,시각 접촉 직후 사망한 직원의 시체다. 마지막 기록과 시신 상태를 함께 보면 엔티티의 형체를 직접 본 뒤 사망한 것 같다.
-person_worker_dead_pit_return_chase,사망한 직원,구덩이에서 복도로 돌아오던 중 추격당해 사망한 직원의 시체다. 복귀 경로에서 엔티티를 피하지 못한 흔적이 남아 있다.
-edgeblock_tool_camera,카메라,현장 사진을 남기기 위한 카메라다. 생존 장비는 아니지만 움직이는 엔티티나 장소의 증거를 확보할 수 있다.
-edgeblock_tool_flashlight,손전등,어두운 구덩이 구역에서 시야를 확보하기 위한 손전등이다. 구덩이에 들어갈 때 사실상 필수 장비다.
-edgeblock_tool_ultrasonic_sensor,환경음 기록 보고서,환경음분석기다. 복도 너머의 발소리와 접근 방향을 파악해 엔티티를 피하거나 유인하는 데 쓸 수 있다.
-evidence_noisy_observation_file,잡음 가득한 기록,녹음 파일을 열었지만 잡음뿐이다. 그래도 복도에 뭔가 있었다는 사실만큼은 분명하다.
-evidence_hallway_chase_death_diagnosis,사망 진단서,복도에서 추격당한 뒤 사망했다는 내용이 적혀 있다. 벽 너머에서 들린 발소리 기록과 함께 회사에 보내면 엔티티의 접근을 미리 파악할 장비를 건의할 수 있을 것 같다.
-evidence_footsteps_beyond_wall,환경음 기록 보고서,벽 너머에서 발소리가 들렸다. 가까워졌다가 멀어지고 다시 멈췄다. 복도 내 추격 사망 진단서와 대조해보면 이 소리가 사망 원인과 연결되어 있는지 알 수 있을 것 같다.
-evidence_escaped_by_sound,환경음 기록 보고서,발소리가 멀어지는 순간에 뛰었다. 숨이 턱 끝까지 차올랐지만 이번에는 살아서 빠져나왔다.
-evidence_hidden_room_refuge_record,환경음 기록 보고서,문을 닫자 소리가 멀어졌다. 여긴 잠깐 숨을 수 있는 곳이다. 오래 있고 싶지만 다시 나갈 생각을 하니 손이 떨린다.
-evidence_entity_stopped_at_door,환경음 기록 보고서,문 앞까지 따라오던 소리가 멈췄다. 이 방 안까지는 들어오지 못하는 것 같다.
-evidence_footsteps_waiting_outside,환경음 기록 보고서,밖에서 계속 기다리고 있었다. 문을 여는 순간 발소리가 다시 움직였다. 내가 먼저 움직였고 그것도 같이 움직였다.
-evidence_final_handwritten_shape,휘갈겨쓴 메모,봤다. 정확히는 본 것 같다. 사람처럼 서 있었는데 사람이 아니었다. 시각 접촉 직후 사망진단서와 대조해보면 내가 본 것이 무엇인지 조금은 설명할 수 있을지도 모른다.
-evidence_visual_contact_death_diagnosis,사망 진단서,시각 접촉 직후 급격한 쇼크와 외상이 발생한 것으로 적혀 있다. 형체를 보았다는 마지막 자필 기록과 함께 보내면 현장 증거 확보용 촬영 장비를 건의할 수 있을 것 같다.
-evidence_pit_return_chase_death_diagnosis,사망 진단서,구덩이 구역에서 복도로 복귀하던 중 추격으로 사망했다고 적혀 있다. 복귀 타이밍을 잡은 환경음 기록과 함께 보면 엔티티가 언제 다시 따라붙는지 추정할 수 있을 것 같다.
-evidence_pit_return_chase_report,사망 진단서,구덩이에서 돌아오는 길에 발소리가 다시 붙었다. 복도에 들어선 뒤에는 도망칠 곳이 없었다. 구덩이 복귀 중 추격 사망 진단서와 대조해봐야겠다.
-evidence_shaken_entity_photo,사진 기록 보고서,사진 전체가 심하게 흔들렸다. 검은 형체가 찍히긴 했지만 움직임이 빨라 정확한 형태는 알아보기 어렵다.
-evidence_hidden_room_note,휘갈겨쓴 메모,이 방은 복도와 다르다. 숨이 조금 돌아온다. 벽에 남은 흔적을 보면 나 말고도 누군가 여기까지 온 적이 있다.
-evidence_black_afterimage_photo,사진 기록 보고서,사진에는 검은 잔상만 남았다. 찍는 순간 분명히 뭔가 지나갔는데 초점이 따라가지 못했다.
-evidence_return_timing_audio,환경음 기록 보고서,발소리가 멀어지는 간격이 있다. 그 틈을 기다리면 복도로 돌아갈 수 있을 것 같다. 구덩이 복귀 중 추격 사망 진단서와 함께 보면 복귀 타이밍을 더 정확히 건의할 수 있겠다.
-evidence_hidden_room_pit_photo_wall,사진 기록 보고서,숨겨진방 벽에 붙어 있던 사진이다. 어두운 구덩이 같은 구역이 찍혀 있다. 구덩이 구역 실종 보고와 대조해보면 실종 원인이 어둠과 지형에 있는지 확인할 수 있을 것 같다.
-evidence_lighting_cycle_record,기록 보고서,복도 조명이 꺼지는 주기가 있다. 완전히 어두워지는 순간 길과 구멍의 경계가 사라진다.
-evidence_hidden_room_pit_photo_inside,사진 기록 보고서,숨겨진방 안쪽에서 발견한 구덩이 구역 사진이다. 바닥이 일정한 격자로 꺼져 있고 깊이는 가늠하기 어렵다.
-evidence_pit_missing_report,실종 보고서,구덩이 구역 진입 후 직원의 위치 신호가 끊겼다고 적혀 있다. 숨겨진방 벽에 붙은 구덩이 구역 사진과 함께 보내면 어둠 속에서 시야를 확보할 장비를 건의할 수 있을 것 같다.
-evidence_empty_pit_light_record,구덩이 구역 조사 보고서,손전등을 비추자 빈 구덩이들이 드러났다. 빛이 없었다면 발을 헛디뎠을 것이다.
-evidence_meaningless_pit_observation,대충 쓴 관측 보고서,구덩이의 깊이와 배열을 대충 적었다. 아직은 이것만으로 뭘 알아내긴 어렵다.
-evidence_pit_grid_handwritten,휘갈겨쓴 메모,구덩이는 아무렇게나 파인 게 아니다. 격자처럼 반복된다. 누가 만든 건지 모르겠지만 피할 길은 있다.
-evidence_chase_sound_cut_at_pit,환경음 기록 보고서,쫓아오던 발소리가 구덩이 앞에서 끊겼다. 떨어진 건지 멈춘 건지 모르겠지만 그 순간만큼은 조용했다.
-evidence_clear_pit_grid_photo,사진 기록 보고서,구덩이의 격자 구조가 선명하게 찍혔다. 손전등이 없었다면 이런 사진은 절대 못 남겼을 것이다.
-evidence_pit_photo_without_entity,사진 기록 보고서,구덩이 구역 사진이다. 구조는 보이지만 엔티티는 찍히지 않았다.
-evidence_lured_entity_handwritten,휘갈겨쓴 메모,소리에 반응한다. 내가 움직인 게 아니라 소리를 따라오게 만들었다. 구덩이 쪽으로 유도하는 데 성공했다.
-evidence_clear_entity_photo_pit,사진 기록 보고서,구덩이에 빠져 움직임이 제한된 엔티티가 선명하게 찍혔다. 지금까지의 흔들린 사진과는 다르게 형태를 확인할 수 있다.
-evidence_recovered_sanity_hidden_room,기록 보고서,숨겨진방에서 한참을 앉아 있었다. 손이 덜 떨린다. 이제야 내가 뭘 봤는지 생각할 수 있다.
-evidence_basement_entrance_revealed,지하실 입구,공포가 조금 가라앉자 방 안쪽의 이상한 틈이 보였다. 아래로 내려가는 입구다.
-evidence_abnormal_sound_fell_into_pit,기록 보고서,구덩이 아래에서 비정상적인 울림이 들렸다. 무언가 떨어졌고 한동안 움직이지 못한 것 같다.
-evidence_exhausted_pit_survival_report,기록 보고서,구덩이에서 살아 나오긴 했지만 몸도 정신도 한계에 가깝다. 바로 다음 구역으로 갈 상태는 아니다.
+﻿substanceId,description
+person_worker,"회사에서 백룸 탐사를 위해 파견한 직원이다. 현재 생존 상태이며, 다음 탐사 구역으로 투입할 수 있다."
+person_worker_dead_hallway_chase,"복도 구역에서 추격당해 사망한 직원의 시신이다. 외상 및 발견 위치를 분석한 결과, 엔티티에게 쫓기다 따라잡힌 것으로 확인된다."
+person_worker_dead_visual_contact,"시각 접촉 직후 사망한 직원의 시신이다. 동선 기록과 시신 상태를 종합할 때, 엔티티의 실체를 직접 목격한 직후 사망한 것으로 추정된다."
+person_worker_dead_pit_return_chase,구덩이 구역에서 복도로 복귀하던 중 사망한 직원의 시신이다. 복귀 동선 상에 엔티티의 추격을 피하지 못한 흔적이 남아 있다.
+edgeblock_tool_camera,"""Halcyon Industries는 데이터 수집을 최우선 과제로 삼고 있습니다. 엔티티와 현장의 시각적 증거를 확보하되, 회사 자산이 파손되지 않도록 주의하십시오. 행운을 빕니다."""
+edgeblock_tool_flashlight,"""어두운 곳을 탐사하는 것은 굉장히 위험합니다! 하지만 빛이 있으면 용기도 생기는 법이죠. 항상 발 밑을 조심하십시오, 행운을 빕니다!"""
+edgeblock_tool_ultrasonic_sensor,"""정적만이 흐르는 백룸에서 환경음 분석기는 소리의 파동을 시각화하여 이상 징후를 가장 빠르게 감지하는 첨단 장비입니다. 자산 보존을 위해, 모든 직원은 탐사 종료 후 해당 장비를 반드시 정상 반납하시기 바랍니다."""
+evidence_noisy_observation_file,녹음 파일의 대부분이 식별 불가능한 잡음으로 훼손되었다. 복도 내부에 미확인 대상이 존재했다는 사실만 입증할 수 있다.
+evidence_hallway_chase_death_diagnosis,"복도 구역에서 추격당한 끝에 사망했다는 소견이 명시되어 있다. 이 진단서를 벽 너머의 발소리가 녹음된 기록과 대조하여 제출하면, 엔티티의 접근을 탐지할 음향 분석 장비를 회사에 건의할 수 있다."
+evidence_footsteps_beyond_wall,"벽 너머에서 접근하다 멀어지고 다시 멈추는 불규칙한 발소리가 기록되어 있다. 복도에서 추격당해 사망한 직원의 진단서와 교차 검증하면, 이 소음과 사망 원인 간의 인과관계를 규명할 수 있다."
+evidence_escaped_by_sound,접근하던 발소리가 멀어지는 시점을 틈타 이동하여 생존한 기록이다. 음향 기반의 회피 기동이 유효함을 시사한다.
+evidence_hidden_room_refuge_record,폐쇄된 공간에 진입하여 외부의 소음으로부터 단절된 기록이다. 임시 대피소의 역할을 수행할 수 있는 공간을 발견했음을 의미한다.
+evidence_entity_stopped_at_door,문 앞까지 접근하던 소음이 정지한 기록이다. 엔티티가 특정 공간 내부로는 진입하지 못하는 제약이 있음을 시사한다.
+evidence_footsteps_waiting_outside,외부에서 대기하던 발소리가 문을 개방하는 순간 다시 움직이기 시작한 상황의 기록이다. 대상이 작업자의 동선에 반응하여 움직임을 동기화하고 있다.
+evidence_final_handwritten_shape,"인간의 형태를 띠고 있으나 인간이 아닌 대상의 형체를 목격했다는 기록이다. 시각 접촉 직후 사망한 직원의 진단서와 대조하면, 이 기록이 지칭하는 대상의 위험성을 증명할 수 있다."
+evidence_visual_contact_death_diagnosis,"시각 접촉 직후 발생한 급성 쇼크 및 외상이 사인으로 기록되어 있다. 무언가의 형체를 묘사한 자필 메모와 함께 제출하면, 시각적 증거 확보를 위한 특수 촬영 장비를 건의할 수 있다."
+evidence_pit_return_chase_death_diagnosis,"구덩이 구역에서 복도로 복귀하는 과정에서 추격에 의해 사망했다는 소견이 기록되어 있다. 안전한 복귀 타이밍을 명시한 환경음 기록과 결합하여 분석하면, 엔티티의 추적 주기를 파악할 수 있다."
+evidence_pit_return_chase_report,"구덩이에서 복귀하는 경로에 발소리가 다시 따라붙었으며, 복도 진입 후 퇴로가 차단되었다는 현장 보고다. 구덩이 복귀 중 사망한 직원의 진단서와 대조를 요한다."
+evidence_shaken_entity_photo,"심한 흔들림으로 인해 피사체의 윤곽이 붕괴된 사진이다. 검은 형체의 존재는 확인되나, 이동 속도가 빨라 정확한 외형 특정은 불가능하다."
+evidence_hidden_room_note,복도와 분리된 특정 방의 환경적 차이와 선행 탐사자의 흔적을 기록한 메모다. 해당 공간이 안전 구역으로 기능할 수 있음을 나타낸다.
+evidence_black_afterimage_photo,초점이 맞지 않아 검은 잔상만 맺힌 사진이다. 셔터 개방 순간 피사체가 프레임을 이탈했음을 의미한다.
+evidence_return_timing_audio,"발소리의 간격을 분석하여 복귀 가능 시점을 산출한 기록이다. 구덩이 복귀 중 추격으로 사망한 직원의 진단서와 대조하면, 보다 정밀한 안전 복귀 타이밍을 회사에 보고할 수 있다."
+evidence_hidden_room_pit_photo_wall,"숨겨진 방의 벽면에서 획득한 사진으로, 조도가 극히 낮은 구덩이 구역이 촬영되어 있다. 구덩이 구역 실종 보고서와 함께 제출 시, 시야 확보용 조명 장비를 회사에 건의할 근거가 된다."
+evidence_lighting_cycle_record,복도 조명의 소등 주기를 기록한 데이터다. 완전 소등 시 지형의 경계를 육안으로 식별할 수 없음을 경고하고 있다.
+evidence_hidden_room_pit_photo_inside,"숨겨진 방 내부에서 발견된 사진이다. 바닥이 일정한 격자 형태로 붕괴되어 있으며, 심도를 측정할 수 없는 구덩이 구역이 담겨 있다."
+evidence_pit_missing_report,"구덩이 구역 진입 후 직원의 위치 송출 신호가 단절되었다는 보고다. 벽에 부착되어 있던 구덩이 구역 사진과 대조하여 제출하면, 해당 구역 전용 조명 장비 보급을 건의할 수 있다."
+evidence_empty_pit_light_record,광원을 사용하여 구덩이 내부가 비어 있음을 확인한 시각적 기록이다. 조명 장비 없이는 지형 파악이 불가능함을 입증한다.
+evidence_meaningless_pit_observation,구덩이의 심도 및 배열 상태를 개략적으로 작성한 보고서다. 현재로서는 유의미한 패턴을 도출하기 부족한 데이터다.
+evidence_pit_grid_handwritten,구덩이의 배치가 무작위가 아닌 규칙적인 격자 형태를 띠고 있음을 파악한 메모다. 이동 가능한 경로가 존재함을 시사한다.
+evidence_chase_sound_cut_at_pit,추격해 오던 발소리가 구덩이 경계선에서 일순간 단절된 현상을 기록한 음향 데이터다.
+evidence_clear_pit_grid_photo,구덩이의 격자형 구조가 왜곡 없이 선명하게 촬영된 사진이다. 광원 확보가 온전한 현장 기록의 전제 조건임을 보여준다.
+evidence_pit_photo_without_entity,구조적 형태만 확인되며 엔티티의 존재는 식별되지 않는 구덩이 구역 사진이다.
+evidence_lured_entity_handwritten,"대상이 소음에 반응하는 특성을 역이용하여, 특정 구역(구덩이)으로 유도하는 데 성공했다는 전략적 기록이다."
+evidence_clear_entity_photo_pit,구덩이 지형에 의해 기동력이 제한된 엔티티의 뚜렷한 형상이 담긴 사진이다. 기존의 훼손된 사진들과 달리 대상의 외형적 특성을 완벽히 식별할 수 있다.
+evidence_recovered_sanity_hidden_room,격리된 공간에서 일정 시간 대기하며 심리적 안정을 되찾은 후 작성된 기록이다. 시각적 정보에 대한 재평가가 가능해졌다.
+evidence_basement_entrance_revealed,방 내부에서 새롭게 발견된 지하 진입로다. 인지 능력이 안정된 이후에만 관측 가능한 은폐된 구조물이다.
+evidence_abnormal_sound_fell_into_pit,구덩이 하층부에서 발생한 비정상적 파음 기록이다. 질량을 가진 물체가 추락하여 일시적으로 기동 불능 상태에 빠졌음을 나타낸다.
+evidence_exhausted_pit_survival_report,"구덩이 구역을 이탈하여 생존했으나 육체적, 정신적 한계에 도달한 직원의 상태 보고서다. 즉각적인 재투입은 불가능하다."

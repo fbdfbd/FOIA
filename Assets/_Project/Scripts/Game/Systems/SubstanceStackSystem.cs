@@ -87,6 +87,15 @@ namespace OneMoreSpoon.Game.Systems
             world.Positions[stackId] = new PositionComponent(clampedPosition);
             return true;
         }
+
+        public bool TryMoveUnclamped(GameEntityId stackId, Vector2 position)
+        {
+            if (!world.SubstanceStacks.ContainsKey(stackId))
+                return false;
+
+            world.Positions[stackId] = new PositionComponent(position);
+            return true;
+        }
     }
 
     public sealed class SubstanceStackSpawnService
@@ -611,7 +620,7 @@ namespace OneMoreSpoon.Game.Systems
                 if (draggingStacks.Contains(stackId))
                     continue;
 
-                stackSystem.TryMove(stackId, GetSlotPosition(area.Bounds, i));
+                stackSystem.TryMoveUnclamped(stackId, GetSlotPosition(area.Bounds, i));
                 depthState.SetDepth(stackId, settings.DockedStackZStep * i);
             }
         }
