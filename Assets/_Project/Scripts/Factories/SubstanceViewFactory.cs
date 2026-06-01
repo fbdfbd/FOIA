@@ -17,6 +17,7 @@ namespace OneMoreSpoon.View.Factories
         private readonly SubstanceDefinitionRegistry definitionRegistry;
         private readonly SubstanceDockDepthState dockDepthState;
         private readonly SubstanceTitleProvider titleProvider;
+        private readonly SubstanceOutlineColorProvider outlineColorProvider;
 
         public SubstanceViewFactory(
             SubstanceView prefab,
@@ -24,7 +25,8 @@ namespace OneMoreSpoon.View.Factories
             ViewRegistry viewRegistry,
             SubstanceDefinitionRegistry definitionRegistry,
             SubstanceDockDepthState dockDepthState,
-            SubstanceTitleProvider titleProvider)
+            SubstanceTitleProvider titleProvider,
+            SubstanceOutlineColorProvider outlineColorProvider)
         {
             this.prefab = prefab;
             this.world = world;
@@ -32,6 +34,7 @@ namespace OneMoreSpoon.View.Factories
             this.definitionRegistry = definitionRegistry;
             this.dockDepthState = dockDepthState;
             this.titleProvider = titleProvider;
+            this.outlineColorProvider = outlineColorProvider;
         }
 
         public SubstanceView Create(GameEntityId stackId)
@@ -67,6 +70,7 @@ namespace OneMoreSpoon.View.Factories
             }
 
             view.SetImage(definition.Image);
+            view.SetOutlineColors(outlineColorProvider.GetColors(definition.Kind));
         }
     }
 }

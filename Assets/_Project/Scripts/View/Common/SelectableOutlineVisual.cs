@@ -11,11 +11,12 @@ namespace OneMoreSpoon.View.Common
         [SerializeField] private Color selectedOutlineColor = Color.yellow;
 
         private MaterialPropertyBlock propertyBlock;
+        private bool isSelected;
 
         private void Awake()
         {
             EnsureRenderer();
-            Apply(false);
+            Apply();
         }
 
         private void Reset()
@@ -25,10 +26,18 @@ namespace OneMoreSpoon.View.Common
 
         public void SetSelected(bool selected)
         {
-            Apply(selected);
+            isSelected = selected;
+            Apply();
         }
 
-        private void Apply(bool selected)
+        public void SetColors(Color normal, Color selected)
+        {
+            normalOutlineColor = normal;
+            selectedOutlineColor = selected;
+            Apply();
+        }
+
+        private void Apply()
         {
             EnsureRenderer();
 
@@ -37,7 +46,7 @@ namespace OneMoreSpoon.View.Common
 
             propertyBlock ??= new MaterialPropertyBlock();
             targetRenderer.GetPropertyBlock(propertyBlock);
-            propertyBlock.SetColor(OutlineTintId, selected ? selectedOutlineColor : normalOutlineColor);
+            propertyBlock.SetColor(OutlineTintId, isSelected ? selectedOutlineColor : normalOutlineColor);
             targetRenderer.SetPropertyBlock(propertyBlock);
         }
 
