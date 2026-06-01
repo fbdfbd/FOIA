@@ -1,116 +1,39 @@
 substanceId,displayName,kind,baseTags,baseValue,addedTags,durationMultiplier,valueMultiplier
 person_worker,직원,Person,person_worker,0,,0,0
-person_worker_dead_1,직원시체1,Person_Captive,person_worker_dead_1,0,,0,0
-evidence_meaningless_observation,의미없는 관측 데이터,Stance,evidence_meaningless_observation,0,,0,0
-evidence_death_certificate,사망진단서,Stance,evidence_death_certificate,0,,0,0
-evidence_employee_entity_record,엔티티에 관련된 직원의 작성 기록,Stance,evidence_employee_entity_record,0,,0,0
-evidence_photo_blurry_shaken,초점이 안맞고 심하게 흔들린 사진,Stance,evidence_photo_blurry_shaken,0,,0,0
-evidence_photo_blurry,초점이 안맞는 사진,Stance,evidence_photo_blurry,0,,0,0
-evidence_previous_victim_notes,방에서 찾은 희생양들의 기록,Trash,evidence_previous_victim_notes,0,,0,0
-evidence_entity_clear_photo,엔티티가 정확하게 찍힌 사진,Unique,evidence_entity_clear_photo,0,,0,0
-evidence_blackout_observation,블랙아웃 관측 기록,Stance,evidence_blackout_observation,0,,0,0
-evidence_entity_sound_record,엔티티 소리 기록,Stance,evidence_entity_sound_record,0,,0,0
-evidence_hole_depth_report,구덩이 깊이 관측 기록,Stance,evidence_hole_depth_report,0,,0,0
+person_worker_dead_hallway_chase,복도에서 추격당해 사망한 직원 시체,Person_Captive,person_worker_dead_hallway_chase,0,,0,0
+person_worker_dead_visual_contact,시각 접촉 직후 사망한 직원 시체,Person_Captive,person_worker_dead_visual_contact,0,,0,0
+person_worker_dead_pit_return_chase,구덩이에서 복귀 중 추격당해 사망한 직원 시체,Person_Captive,person_worker_dead_pit_return_chase,0,,0,0
 edgeblock_tool_camera,카메라,EdgeBlock_Tool,,0,edgeblock_tool_camera,0,0
 edgeblock_tool_flashlight,손전등,EdgeBlock_Tool,,0,edgeblock_tool_flashlight,0,0
-edgeblock_tool_recorder,녹음기,EdgeBlock_Tool,,0,edgeblock_tool_recorder,0,0
-edgeblock_tool_ultrasonic_sensor,초음파센서,EdgeBlock_Tool,,0,edgeblock_tool_ultrasonic_sensor,0,0
-archive_plain_h,소장용 탐사기록: 무기록 복도,Unique,archive_plain_h,0,,0,0
-archive_plain_r,소장용 탐사기록: 무기록 방,Unique,archive_plain_r,0,,0,0
-archive_plain_o,소장용 탐사기록: 무기록 구덩이,Unique,archive_plain_o,0,,0,0
-archive_plain_h_r,소장용 탐사기록: 무기록 복도 방,Unique,archive_plain_h_r,0,,0,0
-archive_plain_h_o,소장용 탐사기록: 무기록 복도 구덩이,Unique,archive_plain_h_o,0,,0,0
-archive_plain_r_h,소장용 탐사기록: 무기록 방 복도,Unique,archive_plain_r_h,0,,0,0
-archive_plain_r_o,소장용 탐사기록: 무기록 방 구덩이,Unique,archive_plain_r_o,0,,0,0
-archive_plain_o_h,소장용 탐사기록: 무기록 구덩이 복도,Unique,archive_plain_o_h,0,,0,0
-archive_plain_o_r,소장용 탐사기록: 무기록 구덩이 방,Unique,archive_plain_o_r,0,,0,0
-archive_record_h,소장용 탐사기록: 기록 복도,Unique,archive_record_h,0,,0,0
-archive_record_r,소장용 탐사기록: 기록 방,Unique,archive_record_r,0,,0,0
-archive_record_o,소장용 탐사기록: 기록 구덩이,Unique,archive_record_o,0,,0,0
-archive_record_h_r,소장용 탐사기록: 기록 복도 방,Unique,archive_record_h_r,0,,0,0
-archive_record_h_o,소장용 탐사기록: 기록 복도 구덩이,Unique,archive_record_h_o,0,,0,0
-archive_record_r_h,소장용 탐사기록: 기록 방 복도,Unique,archive_record_r_h,0,,0,0
-archive_record_r_o,소장용 탐사기록: 기록 방 구덩이,Unique,archive_record_r_o,0,,0,0
-archive_record_o_h,소장용 탐사기록: 기록 구덩이 복도,Unique,archive_record_o_h,0,,0,0
-archive_record_o_r,소장용 탐사기록: 기록 구덩이 방,Unique,archive_record_o_r,0,,0,0
-archive_camera_h,소장용 탐사기록: 카메라 복도,Unique,archive_camera_h,0,,0,0
-archive_camera_r,소장용 탐사기록: 카메라 방,Unique,archive_camera_r,0,,0,0
-archive_camera_o,소장용 탐사기록: 카메라 구덩이,Unique,archive_camera_o,0,,0,0
-archive_camera_h_r,소장용 탐사기록: 카메라 복도 방,Unique,archive_camera_h_r,0,,0,0
-archive_camera_h_o,소장용 탐사기록: 카메라 복도 구덩이,Unique,archive_camera_h_o,0,,0,0
-archive_camera_r_h,소장용 탐사기록: 카메라 방 복도,Unique,archive_camera_r_h,0,,0,0
-archive_camera_r_o,소장용 탐사기록: 카메라 방 구덩이,Unique,archive_camera_r_o,0,,0,0
-archive_camera_o_h,소장용 탐사기록: 카메라 구덩이 복도,Unique,archive_camera_o_h,0,,0,0
-archive_camera_o_r,소장용 탐사기록: 카메라 구덩이 방,Unique,archive_camera_o_r,0,,0,0
-archive_ultra_h,소장용 탐사기록: 초음파 복도,Unique,archive_ultra_h,0,,0,0
-archive_ultra_r,소장용 탐사기록: 초음파 방,Unique,archive_ultra_r,0,,0,0
-archive_ultra_o,소장용 탐사기록: 초음파 구덩이,Unique,archive_ultra_o,0,,0,0
-archive_ultra_h_r,소장용 탐사기록: 초음파 복도 방,Unique,archive_ultra_h_r,0,,0,0
-archive_ultra_h_o,소장용 탐사기록: 초음파 복도 구덩이,Unique,archive_ultra_h_o,0,,0,0
-archive_ultra_r_h,소장용 탐사기록: 초음파 방 복도,Unique,archive_ultra_r_h,0,,0,0
-archive_ultra_r_o,소장용 탐사기록: 초음파 방 구덩이,Unique,archive_ultra_r_o,0,,0,0
-archive_ultra_o_h,소장용 탐사기록: 초음파 구덩이 복도,Unique,archive_ultra_o_h,0,,0,0
-archive_ultra_o_r,소장용 탐사기록: 초음파 구덩이 방,Unique,archive_ultra_o_r,0,,0,0
-archive_flash_h,소장용 탐사기록: 손전등 복도,Unique,archive_flash_h,0,,0,0
-archive_flash_r,소장용 탐사기록: 손전등 방,Unique,archive_flash_r,0,,0,0
-archive_flash_o,소장용 탐사기록: 손전등 구덩이,Unique,archive_flash_o,0,,0,0
-archive_flash_h_r,소장용 탐사기록: 손전등 복도 방,Unique,archive_flash_h_r,0,,0,0
-archive_flash_h_o,소장용 탐사기록: 손전등 복도 구덩이,Unique,archive_flash_h_o,0,,0,0
-archive_flash_r_h,소장용 탐사기록: 손전등 방 복도,Unique,archive_flash_r_h,0,,0,0
-archive_flash_r_o,소장용 탐사기록: 손전등 방 구덩이,Unique,archive_flash_r_o,0,,0,0
-archive_flash_o_h,소장용 탐사기록: 손전등 구덩이 복도,Unique,archive_flash_o_h,0,,0,0
-archive_flash_o_r,소장용 탐사기록: 손전등 구덩이 방,Unique,archive_flash_o_r,0,,0,0
-archive_recorder_h,소장용 탐사기록: 녹음기 복도,Unique,archive_recorder_h,0,,0,0
-archive_recorder_r,소장용 탐사기록: 녹음기 방,Unique,archive_recorder_r,0,,0,0
-archive_recorder_o,소장용 탐사기록: 녹음기 구덩이,Unique,archive_recorder_o,0,,0,0
-archive_recorder_h_r,소장용 탐사기록: 녹음기 복도 방,Unique,archive_recorder_h_r,0,,0,0
-archive_recorder_h_o,소장용 탐사기록: 녹음기 복도 구덩이,Unique,archive_recorder_h_o,0,,0,0
-archive_recorder_r_h,소장용 탐사기록: 녹음기 방 복도,Unique,archive_recorder_r_h,0,,0,0
-archive_recorder_r_o,소장용 탐사기록: 녹음기 방 구덩이,Unique,archive_recorder_r_o,0,,0,0
-archive_recorder_o_h,소장용 탐사기록: 녹음기 구덩이 복도,Unique,archive_recorder_o_h,0,,0,0
-archive_recorder_o_r,소장용 탐사기록: 녹음기 구덩이 방,Unique,archive_recorder_o_r,0,,0,0
-archive_cam_ultra_h,소장용 탐사기록: 카메라 초음파 복도,Unique,archive_cam_ultra_h,0,,0,0
-archive_cam_ultra_r,소장용 탐사기록: 카메라 초음파 방,Unique,archive_cam_ultra_r,0,,0,0
-archive_cam_ultra_o,소장용 탐사기록: 카메라 초음파 구덩이,Unique,archive_cam_ultra_o,0,,0,0
-archive_cam_ultra_h_r,소장용 탐사기록: 카메라 초음파 복도 방,Unique,archive_cam_ultra_h_r,0,,0,0
-archive_cam_ultra_h_o,소장용 탐사기록: 카메라 초음파 복도 구덩이,Unique,archive_cam_ultra_h_o,0,,0,0
-archive_cam_ultra_r_h,소장용 탐사기록: 카메라 초음파 방 복도,Unique,archive_cam_ultra_r_h,0,,0,0
-archive_cam_ultra_r_o,소장용 탐사기록: 카메라 초음파 방 구덩이,Unique,archive_cam_ultra_r_o,0,,0,0
-archive_cam_ultra_o_h,소장용 탐사기록: 카메라 초음파 구덩이 복도,Unique,archive_cam_ultra_o_h,0,,0,0
-archive_cam_ultra_o_r,소장용 탐사기록: 카메라 초음파 구덩이 방,Unique,archive_cam_ultra_o_r,0,,0,0
-archive_cam_flash_h,소장용 탐사기록: 카메라 손전등 복도,Unique,archive_cam_flash_h,0,,0,0
-archive_cam_flash_r,소장용 탐사기록: 카메라 손전등 방,Unique,archive_cam_flash_r,0,,0,0
-archive_cam_flash_o,소장용 탐사기록: 카메라 손전등 구덩이,Unique,archive_cam_flash_o,0,,0,0
-archive_cam_flash_h_r,소장용 탐사기록: 카메라 손전등 복도 방,Unique,archive_cam_flash_h_r,0,,0,0
-archive_cam_flash_h_o,소장용 탐사기록: 카메라 손전등 복도 구덩이,Unique,archive_cam_flash_h_o,0,,0,0
-archive_cam_flash_r_h,소장용 탐사기록: 카메라 손전등 방 복도,Unique,archive_cam_flash_r_h,0,,0,0
-archive_cam_flash_r_o,소장용 탐사기록: 카메라 손전등 방 구덩이,Unique,archive_cam_flash_r_o,0,,0,0
-archive_cam_flash_o_h,소장용 탐사기록: 카메라 손전등 구덩이 복도,Unique,archive_cam_flash_o_h,0,,0,0
-archive_cam_flash_o_r,소장용 탐사기록: 카메라 손전등 구덩이 방,Unique,archive_cam_flash_o_r,0,,0,0
-archive_cam_rec_h,소장용 탐사기록: 카메라 녹음기 복도,Unique,archive_cam_rec_h,0,,0,0
-archive_cam_rec_r,소장용 탐사기록: 카메라 녹음기 방,Unique,archive_cam_rec_r,0,,0,0
-archive_cam_rec_o,소장용 탐사기록: 카메라 녹음기 구덩이,Unique,archive_cam_rec_o,0,,0,0
-archive_cam_rec_h_r,소장용 탐사기록: 카메라 녹음기 복도 방,Unique,archive_cam_rec_h_r,0,,0,0
-archive_cam_rec_h_o,소장용 탐사기록: 카메라 녹음기 복도 구덩이,Unique,archive_cam_rec_h_o,0,,0,0
-archive_cam_rec_r_h,소장용 탐사기록: 카메라 녹음기 방 복도,Unique,archive_cam_rec_r_h,0,,0,0
-archive_cam_rec_r_o,소장용 탐사기록: 카메라 녹음기 방 구덩이,Unique,archive_cam_rec_r_o,0,,0,0
-archive_cam_rec_o_h,소장용 탐사기록: 카메라 녹음기 구덩이 복도,Unique,archive_cam_rec_o_h,0,,0,0
-archive_cam_rec_o_r,소장용 탐사기록: 카메라 녹음기 구덩이 방,Unique,archive_cam_rec_o_r,0,,0,0
-archive_ultra_flash_h,소장용 탐사기록: 초음파 손전등 복도,Unique,archive_ultra_flash_h,0,,0,0
-archive_ultra_flash_r,소장용 탐사기록: 초음파 손전등 방,Unique,archive_ultra_flash_r,0,,0,0
-archive_ultra_flash_o,소장용 탐사기록: 초음파 손전등 구덩이,Unique,archive_ultra_flash_o,0,,0,0
-archive_ultra_flash_h_r,소장용 탐사기록: 초음파 손전등 복도 방,Unique,archive_ultra_flash_h_r,0,,0,0
-archive_ultra_flash_h_o,소장용 탐사기록: 초음파 손전등 복도 구덩이,Unique,archive_ultra_flash_h_o,0,,0,0
-archive_ultra_flash_r_h,소장용 탐사기록: 초음파 손전등 방 복도,Unique,archive_ultra_flash_r_h,0,,0,0
-archive_ultra_flash_r_o,소장용 탐사기록: 초음파 손전등 방 구덩이,Unique,archive_ultra_flash_r_o,0,,0,0
-archive_ultra_flash_o_h,소장용 탐사기록: 초음파 손전등 구덩이 복도,Unique,archive_ultra_flash_o_h,0,,0,0
-archive_ultra_flash_o_r,소장용 탐사기록: 초음파 손전등 구덩이 방,Unique,archive_ultra_flash_o_r,0,,0,0
-archive_all_h,소장용 탐사기록: 완전장비 복도,Unique,archive_all_h,0,,0,0
-archive_all_r,소장용 탐사기록: 완전장비 방,Unique,archive_all_r,0,,0,0
-archive_all_o,소장용 탐사기록: 완전장비 구덩이,Unique,archive_all_o,0,,0,0
-archive_all_h_r,소장용 탐사기록: 완전장비 복도 방,Unique,archive_all_h_r,0,,0,0
-archive_all_h_o,소장용 탐사기록: 완전장비 복도 구덩이,Unique,archive_all_h_o,0,,0,0
-archive_all_r_h,소장용 탐사기록: 완전장비 방 복도,Unique,archive_all_r_h,0,,0,0
-archive_all_r_o,소장용 탐사기록: 완전장비 방 구덩이,Unique,archive_all_r_o,0,,0,0
-archive_all_o_h,소장용 탐사기록: 완전장비 구덩이 복도,Unique,archive_all_o_h,0,,0,0
-archive_all_o_r,소장용 탐사기록: 완전장비 구덩이 방,Unique,archive_all_o_r,0,,0,0
+edgeblock_tool_ultrasonic_sensor,환경음분석기,EdgeBlock_Tool,,0,edgeblock_tool_ultrasonic_sensor,0,0
+evidence_noisy_observation_file,잡음만 남은 관측 파일,Stance,evidence_noisy_observation_file,0,,0,0
+evidence_hallway_chase_death_diagnosis,복도 내 추격 사망 진단서,Stance,evidence_hallway_chase_death_diagnosis,0,,0,0
+evidence_footsteps_beyond_wall,벽 너머에서 들린 발소리 기록,Stance,evidence_footsteps_beyond_wall,0,,0,0
+evidence_escaped_by_sound,발소리를 피해 도망친 기록,Stance,evidence_escaped_by_sound,0,,0,0
+evidence_hidden_room_refuge_record,숨겨진방 피난 기록,Stance,evidence_hidden_room_refuge_record,0,,0,0
+evidence_entity_stopped_at_door,문 앞에서 멈춘 엔티티에 대한 기록,Stance,evidence_entity_stopped_at_door,0,,0,0
+evidence_footsteps_waiting_outside,문밖에서 기다리고 있던 발소리 기록,Stance,evidence_footsteps_waiting_outside,0,,0,0
+evidence_final_handwritten_shape,형체를 보았다는 마지막 자필 기록,Stance,evidence_final_handwritten_shape,0,,0,0
+evidence_visual_contact_death_diagnosis,시각 접촉 직후 사망진단서,Stance,evidence_visual_contact_death_diagnosis,0,,0,0
+evidence_pit_return_chase_death_diagnosis,구덩이 복귀 중 추격 사망 진단서,Stance,evidence_pit_return_chase_death_diagnosis,0,,0,0
+evidence_pit_return_chase_report,복귀 중 추격 사망 보고,Stance,evidence_pit_return_chase_report,0,,0,0
+evidence_shaken_entity_photo,심하게 흔들린 엔티티 사진,Stance,evidence_shaken_entity_photo,0,,0,0
+evidence_hidden_room_note,방에 대한 자필 기록,Stance,evidence_hidden_room_note,0,,0,0
+evidence_black_afterimage_photo,검은 잔상만 남은 사진,Stance,evidence_black_afterimage_photo,0,,0,0
+evidence_return_timing_audio,복귀 타이밍을 잡은 환경음 기록,Stance,evidence_return_timing_audio,0,,0,0
+evidence_hidden_room_pit_photo_wall,숨겨진방 벽에 붙은 구덩이 구역 사진,Stance,evidence_hidden_room_pit_photo_wall,0,,0,0
+evidence_lighting_cycle_record,복도 조명이 꺼지는 주기에 대한 기록,Stance,evidence_lighting_cycle_record,0,,0,0
+evidence_hidden_room_pit_photo_inside,숨겨진방 내부의 구덩이 구역 사진,Stance,evidence_hidden_room_pit_photo_inside,0,,0,0
+evidence_pit_missing_report,구덩이 구역 실종 보고,Stance,evidence_pit_missing_report,0,,0,0
+evidence_empty_pit_light_record,빛에 드러난 빈 구덩이 기록,Stance,evidence_empty_pit_light_record,0,,0,0
+evidence_meaningless_pit_observation,의미없는 구덩이 관측 데이터,Stance,evidence_meaningless_pit_observation,0,,0,0
+evidence_pit_grid_handwritten,구덩이의 그리드 구조에 대한 자필 기록,Stance,evidence_pit_grid_handwritten,0,,0,0
+evidence_chase_sound_cut_at_pit,구덩이 앞에서 끊긴 추격음,Stance,evidence_chase_sound_cut_at_pit,0,,0,0
+evidence_clear_pit_grid_photo,선명하게 촬영된 구덩이 그리드,Stance,evidence_clear_pit_grid_photo,0,,0,0
+evidence_pit_photo_without_entity,엔티티가 없는 구덩이 구역 사진,Stance,evidence_pit_photo_without_entity,0,,0,0
+evidence_lured_entity_handwritten,엔티티 유인에 성공한 자필 기록,Stance,evidence_lured_entity_handwritten,0,,0,0
+evidence_clear_entity_photo_pit,구덩이에 빠진 엔티티의 선명한 사진,Stance,evidence_clear_entity_photo_pit,0,,0,0
+evidence_recovered_sanity_hidden_room,숨겨진방에서 회복된 정신력 기록,Stance,evidence_recovered_sanity_hidden_room,0,,0,0
+evidence_basement_entrance_revealed,공포가 가라앉자 드러난 지하실 입구,Stance,evidence_basement_entrance_revealed,0,,0,0
+evidence_abnormal_sound_fell_into_pit,구덩이 아래로 떨어진 비정상 음향,Stance,evidence_abnormal_sound_fell_into_pit,0,,0,0
+evidence_exhausted_pit_survival_report,탈진 상태로 끝난 구덩이 생존 보고,Stance,evidence_exhausted_pit_survival_report,0,,0,0

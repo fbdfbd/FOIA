@@ -1,0 +1,423 @@
+Backrooms CSV modification plan
+===============================
+
+Scope
+-----
+- Do not modify nodeInspects.csv or substanceInspects.csv for now.
+- Do not modify SO_InitialLevelLayout.asset. Initial grants will be handled manually in the Inspector.
+- Reuse existing IDs where possible to avoid code/importer changes.
+- Use CSV-only behavior: positive history matches plus priority fallback.
+
+
+1. nodes.csv
+------------
+Keep existing base/input/output/merge/scan nodes.
+
+Change display names:
+- node_place_hallway: 복도
+- node_place_room: 숨겨진방
+- node_place_hole: 구덩이
+- node_act_record: 기록
+- node_unique_scan: 스캔
+
+Add new node:
+- definitionId: node_place_basement
+- displayName: 지하실
+- processLayer: 20 or higher than exploration places
+- category: Place
+- baseTags: empty
+- addedFlowTags: node_place_basement
+
+Note:
+- node_place_room is reused as "숨겨진방".
+- node_place_hole is reused as "구덩이".
+- node_place_basement is used as ending/next-level unlock reward.
+
+
+2. operations.csv
+-----------------
+Recommended cleanup:
+- Change operationId from "deafultoperation" to "op_default".
+
+Reason:
+- EdgeConnectionInput defaultOperationId is "op_default".
+- Current CSV has "deafultoperation", which can make default edge creation fail unless an Inspector fallback is valid.
+
+
+3. substances.csv
+-----------------
+Keep:
+- person_worker as 직원.
+- edgeblock_tool_camera as 카메라.
+- edgeblock_tool_flashlight as 손전등.
+- edgeblock_tool_ultrasonic_sensor, but rename displayName to 환경음분석기.
+
+Remove or leave unused:
+- edgeblock_tool_recorder and recorder-related archive/results.
+
+Add death-result substances. Use kind Person_Captive so they can be scanned:
+- person_worker_dead_hallway: 복도에서 사망한 직원 시체
+- person_worker_dead_record_hallway: 기록 중 복도에서 사망한 직원 시체
+- person_worker_dead_hidden_to_hallway: 숨겨진방에서 복귀 중 사망한 직원 시체
+- person_worker_dead_hole_to_hallway: 구덩이에서 복귀 중 사망한 직원 시체
+- person_worker_dead_visual_contact: 시각 접촉 직후 사망한 직원 시체
+
+Add report/evidence/byproduct substances. Recommended kind: Stance for merge ingredients, Unique or Trash for archive-only flavor.
+- evidence_noisy_observation_file: 잡음만 남은 관측 파일
+- evidence_escape_death_diagnosis: 도주 중 사망으로 추정되는 진단서
+- evidence_hallway_chase_death_report: 복도 내 추격 사망 보고서
+- evidence_footsteps_beyond_wall: 벽 너머에서 들린 발소리 기록
+- evidence_escaped_by_sound: 발소리를 피해 도망친 기록
+- evidence_hidden_room_refuge_record: 숨겨진방 피난 기록
+- evidence_entity_stopped_at_door: 문 앞에서 멈춘 엔티티에 대한 기록
+- evidence_footsteps_waiting_outside: 문밖에서 기다리고 있던 발소리 기록
+- evidence_final_handwritten_shape: 형체를 보았다는 마지막 자필 기록
+- evidence_visual_contact_death_diagnosis: 시각 접촉 직후 사망진단서
+- evidence_shaken_entity_photo: 심하게 흔들린 엔티티 사진
+- evidence_hidden_room_note: 방에 대한 자필 기록
+- evidence_black_afterimage_photo: 검은 잔상만 남은 사진
+- evidence_return_timing_audio: 복귀 타이밍을 잡은 환경음 기록
+- evidence_hidden_room_pit_photo_wall: 숨겨진방 벽에 붙은 구덩이 구역 사진
+- evidence_lighting_cycle_record: 복도 조명이 꺼지는 주기에 대한 기록
+- evidence_hidden_room_pit_photo_inside: 숨겨진방 내부의 구덩이 구역 사진
+- evidence_pit_missing_report: 구덩이 구역 실종 보고
+- evidence_empty_pit_light_record: 빛에 드러난 빈 구덩이 기록
+- evidence_meaningless_pit_observation: 의미없는 구덩이 관측 데이터
+- evidence_pit_grid_handwritten: 구덩이의 그리드 구조에 대한 자필 기록
+- evidence_chase_sound_cut_at_pit: 구덩이 앞에서 끊긴 추격음
+- evidence_clear_pit_grid_photo: 선명하게 촬영된 구덩이 그리드
+- evidence_pit_photo_without_entity: 엔티티가 없는 구덩이 구역 사진
+- evidence_lured_entity_handwritten: 엔티티 유인에 성공한 자필 기록
+- evidence_clear_entity_photo_pit: 구덩이에 빠진 엔티티의 선명한 사진
+- evidence_recovered_sanity_hidden_room: 숨겨진방에서 회복된 정신력 기록
+- evidence_basement_entrance_revealed: 공포가 가라앉자 드러난 지하실 입구
+- evidence_abnormal_sound_fell_into_pit: 구덩이 아래로 떨어진 비정상 음향
+- evidence_exhausted_pit_survival_report: 탈진 상태로 끝난 구덩이 생존 보고
+
+Kind guideline:
+- Merge ingredients for tools should be Stance so mergeRecipes can consume them.
+- Final/archive/lore-only results can be Unique or Trash.
+- Edge blocks must be EdgeBlock_Tool.
+
+
+4. outputRules.csv
+------------------
+General rule principle:
+- More specific survival/success rules get higher priority.
+- Fallback danger rules get lower priority.
+- Required history is a subsequence match.
+- "No flashlight in pit" is represented by:
+  high priority flashlight pit survival rule first,
+  lower priority generic pit missing rule second.
+
+Recommended priority bands:
+- 1000+: final/scan-specific rules
+- 950: final success route
+- 900-940: tool-specific success/failure exploration
+- 800: record/death setup routes
+- 700: early/default routes and fallbacks
+
+Core early routes:
+- worker_hallway_death
+  requiredSubstanceId: person_worker
+  requiredHistorySequence: node:node_place_hallway
+  resultSubstanceId: person_worker_dead_hallway
+
+- worker_dead_hallway_scan
+  requiredSubstanceId: person_worker_dead_hallway
+  requiredHistorySequence: node:node_unique_scan
+  resultSubstanceId: evidence_escape_death_diagnosis
+  first discovery reward should unlock node_act_record.
+
+- worker_record_hallway_death
+  requiredSubstanceId: person_worker
+  requiredHistorySequence: node:node_act_record|node:node_place_hallway
+  resultSubstanceId: person_worker_dead_record_hallway
+
+- worker_dead_record_hallway_scan
+  requiredSubstanceId: person_worker_dead_record_hallway
+  requiredHistorySequence: node:node_unique_scan
+  resultSubstanceId: evidence_hallway_chase_death_report
+
+Environment analyzer unlock:
+- Comes from mergeRecipes.csv:
+  evidence_hallway_chase_death_report + evidence_footsteps_beyond_wall
+  => edgeblock_tool_ultrasonic_sensor
+
+Second flow:
+- worker_record_audio_hallway_alive
+  requiredSubstanceId: person_worker
+  requiredHistorySequence: node:node_act_record|edgeBlock:edgeblock_tool_ultrasonic_sensor|node:node_place_hallway
+  resultSubstanceId: person_worker
+  first discovery reward should unlock node_place_room.
+
+Hidden room order rules:
+- worker_record_hallway_hidden_alive
+  sequence: node:node_act_record|node:node_place_hallway|node:node_place_room
+  result: person_worker
+
+- worker_record_hidden_hallway_death
+  sequence: node:node_act_record|node:node_place_room|node:node_place_hallway
+  result: person_worker_dead_hidden_to_hallway
+
+- worker_record_hidden_audio_hallway_alive
+  sequence: node:node_act_record|node:node_place_room|edgeBlock:edgeblock_tool_ultrasonic_sensor|node:node_place_hallway
+  result: person_worker
+
+Camera unlock:
+- worker_dead_hidden_to_hallway_scan
+  requiredSubstanceId: person_worker_dead_hidden_to_hallway
+  sequence: node:node_unique_scan
+  resultSubstanceId: evidence_visual_contact_death_diagnosis
+
+- merge:
+  evidence_final_handwritten_shape + evidence_visual_contact_death_diagnosis
+  => edgeblock_tool_camera
+
+Camera exploration:
+- worker_record_camera_hallway_hidden_alive
+  sequence: node:node_act_record|edgeBlock:edgeblock_tool_camera|node:node_place_hallway|node:node_place_room
+  result: person_worker
+  byproducts: shaken entity photo, hidden room note
+
+- worker_record_hidden_camera_audio_hallway_alive
+  sequence: node:node_act_record|node:node_place_room|edgeBlock:edgeblock_tool_camera|edgeBlock:edgeblock_tool_ultrasonic_sensor|node:node_place_hallway
+  result: person_worker
+  byproducts: black afterimage photo, return timing audio
+
+Pit unlock:
+- worker_record_hallway_camera_hidden_alive
+  sequence: node:node_act_record|node:node_place_hallway|edgeBlock:edgeblock_tool_camera|node:node_place_room
+  result: person_worker
+  first discovery reward should unlock node_place_hole.
+
+- worker_record_camera_hidden_audio_hallway_alive
+  sequence: node:node_act_record|edgeBlock:edgeblock_tool_camera|node:node_place_room|edgeBlock:edgeblock_tool_ultrasonic_sensor|node:node_place_hallway
+  result: person_worker
+  also may unlock node_place_hole if needed.
+
+Pit missing fallback:
+- worker_pit_missing_fallback
+  priority: lower than flashlight survival rules
+  requiredSubstanceId: person_worker
+  requiredHistorySequence: node:node_place_hole
+  resultSubstanceId: person_worker
+  byproduct: evidence_pit_missing_report
+
+Pit survival with flashlight:
+- worker_flashlight_pit_alive
+  priority: higher than pit fallback
+  sequence: edgeBlock:edgeblock_tool_flashlight|node:node_place_hole
+  result: person_worker
+  byproducts: evidence_empty_pit_light_record, evidence_meaningless_pit_observation
+
+- worker_record_flashlight_pit_alive
+  sequence: node:node_act_record|edgeBlock:edgeblock_tool_flashlight|node:node_place_hole
+  result: person_worker
+  byproducts: evidence_pit_grid_handwritten, evidence_chase_sound_cut_at_pit
+
+- worker_record_flashlight_camera_pit_alive
+  sequence: node:node_act_record|edgeBlock:edgeblock_tool_flashlight|edgeBlock:edgeblock_tool_camera|node:node_place_hole
+  result: person_worker
+  byproducts: evidence_clear_pit_grid_photo, evidence_pit_photo_without_entity
+
+Flashlight unlock:
+- Comes from mergeRecipes.csv:
+  evidence_pit_missing_report + evidence_hidden_room_pit_photo_wall
+  => edgeblock_tool_flashlight
+
+Final success:
+- worker_final_basement_success
+  priority: highest among worker routes
+  sequence:
+    node:node_act_record|
+    edgeBlock:edgeblock_tool_ultrasonic_sensor|
+    node:node_place_hallway|
+    edgeBlock:edgeblock_tool_flashlight|
+    edgeBlock:edgeblock_tool_camera|
+    node:node_place_hole|
+    node:node_place_room
+  result: person_worker
+  byproducts:
+    evidence_lured_entity_handwritten
+    evidence_clear_entity_photo_pit
+    evidence_recovered_sanity_hidden_room
+    evidence_basement_entrance_revealed
+  first discovery reward should unlock node_place_basement.
+
+Near-miss failure routes:
+- worker_final_no_flashlight_missing
+  This may be covered by worker_pit_missing_fallback if it contains node_place_hole and no higher flashlight rule matches.
+  Byproduct: evidence_pit_missing_report
+
+- worker_final_no_camera_alive
+  sequence:
+    node:node_act_record|
+    edgeBlock:edgeblock_tool_ultrasonic_sensor|
+    node:node_place_hallway|
+    edgeBlock:edgeblock_tool_flashlight|
+    node:node_place_hole|
+    node:node_place_room
+  result: person_worker
+  byproducts:
+    evidence_abnormal_sound_fell_into_pit
+    evidence_recovered_sanity_hidden_room
+
+- worker_final_camera_no_pit_alive
+  likely covered by worker_record_camera_hallway_hidden_alive.
+  result: person_worker
+  byproduct: evidence_shaken_entity_photo
+
+- worker_final_no_recovery_alive
+  sequence:
+    node:node_act_record|
+    edgeBlock:edgeblock_tool_ultrasonic_sensor|
+    node:node_place_hallway|
+    edgeBlock:edgeblock_tool_flashlight|
+    edgeBlock:edgeblock_tool_camera|
+    node:node_place_hole
+  result: person_worker
+  byproducts:
+    evidence_clear_entity_photo_pit
+    evidence_exhausted_pit_survival_report
+  no basement reward.
+
+Important matching note:
+- A generic node:node_place_hole fallback will also match final routes.
+- Therefore all flashlight pit survival/final rules must have higher priority than worker_pit_missing_fallback.
+
+
+5. outputRuleByproducts.csv
+---------------------------
+Add byproducts per outputRules.csv ruleId.
+
+Early route byproducts:
+- worker_hallway_death:
+  evidence_noisy_observation_file
+- worker_record_hallway_death:
+  evidence_footsteps_beyond_wall
+- worker_record_audio_hallway_alive:
+  evidence_escaped_by_sound
+- worker_record_hallway_hidden_alive:
+  evidence_entity_stopped_at_door
+  evidence_hidden_room_refuge_record
+- worker_record_hidden_hallway_death:
+  evidence_footsteps_waiting_outside
+  evidence_final_handwritten_shape
+- worker_record_hidden_audio_hallway_alive:
+  evidence_return_timing_audio
+
+Camera route byproducts:
+- worker_record_camera_hallway_hidden_alive:
+  evidence_shaken_entity_photo
+  evidence_hidden_room_note
+- worker_record_hidden_camera_audio_hallway_alive:
+  evidence_black_afterimage_photo
+  evidence_return_timing_audio
+- worker_record_hallway_camera_hidden_alive:
+  evidence_hidden_room_pit_photo_wall
+  evidence_lighting_cycle_record
+- worker_record_camera_hidden_audio_hallway_alive:
+  evidence_hidden_room_pit_photo_inside
+  evidence_return_timing_audio
+
+Pit route byproducts:
+- worker_pit_missing_fallback:
+  evidence_pit_missing_report
+- worker_flashlight_pit_alive:
+  evidence_empty_pit_light_record
+  evidence_meaningless_pit_observation
+- worker_record_flashlight_pit_alive:
+  evidence_pit_grid_handwritten
+  evidence_chase_sound_cut_at_pit
+- worker_record_flashlight_camera_pit_alive:
+  evidence_clear_pit_grid_photo
+  evidence_pit_photo_without_entity
+
+Final route byproducts:
+- worker_final_basement_success:
+  evidence_lured_entity_handwritten
+  evidence_clear_entity_photo_pit
+  evidence_recovered_sanity_hidden_room
+  evidence_basement_entrance_revealed
+- worker_final_no_camera_alive:
+  evidence_abnormal_sound_fell_into_pit
+  evidence_recovered_sanity_hidden_room
+- worker_final_no_recovery_alive:
+  evidence_clear_entity_photo_pit
+  evidence_exhausted_pit_survival_report
+
+Use requiredUndiscoveredSubstanceIds for one-time archive/flavor byproducts if repeated output clutter is a concern.
+
+
+6. mergeRecipes.csv
+-------------------
+Replace existing tool recipes with:
+
+- recipe_edgeblock_tool_ultrasonic_sensor
+  inputSubstanceIds:
+    evidence_hallway_chase_death_report|evidence_footsteps_beyond_wall
+  resultSubstanceId:
+    edgeblock_tool_ultrasonic_sensor
+
+- recipe_edgeblock_tool_camera
+  inputSubstanceIds:
+    evidence_final_handwritten_shape|evidence_visual_contact_death_diagnosis
+  resultSubstanceId:
+    edgeblock_tool_camera
+
+- recipe_edgeblock_tool_flashlight
+  inputSubstanceIds:
+    evidence_pit_missing_report|evidence_hidden_room_pit_photo_wall
+  resultSubstanceId:
+    edgeblock_tool_flashlight
+
+Remove or leave unused:
+- recipe_edgeblock_tool_recorder
+
+
+7. firstDiscoveryRewards.csv
+----------------------------
+Keep rewardType limited to Substance or Node.
+
+Recommended rewards:
+- triggerType: OutputRule
+  triggerId: worker_dead_hallway_scan
+  rewardType: Node
+  rewardId: node_act_record
+  amount: 1
+
+- triggerType: OutputRule
+  triggerId: worker_record_audio_hallway_alive
+  rewardType: Node
+  rewardId: node_place_room
+  amount: 1
+
+- triggerType: OutputRule
+  triggerId: worker_record_hallway_camera_hidden_alive
+  rewardType: Node
+  rewardId: node_place_hole
+  amount: 1
+
+- triggerType: OutputRule
+  triggerId: worker_final_basement_success
+  rewardType: Node
+  rewardId: node_place_basement
+  amount: 1
+
+Optional:
+- Add rewardGroup values if duplicate node grants become annoying.
+- Example rewardGroup values:
+  unlock_record
+  unlock_hidden_room
+  unlock_pit
+  unlock_basement
+
+
+8. Files intentionally not touched
+----------------------------------
+- nodeInspects.csv
+- substanceInspects.csv
+- SO_InitialLevelLayout.asset
+- .meta files
+
