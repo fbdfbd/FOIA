@@ -26,8 +26,8 @@ Transform:
   m_GameObject: {fileID: 2788765681617122443}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.03, y: -0.5, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
+  m_LocalPosition: {x: 0.03, y: -0.45, z: 0}
+  m_LocalScale: {x: 0.66960007, y: 0.66960007, z: 1.116}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1220954847134601887}
@@ -77,9 +77,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -189977793
-  m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 04f232456ea6fe3489967feea6e2ed12, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 2699261362674131701}
   - component: {fileID: 8289468287852243107}
   - component: {fileID: 6637206190057561345}
+  - component: {fileID: 1156053407196331658}
   m_Layer: 7
   m_Name: NodeViewPrefab_Interact
   m_TagString: Untagged
@@ -153,7 +154,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a19f1e49895036b4b81cf5f3801e8c39, type: 2}
+  - {fileID: 2100000, guid: 0a98d770bf4b43c42b6b64488788350d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -172,8 +173,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 818001105
-  m_SortingLayer: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 920e1e6b58efc6a4893cdd3d18003c8c, type: 3}
@@ -201,8 +202,7 @@ MonoBehaviour:
   label: {fileID: 5475669352634720013}
   spriteRenderer: {fileID: 2699261362674131701}
   imageRenderer: {fileID: 230792647048052401}
-  selectionVisual: {fileID: 0}
-  sortingLayerVisual: {fileID: 0}
+  selectionVisual: {fileID: 1156053407196331658}
   normalZ: 0
   pressedZOffset: -0.5
   moveTweenDuration: 0.14
@@ -252,6 +252,21 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 6, y: 4.35}
   m_EdgeRadius: 0
+--- !u!114 &1156053407196331658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3724219388037776240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61a45dbb250cdc647a6cf834deac1165, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.View.Common.SelectableOutlineVisual
+  targetRenderer: {fileID: 2699261362674131701}
+  normalOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedOutlineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &8370085344837913323
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,8 +336,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
-  m_sharedMaterial: {fileID: 697555715455890385, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2ad525cd121bf414683d79fc1394faae, type: 2}
+  m_sharedMaterial: {fileID: 517332483471463887, guid: 2ad525cd121bf414683d79fc1394faae, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -346,12 +361,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.8
+  m_fontSize: 0.7
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0.001
-  m_fontSizeMax: 0.8
+  m_fontSizeMax: 0.7
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -450,7 +465,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: -189977793
+  m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!114 &9213802314185289270

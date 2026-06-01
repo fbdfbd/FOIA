@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 714040017418587838}
   - component: {fileID: 1700252867415424330}
   - component: {fileID: 7013530010230989291}
+  - component: {fileID: 9076560900285849532}
   m_Layer: 7
   m_Name: NodeViewPrefab_Output
   m_TagString: Untagged
@@ -61,7 +62,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: 0a98d770bf4b43c42b6b64488788350d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -85,7 +86,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 3715b0aa115ab5648b8d196fbf767608, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -109,8 +110,7 @@ MonoBehaviour:
   label: {fileID: 1616562708706982333}
   spriteRenderer: {fileID: 714040017418587838}
   imageRenderer: {fileID: 0}
-  normalColor: {r: 1, g: 1, b: 1, a: 1}
-  selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  selectionVisual: {fileID: 9076560900285849532}
   normalZ: 0
   pressedZOffset: -0.5
   moveTweenDuration: 0.14
@@ -160,6 +160,21 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 3.6, y: 4.35}
   m_EdgeRadius: 0
+--- !u!114 &9076560900285849532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3988745442244173385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61a45dbb250cdc647a6cf834deac1165, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.View.Common.SelectableOutlineVisual
+  targetRenderer: {fileID: 714040017418587838}
+  normalOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedOutlineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &6235216329081267852
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,15 +242,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uACB0\uACFC"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
-  m_sharedMaterial: {fileID: 697555715455890385, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2ad525cd121bf414683d79fc1394faae, type: 2}
+  m_sharedMaterial: {fileID: 517332483471463887, guid: 2ad525cd121bf414683d79fc1394faae, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4285777877
+  m_fontColor: {r: 0.8352941, g: 0.78039217, b: 0.4509804, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -252,12 +267,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.7
+  m_fontSize: 0.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0.001
-  m_fontSizeMax: 0.7
+  m_fontSizeMax: 0.65
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512

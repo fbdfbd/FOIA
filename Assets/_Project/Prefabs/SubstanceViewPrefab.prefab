@@ -12,8 +12,7 @@ GameObject:
   - component: {fileID: 2413675865854139266}
   - component: {fileID: 4163109207353535487}
   - component: {fileID: 43564751759636787}
-  - component: {fileID: 2687356537642013607}
-  - component: {fileID: 1446825869135870641}
+  - component: {fileID: 7470358851218103542}
   m_Layer: 9
   m_Name: SubstanceViewPrefab
   m_TagString: Untagged
@@ -87,7 +86,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 3715b0aa115ab5648b8d196fbf767608, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -156,15 +155,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.View.Substances.SubstanceView
   backgroundRenderer: {fileID: 2413675865854139266}
   imageRenderer: {fileID: 0}
-  selectionVisual: {fileID: 2687356537642013607}
-  sortingLayerVisual: {fileID: 1446825869135870641}
+  selectionVisual: {fileID: 7470358851218103542}
   nameText: {fileID: 3794580189428127565}
   amountText: {fileID: 5552901298704227577}
   titleText: {fileID: 5515401744615181504}
   normalZ: 0
   pressedZOffset: -0.5
   moveTweenDuration: 0.14
---- !u!114 &2687356537642013607
+--- !u!114 &7470358851218103542
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -177,22 +175,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.View.Common.SelectableOutlineVisual
   targetRenderer: {fileID: 2413675865854139266}
-  normalOutlineColor: {r: 0, g: 0, b: 0, a: 1}
+  normalOutlineColor: {r: 1, g: 1, b: 1, a: 1}
   selectedOutlineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
---- !u!114 &1446825869135870641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2813690543343577100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c2d8b7ef6a44a74aa6e9de2b8729d5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.View.Common.SortingLayerStateVisual
-  activeSortingLayerName: Active
-  sortingGroup: {fileID: 0}
 --- !u!1 &2816060880684471721
 GameObject:
   m_ObjectHideFlags: 0
@@ -260,15 +244,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uAC1C\uC218"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
-  m_sharedMaterial: {fileID: 697555715455890385, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2ad525cd121bf414683d79fc1394faae, type: 2}
+  m_sharedMaterial: {fileID: 517332483471463887, guid: 2ad525cd121bf414683d79fc1394faae, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4285777877
+  m_fontColor: {r: 0.8352941, g: 0.78039217, b: 0.4509804, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -285,12 +269,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.3
+  m_fontSize: 0.35
   m_fontSizeBase: 0.25
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0.001
-  m_fontSizeMax: 18
+  m_fontSizeMax: 0.35
   m_fontStyle: 0
   m_HorizontalAlignment: 4
   m_VerticalAlignment: 1024
@@ -397,15 +381,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uBD80\uC0B0\uBB3C"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
-  m_sharedMaterial: {fileID: 697555715455890385, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2ad525cd121bf414683d79fc1394faae, type: 2}
+  m_sharedMaterial: {fileID: 517332483471463887, guid: 2ad525cd121bf414683d79fc1394faae, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4285777877
+  m_fontColor: {r: 0.8352941, g: 0.78039217, b: 0.4509804, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -422,12 +406,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.8
+  m_fontSize: 0.7
   m_fontSizeBase: 0.4
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0.001
-  m_fontSizeMax: 18
+  m_fontSizeMax: 0.7
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -638,15 +622,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uD669\uAE08 \uD06C\uB7EC\uC2A4\uD2B8 \uBE75"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
-  m_sharedMaterial: {fileID: 697555715455890385, guid: c48698acb66abda40bd26d0edd54a157, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2ad525cd121bf414683d79fc1394faae, type: 2}
+  m_sharedMaterial: {fileID: 517332483471463887, guid: 2ad525cd121bf414683d79fc1394faae, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4285777877
+  m_fontColor: {r: 0.8352941, g: 0.78039217, b: 0.4509804, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -663,12 +647,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.3
+  m_fontSize: 0.35
   m_fontSizeBase: 0.2
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0.001
-  m_fontSizeMax: 0.3
+  m_fontSizeMax: 0.35
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
