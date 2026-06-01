@@ -1,4 +1,5 @@
 using OneMoreSpoon.App.Encyclopedia;
+using OneMoreSpoon.App.Messaging;
 using OneMoreSpoon.Game.Core;
 using OneMoreSpoon.Game.Definitions;
 using OneMoreSpoon.Game.Factories;
@@ -158,6 +159,7 @@ namespace OneMoreSpoon.App.Rewards
                 var position = playAreaBounds.Clamp(basePosition + NodeRewardOffset + NodeRewardSpacing * (index + i));
                 var entityId = nodeFactory.CreateNode(node, position);
                 nodeViewFactory.Create(entityId);
+                NodeDiscoveryEvents.RaiseDiscovered(node.DefinitionId);
                 Debug.Log($"[FirstDiscoveryReward] Node created id={node.DefinitionId} entity={entityId}");
             }
 
