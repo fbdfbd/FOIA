@@ -49,7 +49,7 @@ MonoBehaviour:
     m_Bits: 128
   previewLine: {fileID: 0}
   defaultOperationId: op_default
-  defaultOperationDefinition: {fileID: 11400000, guid: c0631e20df5627647a122118b1b4940e, type: 2}
+  defaultOperationDefinition: {fileID: 11400000, guid: b6397f6584d9343488557afc1b74d8dd, type: 2}
 --- !u!1 &1058010268798927714
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,6 +206,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6347697802586430811}
   - component: {fileID: 5698521120242626284}
+  - component: {fileID: 6062675437006578467}
   m_Layer: 0
   m_Name: NodePointerInput
   m_TagString: Untagged
@@ -240,12 +241,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e62e86273e7d1b94b8b53649fa1abecc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.Input.NodePointerInput
+  pointerHitResolver: {fileID: 7917747823145542570}
+--- !u!114 &6062675437006578467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4120173339132088579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bc3340374724e74abf565715a6e4ee1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.Input.PointerHitResolver
   nodeLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
   edgeLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
 --- !u!1 &7215761920554021057
 GameObject:
   m_ObjectHideFlags: 0
@@ -281,8 +295,59 @@ Transform:
   - {fileID: 6849553071648865593}
   - {fileID: 1900993288403519595}
   - {fileID: 5481418976894293638}
+  - {fileID: 7864213733375313791}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7294405928090743421
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7864213733375313791}
+  - component: {fileID: 7917747823145542570}
+  m_Layer: 0
+  m_Name: PointerHitResolver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7864213733375313791
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7294405928090743421}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.40563, y: 1.36147, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8570950486843999961}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7917747823145542570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7294405928090743421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bc3340374724e74abf565715a6e4ee1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.Input.PointerHitResolver
+  nodeLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  edgeLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &7736717920932597223
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,6 +358,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3104022660034118940}
   - component: {fileID: 4855091872821216491}
+  - component: {fileID: 8728336522821694078}
   m_Layer: 0
   m_Name: EdgeSelectionInput
   m_TagString: Untagged
@@ -327,6 +393,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2192ec35180c77b4ebfa0b11265f4f16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.Input.EdgeSelectionInput
+  pointerHitResolver: {fileID: 7917747823145542570}
+--- !u!114 &8728336522821694078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7736717920932597223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bc3340374724e74abf565715a6e4ee1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OneMoreSpoon.Input.PointerHitResolver
+  nodeLayer:
+    serializedVersion: 2
+    m_Bits: 0
   edgeLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0

@@ -1,25 +1,22 @@
 using OneMoreSpoon.App.State;
 using OneMoreSpoon.Game.Systems;
 using OneMoreSpoon.View.Common;
-using OneMoreSpoon.View.Edges;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using VContainer;
 
 namespace OneMoreSpoon.Input
 {
+    [RequireComponent(typeof(PointerHitResolver))]
     public sealed class EdgeSelectionInput : MonoBehaviour
     {
-        [SerializeField] private LayerMask edgeLayer;
+        [SerializeField] private PointerHitResolver pointerHitResolver;
 
         private SelectionState selectionState;
         private SelectionVisualService selectionVisualService;
         private EdgeConnectionState edgeConnectionState;
         private EdgeDeleteSystem edgeDeleteSystem;
         private ViewRegistry viewRegistry;
-
-        private Camera mainCamera;
 
         [Inject]
         public void Construct(
@@ -38,7 +35,8 @@ namespace OneMoreSpoon.Input
 
         private void Awake()
         {
-            mainCamera = Camera.main;
+            if (pointerHitResolver == null)
+                pointerHitResolver = GetComponent<PointerHitResolver>();
         }
 
         private void Update()
@@ -58,15 +56,12 @@ namespace OneMoreSpoon.Input
 
         private void TrySelectEdge()
         {
-            if (IsPointerOverUI())
+            PointerHit hit = pointerHitResolver.Resolve();
+
+            if (hit.Type != PointerHitType.Edge)
                 return;
 
-            var edgeView = RaycastEdgeView();
-
-            if (edgeView == null)
-                return;
-
-            selectionVisualService.SelectEdge(edgeView);
+            selectionVisualService.SelectEdge(hit.EdgeView);
         }
 
         private void TryDeleteSelectedEdge()
@@ -90,46 +85,16 @@ namespace OneMoreSpoon.Input
 
         private void TryDeleteSelectedEdgeUnderPointer()
         {
-            if (IsPointerOverUI())
-                return;
-
             if (selectionState.SelectedType != SelectionTargetType.Edge)
                 return;
 
-            var edgeView = RaycastEdgeView();
+            PointerHit hit = pointerHitResolver.Resolve();
 
-            if (edgeView == null || edgeView.EntityId != selectionState.SelectedEntityId)
+            if (hit.Type != PointerHitType.Edge ||
+                hit.EdgeView.EntityId != selectionState.SelectedEntityId)
                 return;
 
             TryDeleteSelectedEdge();
-        }
-
-        private EdgeView RaycastEdgeView()
-        {
-            Vector2 worldPosition = GetPointerWorldPosition();
-            var hit = Physics2D.Raycast(worldPosition, Vector2.zero, Mathf.Infinity, edgeLayer);
-
-            if (hit.collider == null)
-                return null;
-
-            return hit.collider.GetComponentInParent<EdgeView>();
-        }
-
-        private Vector2 GetPointerWorldPosition()
-        {
-            if (mainCamera == null)
-                mainCamera = Camera.main;
-
-            Vector2 screenPosition = Pointer.current.position.ReadValue();
-            Vector3 worldPosition = mainCamera.ScreenToWorldPoint(screenPosition);
-
-            return new Vector2(worldPosition.x, worldPosition.y);
-        }
-
-        private bool IsPointerOverUI()
-        {
-            return EventSystem.current != null
-                && EventSystem.current.IsPointerOverGameObject();
         }
     }
 }
