@@ -326,6 +326,23 @@ namespace OneMoreSpoon.Game.Systems
         TraitShard
     }
 
+    public readonly struct SubstanceDockDragOrigin
+    {
+        public readonly bool WasDocked;
+        public readonly SubstanceDockKind DockKind;
+        public readonly int OrderIndex;
+
+        public SubstanceDockDragOrigin(
+            bool wasDocked,
+            SubstanceDockKind dockKind,
+            int orderIndex)
+        {
+            WasDocked = wasDocked;
+            DockKind = dockKind;
+            OrderIndex = orderIndex;
+        }
+    }
+
     public sealed class SubstanceDockDepthState
     {
         private readonly Dictionary<GameEntityId, float> depthsByStackId = new();
@@ -505,18 +522,21 @@ namespace OneMoreSpoon.Game.Systems
             RearrangeAll();
         }
 
-        public void BeginDrag(GameEntityId stackId)
+        public SubstanceDockDragOrigin BeginDrag(GameEntityId stackId)
         {
             knownStacks.Add(stackId);
             draggingStacks.Add(stackId);
 
             if (!dockedStacks.TryGetValue(stackId, out SubstanceDockKind dockKind))
-                return;
+                return default;
 
+            int orderIndex = GetDockOrder(dockKind).IndexOf(stackId);
             dockedStacks.Remove(stackId);
             RemoveFromDockOrder(stackId, dockKind);
             depthState.ClearDepth(stackId);
             Rearrange(dockKind);
+
+            return new SubstanceDockDragOrigin(true, dockKind, orderIndex);
         }
 
         public void EndDrag(GameEntityId stackId)
@@ -539,6 +559,41 @@ namespace OneMoreSpoon.Game.Systems
             draggingStacks.Remove(stackId);
             DockInternal(stackId, dockKind);
             Rearrange(dockKind);
+            return true;
+        }
+
+        public bool RestoreDragOrigin(GameEntityId stackId, SubstanceDockDragOrigin origin)
+        {
+            if (!origin.WasDocked)
+            {
+                MarkFree(stackId);
+                return true;
+            }
+
+            if (!world.SubstanceStacks.TryGetValue(stackId, out var stack))
+                return false;
+
+            if (!TryGetDockKind(stack.SubstanceId, out SubstanceDockKind expectedDockKind) ||
+                expectedDockKind != origin.DockKind)
+            {
+                MarkFree(stackId);
+                return false;
+            }
+
+            knownStacks.Add(stackId);
+            draggingStacks.Remove(stackId);
+
+            if (dockedStacks.TryGetValue(stackId, out SubstanceDockKind currentDockKind))
+            {
+                if (currentDockKind != origin.DockKind)
+                    RemoveFromDockOrder(stackId, currentDockKind);
+                else
+                    RemoveFromDockOrder(stackId, origin.DockKind);
+            }
+
+            dockedStacks[stackId] = origin.DockKind;
+            InsertIntoDockOrder(stackId, origin.DockKind, origin.OrderIndex);
+            Rearrange(origin.DockKind);
             return true;
         }
 
@@ -727,6 +782,15 @@ namespace OneMoreSpoon.Game.Systems
 
             if (!dockOrder.Contains(stackId))
                 dockOrder.Add(stackId);
+        }
+
+        private void InsertIntoDockOrder(GameEntityId stackId, SubstanceDockKind dockKind, int index)
+        {
+            var dockOrder = GetDockOrder(dockKind);
+            dockOrder.Remove(stackId);
+
+            int clampedIndex = Mathf.Clamp(index, 0, dockOrder.Count);
+            dockOrder.Insert(clampedIndex, stackId);
         }
 
         private void RemoveFromDockOrder(GameEntityId stackId, SubstanceDockKind dockKind)

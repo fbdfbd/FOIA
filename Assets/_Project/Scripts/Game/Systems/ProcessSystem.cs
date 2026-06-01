@@ -112,7 +112,7 @@ namespace OneMoreSpoon.Game.Systems
                     continue;
                 }
 
-                if (!SubstanceFlowSpawnRule.CanSpawnFlow(substanceDefinition.Kind))
+                if (!SubstanceFlowSpawnRule.CanSpawnFlow(world, request.TargetNodeId, substanceDefinition.Kind))
                 {
                     Debug.LogWarning($"[FlowSpawn] Skipped substance={request.SubstanceId} targetNode={request.TargetNodeId} reason=SubstanceCannotSpawnFlow kind={substanceDefinition.Kind}");
                     continue;
@@ -551,9 +551,43 @@ namespace OneMoreSpoon.Game.Systems
 
     public static class SubstanceFlowSpawnRule
     {
-        public static bool CanSpawnFlow(SubstanceKind kind)
+        private const string ScanNodeDefinitionId = "node_unique_scan";
+
+        public static bool CanSpawnFlow(
+            GameWorld world,
+            GameEntityId inputNodeId,
+            SubstanceKind kind)
         {
-            return SubstanceKindRules.CanSpawnFlow(kind);
+            if (!SubstanceKindRules.CanSpawnFlow(kind))
+                return false;
+
+            bool isConnectedToScan = HasOutgoingNode(world, inputNodeId, ScanNodeDefinitionId);
+
+            if (isConnectedToScan)
+                return kind == SubstanceKind.Person_Captive;
+
+            return kind != SubstanceKind.Person_Captive;
+        }
+
+        private static bool HasOutgoingNode(
+            GameWorld world,
+            GameEntityId fromNodeId,
+            string targetNodeDefinitionId)
+        {
+            foreach (var pair in world.Edges)
+            {
+                var edge = pair.Value;
+                if (edge.FromNodeId != fromNodeId)
+                    continue;
+
+                if (!world.Nodes.TryGetValue(edge.ToNodeId, out var node))
+                    continue;
+
+                if (node.DefinitionId == targetNodeDefinitionId)
+                    return true;
+            }
+
+            return false;
         }
     }
 

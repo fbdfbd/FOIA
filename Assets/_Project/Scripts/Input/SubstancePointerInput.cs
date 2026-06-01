@@ -16,6 +16,7 @@ namespace OneMoreSpoon.Input
     public sealed class SubstancePointerInput : MonoBehaviour
     {
         [SerializeField] private LayerMask substanceLayer;
+        [SerializeField] private float dragStartThreshold = 0.12f;
 
         private GameWorld world;
         private SubstanceStackSystem stackSystem;
@@ -28,9 +29,21 @@ namespace OneMoreSpoon.Input
         private SelectionVisualService selectionVisualService;
 
         private Camera mainCamera;
+        private SubstanceView pendingView;
         private SubstanceView draggingView;
+        private SubstanceDockDragOrigin dragOrigin;
+        private Vector2 pointerDownPosition;
         private Vector2 dragStartPosition;
         private Vector2 pointerToViewOffset;
+
+        private enum DropResult
+        {
+            Free,
+            Docked,
+            Accepted,
+            ReturnToOrigin,
+            Removed
+        }
 
         [Inject]
         public void Construct(
@@ -66,30 +79,31 @@ namespace OneMoreSpoon.Input
                 return;
 
             if (Pointer.current.press.wasPressedThisFrame)
-                BeginDrag();
+                BeginPress();
 
             if (Pointer.current.press.isPressed)
-                Drag();
+                UpdatePress();
 
             if (Pointer.current.press.wasReleasedThisFrame)
-                EndDrag();
+                EndPress();
         }
 
-        private void BeginDrag()
+        private void BeginPress()
         {
             if (IsPointerOverUI())
                 return;
 
-            draggingView = RaycastSubstanceView();
+            pendingView = RaycastSubstanceView();
 
-            if (draggingView == null)
+            if (pendingView == null)
                 return;
 
-            selectionVisualService.SelectSubstance(draggingView);
-            substanceDockSystem.BeginDrag(draggingView.EntityId);
-            draggingView.SetPressed(true);
-            dragStartPosition = draggingView.transform.position;
-            pointerToViewOffset = (Vector2)draggingView.transform.position - GetPointerWorldPosition();
+            pointerDownPosition = GetPointerWorldPosition();
+            dragStartPosition = pendingView.transform.position;
+            pointerToViewOffset = (Vector2)pendingView.transform.position - pointerDownPosition;
+            dragOrigin = default;
+
+            selectionVisualService.SelectSubstance(pendingView);
         }
 
         public void BeginExternalDrag(SubstanceView view)
@@ -97,25 +111,57 @@ namespace OneMoreSpoon.Input
             if (view == null)
                 return;
 
+            pendingView = null;
             draggingView = view;
 
             Vector2 pointerPosition = GetPointerWorldPosition();
+            pointerDownPosition = pointerPosition;
             dragStartPosition = pointerPosition;
             pointerToViewOffset = Vector2.zero;
 
             selectionVisualService.SelectSubstance(draggingView);
-            substanceDockSystem.BeginDrag(draggingView.EntityId);
+            dragOrigin = substanceDockSystem.BeginDrag(draggingView.EntityId);
             draggingView.SetPressed(true);
             stackSystem.TryMove(draggingView.EntityId, pointerPosition);
         }
 
-        private void Drag()
+        private void UpdatePress()
         {
+            if (pendingView != null && ShouldStartDrag())
+                StartDrag();
+
             if (draggingView == null)
                 return;
 
             Vector2 position = GetPointerWorldPosition() + pointerToViewOffset;
             stackSystem.TryMove(draggingView.EntityId, position);
+        }
+
+        private bool ShouldStartDrag()
+        {
+            return (GetPointerWorldPosition() - pointerDownPosition).sqrMagnitude >=
+                dragStartThreshold * dragStartThreshold;
+        }
+
+        private void StartDrag()
+        {
+            draggingView = pendingView;
+            pendingView = null;
+
+            dragOrigin = substanceDockSystem.BeginDrag(draggingView.EntityId);
+            draggingView.SetPressed(true);
+        }
+
+        private void EndPress()
+        {
+            if (draggingView != null)
+            {
+                EndDrag();
+                return;
+            }
+
+            pendingView = null;
+            dragOrigin = default;
         }
 
         private void EndDrag()
@@ -127,8 +173,7 @@ namespace OneMoreSpoon.Input
 
             if (inputNode != null)
             {
-                DropOnInputNode(inputNode);
-                ReleaseDraggingView();
+                FinishDrop(DropOnInputNode(inputNode));
                 return;
             }
 
@@ -136,8 +181,7 @@ namespace OneMoreSpoon.Input
 
             if (mergeNode != null)
             {
-                DropOnMergeNode(mergeNode);
-                ReleaseDraggingView();
+                FinishDrop(DropOnMergeNode(mergeNode));
                 return;
             }
 
@@ -145,8 +189,7 @@ namespace OneMoreSpoon.Input
 
             if (edge != null)
             {
-                DropOnEdge(edge);
-                ReleaseDraggingView();
+                FinishDrop(DropOnEdge(edge));
                 return;
             }
 
@@ -154,28 +197,47 @@ namespace OneMoreSpoon.Input
 
             if (trashCan != null)
             {
-                DropOnTrashCan();
+                FinishDrop(DropOnTrashCan());
                 return;
             }
 
             if (substanceDockSystem.TryGetDockAt(GetPointerWorldPosition(), out var dockKind) &&
                 substanceDockSystem.TryDock(draggingView.EntityId, dockKind))
             {
-                ReleaseDraggingView(false);
+                FinishDrop(DropResult.Docked);
                 return;
             }
 
             if (RaycastAnyNodeView())
             {
-                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
-                ReleaseDraggingView();
+                FinishDrop(DropResult.ReturnToOrigin);
                 return;
             }
 
-            ReleaseDraggingView();
+            FinishDrop(DropResult.Free);
         }
 
-        private void ReleaseDraggingView(bool markFree = true)
+        private void FinishDrop(DropResult result)
+        {
+            switch (result)
+            {
+                case DropResult.Docked:
+                case DropResult.Accepted:
+                    ReleaseDraggingView(false, false);
+                    break;
+                case DropResult.ReturnToOrigin:
+                    RestoreDraggingViewOrigin();
+                    break;
+                case DropResult.Removed:
+                    ClearDragState();
+                    break;
+                default:
+                    ReleaseDraggingView(true, true);
+                    break;
+            }
+        }
+
+        private void ReleaseDraggingView(bool markFree, bool relax)
         {
             if (draggingView != null)
             {
@@ -185,48 +247,59 @@ namespace OneMoreSpoon.Input
                 substanceDockSystem.EndDrag(draggingView.EntityId);
                 draggingView.SetPressed(false);
 
-                if (markFree)
+                if (relax)
                     clusterSeparationSystem.RelaxAround(draggingView.EntityId);
             }
 
-            draggingView = null;
+            ClearDragState();
         }
 
-        private void DropOnInputNode(NodeView inputNode)
+        private void RestoreDraggingViewOrigin()
+        {
+            if (draggingView == null)
+                return;
+
+            stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+            substanceDockSystem.RestoreDragOrigin(draggingView.EntityId, dragOrigin);
+            substanceDockSystem.EndDrag(draggingView.EntityId);
+            draggingView.SetPressed(false);
+
+            if (!dragOrigin.WasDocked)
+                clusterSeparationSystem.RelaxAround(draggingView.EntityId);
+
+            ClearDragState();
+        }
+
+        private DropResult DropOnInputNode(NodeView inputNode)
         {
             if (!world.SubstanceStacks.TryGetValue(draggingView.EntityId, out var stack))
             {
                 Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} targetNode={inputNode.EntityId} reason=StackNotFound");
-                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
-                return;
+                return DropResult.ReturnToOrigin;
             }
 
             if (!substanceDefinitionRegistry.TryGet(stack.SubstanceId, out var definition))
             {
                 Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} substance={stack.SubstanceId} targetNode={inputNode.EntityId} reason=SubstanceDefinitionNotFound");
-                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
-                return;
+                return DropResult.ReturnToOrigin;
             }
 
-            if (!SubstanceFlowSpawnRule.CanSpawnFlow(definition.Kind))
+            if (!SubstanceFlowSpawnRule.CanSpawnFlow(world, inputNode.EntityId, definition.Kind))
             {
                 Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} substance={stack.SubstanceId} targetNode={inputNode.EntityId} reason=SubstanceCannotSpawnFlow kind={definition.Kind}");
-                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
-                return;
+                return DropResult.ReturnToOrigin;
             }
 
             if (!world.EnqueueFlowSpawn(inputNode.EntityId, stack.SubstanceId))
             {
                 Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} substance={stack.SubstanceId} targetNode={inputNode.EntityId} reason=FlowSpawnRejected");
-                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
-                return;
+                return DropResult.ReturnToOrigin;
             }
 
             if (!stackSystem.TryConsume(draggingView.EntityId, out var removed))
             {
                 Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} substance={stack.SubstanceId} targetNode={inputNode.EntityId} reason=ConsumeFailed");
-                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
-                return;
+                return DropResult.ReturnToOrigin;
             }
 
             //InputNodeMaterialView materialView = inputNode.GetComponent<InputNodeMaterialView>();
@@ -239,40 +312,41 @@ namespace OneMoreSpoon.Input
             if (removed || stackSystem.IsEmpty(draggingView.EntityId))
             {
                 RemoveDraggedView();
-                return;
+                return DropResult.Removed;
             }
 
-            stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+            return DropResult.ReturnToOrigin;
         }
 
-        private void DropOnMergeNode(NodeView mergeNode)
+        private DropResult DropOnMergeNode(NodeView mergeNode)
         {
             if (mergeSystem.TryAddStack(mergeNode.EntityId, draggingView.EntityId))
             {
                 Debug.Log($"[SubstanceDrop] Succeeded stack={draggingView.EntityId} targetNode={mergeNode.EntityId} target=Merge");
-                return;
+                return DropResult.Accepted;
             }
 
             Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} targetNode={mergeNode.EntityId} reason=MergeRejected");
-            stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+            return DropResult.ReturnToOrigin;
         }
 
-        private void DropOnEdge(EdgeView edge)
+        private DropResult DropOnEdge(EdgeView edge)
         {
             if (edgeBlockEquipSystem.TryEquip(edge.EntityId, draggingView.EntityId))
             {
                 Debug.Log($"[SubstanceDrop] Succeeded stack={draggingView.EntityId} targetEdge={edge.EntityId} target=EdgeBlock");
 
                 if (!world.SubstanceStacks.ContainsKey(draggingView.EntityId))
+                {
                     RemoveDraggedView();
-                else
-                    stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+                    return DropResult.Removed;
+                }
 
-                return;
+                return DropResult.ReturnToOrigin;
             }
 
             Debug.LogWarning($"[SubstanceDrop] Failed stack={draggingView.EntityId} targetEdge={edge.EntityId} reason=EdgeBlockRejected");
-            stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
+            return DropResult.ReturnToOrigin;
         }
 
         private SubstanceView RaycastSubstanceView()
@@ -360,25 +434,18 @@ namespace OneMoreSpoon.Input
             return null;
         }
 
-        private void DropOnTrashCan()
+        private DropResult DropOnTrashCan()
         {
             if (!world.SubstanceStacks.TryGetValue(draggingView.EntityId, out var stack))
-                return;
+                return DropResult.ReturnToOrigin;
 
             if (stack.IsInfinite)
-            {
-                stackSystem.TryMove(draggingView.EntityId, dragStartPosition);
-                substanceDockSystem.MarkFree(draggingView.EntityId);
-                substanceDockSystem.EndDrag(draggingView.EntityId);
-                draggingView.SetPressed(false);
-                draggingView = null;
-                return;
-            }
+                return DropResult.ReturnToOrigin;
 
             var stackId = draggingView.EntityId;
             RemoveDraggedView();
             substanceDockSystem.EndDrag(stackId);
-            draggingView = null;
+            return DropResult.Removed;
         }
 
         private bool RaycastAnyNodeView()
@@ -421,6 +488,13 @@ namespace OneMoreSpoon.Input
             }
 
             draggingView = null;
+        }
+
+        private void ClearDragState()
+        {
+            pendingView = null;
+            draggingView = null;
+            dragOrigin = default;
         }
 
         private Vector2 GetPointerWorldPosition()

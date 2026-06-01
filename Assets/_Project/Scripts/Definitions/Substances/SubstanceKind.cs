@@ -23,6 +23,7 @@ namespace OneMoreSpoon.Game.Definitions
                 && kind != SubstanceKind.EdgeBlock_Stance
                 && kind != SubstanceKind.Person_Replace
                 && kind != SubstanceKind.Unique
+                && kind != SubstanceKind.EdgeBlock_Tool
                 && kind != SubstanceKind.Trash;
         }
 
